@@ -1,26 +1,83 @@
 <template>
-    <a-switch
-        v-model:checked="status"
-        checked-children="开"
-        un-checked-children="关"
-        @change="switchEvent"
-    />
-    <div>
-        当前开关的状态是：
-        <span>{{ statusTxt }}</span>
+  <div>
+    <h2 class="proj_title">
+      创造优质广告投放，实现双赢<span @click="toPage">前往项目大厅</span>
+    </h2>
+    <div class="proj_box">
+      <div v-for="(item, idx) in projectList" :key="idx" class="proj_box_div">
+        <a-card hoverable>
+          <template #actions>
+            <a-button type="primary"><form-outlined />申请</a-button>
+          </template>
+          <a-card-meta :title="item.title" :description="item.desc">
+            <template #avatar>
+              <a-avatar src="https://joeschmoe.io/api/v1/random" />
+            </template>
+          </a-card-meta>
+          <p><span>所属项目：</span>{{ item.type }}</p>
+          <p><span>预算金额：</span>{{ item.money }}</p>
+          <p><span>预期目标：</span>{{ item.target }}</p>
+          <p><span>投放时间：</span>{{ item.time }}</p>
+          <p><span>投放平台：</span>{{ item.plat }}</p>
+        </a-card>
+      </div>
     </div>
-    <Iptcom></Iptcom>
-    妈咪{{showTxt}}
+  </div>
 </template>
 <script setup>
-import { ref } from 'vue'
-import Iptcom from './child/index.vue'
-let status = ref(false)
-let statusTxt = ref('')
-
-const switchEvent = val => {
-    console.log(val)
-    statusTxt.value = val ? '打开' : '关闭'
+import { FormOutlined } from "@ant-design/icons-vue";
+import { reactive, ref } from "vue";
+import { useRouter } from 'vue-router'
+// 项目中心
+let { projectList, toPage } = projectFun();
+let $router = useRouter()
+function projectFun() {
+  let projectList = reactive([
+    {
+      title: "EDG跨品联合活动",
+      desc: "2022-01-01",
+      type: "家用电器",
+      money: "80000",
+      target: "ROI: 20  CTR: 3%",
+      time: "2022-03-03",
+      plat: "京准通",
+    },
+    {
+      title: "EDG跨品联合活动",
+      desc: "2022-01-01",
+      type: "家用电器",
+      money: "80000",
+      target: "ROI: 20  CTR: 3%",
+      time: "2022-03-03",
+      plat: "京准通",
+    },
+    {
+      title: "EDG跨品联合活动",
+      desc: "2022-01-01",
+      type: "家用电器",
+      money: "80000",
+      target: "ROI: 20  CTR: 3%",
+      time: "2022-03-03",
+      plat: "京准通",
+    },
+    {
+      title: "EDG跨品联合活动",
+      desc: "2022-01-01",
+      type: "家用电器",
+      money: "80000",
+      target: "ROI: 20  CTR: 3%",
+      time: "2022-03-03",
+      plat: "京准通",
+    },
+  ]);
+  let toPage = () => {
+    $router.push({
+      path: '/projectCenter'
+    })
+  }
+  return { projectList, toPage };
 }
-
 </script>
+<style lang="scss" scoped>
+@import "index";
+</style>
