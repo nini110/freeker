@@ -10,11 +10,11 @@ export default {
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: yahei; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  /* height: 100%; */
-  min-height: 100vh;
-  background-color: #f0f4fb;
+  height: 100%;
+  /* background-color: #fafafa; */
 }
 </style>

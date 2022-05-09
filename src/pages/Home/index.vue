@@ -60,15 +60,6 @@ function projectFun() {
       time: "2022-03-03",
       plat: "京准通",
     },
-    {
-      title: "EDG跨品联合活动",
-      desc: "2022-01-01",
-      type: "家用电器",
-      money: "80000",
-      target: "ROI: 20  CTR: 3%",
-      time: "2022-03-03",
-      plat: "京准通",
-    },
   ]);
   let toPage = () => {
     $router.push({

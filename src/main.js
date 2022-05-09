@@ -3,6 +3,8 @@ import App from './App.vue'
 const app = createApp(App)
 // 公共的scss文件不在这里引用，参考config.js中css配置项
 // import './styles/_index.scss'
+import './assets/fonts/iconfont.css'
+import './assets/fonts/iconfont.js'
 // vuex
 import store from './store'
 // 路由
