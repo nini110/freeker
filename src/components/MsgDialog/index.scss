@@ -1,0 +1,10 @@
+:deep .ant-modal {
+    width: 1200px!important;
+    &-content {
+        width: 1200px;
+    }
+    &-body {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+}

@@ -1,0 +1,25 @@
+.projBox {
+   &_div {
+      padding: 10px;
+   }
+}
+
+.searchIpt {
+
+   padding: 20px 40px 0 0;
+   box-sizing: border-box;
+
+   :deep .ant-form {
+      width: 100%;
+      display: flex;
+      &-item {
+         width: 45%;
+         margin: 0;
+
+         &:last-child {
+            width: 10%;
+            text-align: right;
+         }
+      }
+   }
+}

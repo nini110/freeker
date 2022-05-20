@@ -1,0 +1,65 @@
+
+.proj {
+
+    &_title {
+        width: calc(100% - 60px);
+        position: relative;
+        font-size: 24px;
+        padding: 15px 0;
+        margin: 40px 30px 15px 30px;
+        font-weight: bold;
+        border-bottom: 1px #D7D7D7 solid;
+    
+        span {
+            cursor: pointer;
+            font-size: 18px;
+            color: $baseBlue;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+    }
+    &_box {
+        display: flex;
+        // justify-content: space-around;
+        padding: 20px 30px;
+        flex-wrap: wrap;
+    
+        &_div {
+            flex-basis: 33.3%;
+            padding: 10px;
+        }
+    
+        :deep .ant-card {
+            width: 100% !important;
+            padding: 0 10px;
+            box-sizing: border-box;
+    
+            &-body {
+                padding: 15px;
+            }
+    
+            &-meta {
+                padding: 10px 0;
+            }
+    
+            &-actions {
+                li {
+                    width: 100%!important;
+                }
+    
+            }
+    
+            p {
+                span {
+                    color: #606266;
+                }
+    
+                font-size: 14px;
+                padding: 5px 0;
+                color: #303133;
+            }
+        }
+    }
+}

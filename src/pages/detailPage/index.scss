@@ -1,0 +1,126 @@
+.detailBox {
+    padding: 40px;
+
+    h2 {
+        font-size: 20px;
+        color: #304155;
+        font-weight: bold;
+        position: relative;
+        margin-bottom: 30px;
+
+        &:after {
+            content: '';
+            width: 40px;
+            height: 6px;
+            border-radius: 10px;
+            background-color: #ff1a00;
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+        }
+    }
+
+    &_div {
+        margin: 30px;
+    }
+
+    &_desc {
+        font-size: 14px;
+        line-height: 26px;
+    }
+
+    &_info {
+        padding: 0 20px;
+        border: 1px solid #e7e7e7;
+        border-radius: 5px;
+        h3 {
+            font-size: 18px;
+            line-height: 36px;
+            position: relative;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f6f6f6;
+
+            &:before {
+                content: '';
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: #ff532b;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+
+        &_box {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            p {
+                margin: 10px 0;
+                font-size: 14px;
+
+                span {
+                    &:first-child {
+                        color: #606266;
+                    }
+
+                    &:nth-child(2) {
+                        color: #303133;
+                    }
+                }
+
+                &.one {
+                    flex-basis: 33.3%;
+                }
+
+                &.two {
+                    flex-basis: 60%;
+
+                }
+
+                &.three {
+                    flex-basis: 100%;
+
+                }
+            }
+        }
+
+    }
+    &_btn {
+        text-align: center;
+    }
+    &_topbtn {
+        position: relative;
+        &:after {
+            content: '';
+            width: 100px;
+            height: 100px;
+            background-size: cover;
+            background-position: top right;
+            background-repeat: no-repeat;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+        &.dsh:after {
+            background-image: url(../../assets/images/dsh.png);
+        }
+        &.dqd:after {
+            background-image: url(../../assets/images/dqd.png);
+        }
+        &.jxz:after {
+            background-image: url(../../assets/images/jxz.png);
+        }
+        &.dqr:after {
+            background-image: url(../../assets/images/dqr.png);
+        }
+        &.ywc:after {
+            background-image: url(../../assets/images/ywc.png);
+        }
+        &.yqx:after {
+            background-image: url(../../assets/images/yqx.png);
+        }
+    }
+}

@@ -1,0 +1,93 @@
+{
+  "id": "3348143",
+  "name": "freeker",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "11855581",
+      "name": "项目",
+      "font_class": "xiangmu",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "18551077",
+      "name": "任务办理1",
+      "font_class": "renwubanli1",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "19842404",
+      "name": "结算",
+      "font_class": "jiesuan",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "736513",
+      "name": "银行卡",
+      "font_class": "yinxingqia",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "1153608",
+      "name": "资质",
+      "font_class": "zizhi",
+      "unicode": "e6b3",
+      "unicode_decimal": 59059
+    },
+    {
+      "icon_id": "1529972",
+      "name": "等级",
+      "font_class": "dengji",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "6337465",
+      "name": "笑脸",
+      "font_class": "xiaolian2",
+      "unicode": "ec80",
+      "unicode_decimal": 60544
+    },
+    {
+      "icon_id": "16365909",
+      "name": "账号中心 账号管理",
+      "font_class": "zhanghaozhongxinzhanghaoguanli",
+      "unicode": "e6a0",
+      "unicode_decimal": 59040
+    },
+    {
+      "icon_id": "11077383",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "12767312",
+      "name": "企业微信",
+      "font_class": "qiyeweixin1",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "22032561",
+      "name": "企业微信",
+      "font_class": "qiyeweixin",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "9961942",
+      "name": "提现账号设置",
+      "font_class": "tixianzhanghaoshezhi",
+      "unicode": "e695",
+      "unicode_decimal": 59029
+    }
+  ]
+}

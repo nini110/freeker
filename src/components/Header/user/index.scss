@@ -1,0 +1,198 @@
+.user {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px dotted #d7d7d7;
+    padding-bottom: 20px;
+    &_img {
+        flex-basis: 40%;
+        text-align: center;
+        line-height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+            width: 70%;
+        }
+    }
+
+    &_box {
+        flex-basis: 70%;
+        padding-left: 20px;
+
+        p {
+            width: 100%;
+            font-size: 16px;
+            line-height: 32px;
+            padding: 4px 0;
+            display: flex;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: flex-start;
+
+            span {
+                &.label {
+                    width: 40%;
+                    text-align: justify;
+                    text-align-last: justify;
+                    color: #606266;
+                    &:before {
+                        margin-right: 3px;
+                    }
+
+                }
+
+                &:nth-child(2) {
+                    width: 69%;
+                    color: #303133;
+                    display: flex;
+                    input {
+                        width: calc(100% - 80px) !important;
+                    }
+                }
+                &.bind {
+                    color: red;
+                }
+            }
+
+            i {
+                font-style: normal;
+                margin-left: 20px;
+                color: $baseBlue;
+                cursor: pointer;
+
+                .iconfont {
+                    width: auto !important;
+                }
+            }
+        }
+    }
+
+    // &_dialog {
+    //     padding-bottom: 40px;
+    // }
+}
+.erweima {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    border-radius: 5px;
+    background-image: linear-gradient(to right,#ff0b95,#ffa22f);
+    img {
+        &:nth-child(1) {
+            width: 150px;
+        }
+        &:nth-child(2) {
+        width: 100px;
+            
+        }
+    }
+}
+.zizhi {
+    padding: 10px 0;
+    background-color: $baseGray;
+    h2 {
+        font-size: 16px;
+        line-height: 36px;
+        color: #606266;
+        padding-left: 10px;
+        margin-bottom: 15px;
+
+        span {
+            margin: 0 5px;
+            color: red;
+        }
+    }
+
+    :deep .ant {
+        &-form {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+
+            &-div {
+                flex-basis: 48%;
+            }
+
+            &-item {
+                margin-bottom: 10px;
+            }
+        }
+
+        &-upload {
+            padding: 6px 0 !important;
+
+            &-text {
+                font-size: 12px !important;
+                color: #909399 !important;
+            }
+        }
+
+
+    }
+
+    &-btn {
+        text-align: center;
+    }
+}
+
+:deep .ant {
+    &-modal {
+        &-body {
+            padding: 20px 20px 40px 20px;
+        }
+    }
+    &-input {
+        background-color: transparent;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        box-shadow: none;
+        &-group {
+            input {
+                border-left-color: transparent;
+                border-right-color: transparent;
+                border-top-color: transparent;
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+            button {
+                border: none;
+                color: #606266;
+                box-shadow: none;
+                background-color: transparent;
+            }
+        }
+        &-affix-wrapper {
+            background-color: transparent;
+            border-left-color: transparent;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            box-shadow: none;
+            &:hover {
+                background-color: transparent;
+                border-left-color: transparent;
+                border-right-color: transparent;
+                border-top-color: transparent;
+                box-shadow: none; 
+            }
+        }
+    }
+    &-select {
+        &-focused {
+            .ant-select-selector {
+                box-shadow: none!important;
+
+            }
+        }
+        &-selector {
+            background-color: transparent!important;
+            border-left-color: transparent!important;
+            border-right-color: transparent!important;
+            border-top-color: transparent!important;
+        }
+    }
+
+
+}
