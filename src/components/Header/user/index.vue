@@ -9,7 +9,7 @@
       :keyboard="false"
       :maskClosable="false"
       centered
-      :width="660"
+      :width="620"
       :getContainer="$refs.aff2"
     >
       <template #footer>
@@ -21,7 +21,7 @@
         <div class="user_img">
           <img src="../../../assets/user.png" alt="" />
         </div>
-        <div class="user_box">
+        <div class="user_box" ref="boxref">
           <p>
             <span class="label iconfont icon-xiaolian2">昵称：</span>
             <a-input-group v-if="showIpt" compact>
@@ -39,75 +39,102 @@
             <span>123456789</span>
           </p>
           <p>
-            <span class="label iconfont icon-dengji">投手等级：</span>
+            <span class="label iconfont icon-dengji">等级：</span>
             <span>高级</span>
           </p>
           <p>
-            <span class="label iconfont icon-zizhi">投放资质：</span>
+            <span class="label iconfont icon-zizhi">资质：</span>
             <span
               >京东五星投手<i @click="uploadEvent"><edit-outlined /></i
             ></span>
           </p>
           <p>
-            <span class="label iconfont icon-yinxingqia">美事通账号：</span>
-            <span class="bind">未绑定<i @click="bindEvent"><link-outlined /></i></span>
+            <span class="label iconfont icon-yinxingqia">美事通：</span>
+            <span class="bind"
+              >未绑定<i @click="bindEvent"><link-outlined /></i
+            ></span>
           </p>
         </div>
       </div>
-      <div v-if="showErweima" class="erweima">
-        <img src="../../../assets/images/mst.png" alt="">
-        <img src="../../../assets/images/weweima.webp" alt="">
-      </div>
-      <div v-if="showUpload" class="zizhi">
-        <h2><edit-outlined />修改</h2>
-        <a-form
-          :model="zizhiForm"
-          :label-col="{ span: 6 }"
-          :wrapper-col="{ span: 18 }"
-        >
-          <div class="ant-form-div">
-            <a-form-item label="平台">
-              <a-select
-                v-model:value="zizhiForm.plat"
-                :options="options"
-                allow-clear
-              ></a-select>
-            </a-form-item>
-            <a-form-item label="等级">
-              <a-select
-                v-model:value="zizhiForm.level"
-                :options="options"
-                allow-clear
-              ></a-select>
-            </a-form-item>
-            <a-form-item label="编号">
-              <a-input v-model:value="zizhiForm.code" allow-clear />
-            </a-form-item>
-          </div>
-          <div class="ant-form-div">
-            <a-form-item label="上传">
-              <a-upload-dragger
-                v-model:fileList="fileList"
-                name="file"
-                :multiple="true"
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                @change="handleChange"
-                @drop="handleDrop"
-              >
-                <p class="ant-upload-drag-icon">
-                  <inbox-outlined></inbox-outlined>
-                </p>
-                <p class="ant-upload-text">点击或拖拽至区域上传</p>
-              </a-upload-dragger>
-            </a-form-item>
-          </div>
-        </a-form>
-        <div class="zizhi-btn">
-          <a-button type="primary" html-type="submit" @click="fromSave"
-            >确认</a-button
-          >
+      <a-drawer
+        v-if="showErweima"
+        title=""
+        placement="right"
+        :closable="false"
+        :visible="showErweima"
+        :get-container="false"
+        :style="{ position: 'absolute' }"
+        width="500"
+      >
+        <div class="erweima">
+          <img src="../../../assets/images/nobind3.png" alt="" />
+          <img src="../../../assets/images/mst.png" alt="" />
+          <img src="../../../assets/images/weweima.webp" alt="" />
         </div>
-      </div>
+        <div class="erweima-btn">
+          <a-button type="primary" @click="bindEvent_2">知道了</a-button>
+        </div>
+      </a-drawer>
+      <a-drawer
+        v-if="showUpload"
+        title=""
+        placement="right"
+        :closable="false"
+        :visible="showUpload"
+        :get-container="false"
+        :style="{ position: 'absolute' }"
+        width="500"
+      >
+        <div class="zizhi">
+          <h2><edit-outlined />投手资质修改</h2>
+          <a-form
+            :model="zizhiForm"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 18 }"
+          >
+            <div class="ant-form-div">
+              <a-form-item label="平台">
+                <a-select
+                  v-model:value="zizhiForm.plat"
+                  :options="options"
+                  allow-clear
+                ></a-select>
+              </a-form-item>
+              <a-form-item label="等级">
+                <a-select
+                  v-model:value="zizhiForm.level"
+                  :options="options"
+                  allow-clear
+                ></a-select>
+              </a-form-item>
+              <a-form-item label="编号">
+                <a-input v-model:value="zizhiForm.code" allow-clear />
+              </a-form-item>
+            </div>
+            <div class="ant-form-div">
+              <a-form-item label="上传">
+                <a-upload-dragger
+                  v-model:fileList="fileList"
+                  name="file"
+                  :multiple="true"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  @change="handleChange"
+                  @drop="handleDrop"
+                >
+                  <p class="ant-upload-drag-icon">
+                    <inbox-outlined></inbox-outlined>
+                  </p>
+                  <p class="ant-upload-text">点击或拖拽至区域上传</p>
+                </a-upload-dragger>
+              </a-form-item>
+            </div>
+          </a-form>
+        </div>
+        <div class="zizhi-btn">
+          <a-button @click="uploadEvent_3">取消</a-button>
+          <a-button type="primary" @click="uploadEvent_2">确认</a-button>
+        </div>
+      </a-drawer>
     </a-modal>
   </div>
 </template>
@@ -118,7 +145,7 @@ import {
   InboxOutlined,
   EditOutlined,
   UploadOutlined,
-  LinkOutlined
+  LinkOutlined,
 } from "@ant-design/icons-vue";
 let $props = defineProps({
   showDialog: {
@@ -153,7 +180,7 @@ function relate_nick() {
         content: "请先确认修改信息",
         duration: 2,
       });
-      return
+      return;
     }
     showIpt.value = true;
   };
@@ -163,18 +190,18 @@ function relate_nick() {
   return { nickName, showIpt, editEvent, confirmEvent };
 }
 // 认证资质
-let { showUpload, uploadEvent, zizhiForm, fromSave, showErweima, bindEvent } = relate_upload();
+let { showUpload, uploadEvent, uploadEvent_2, uploadEvent_3, zizhiForm, fromSave, showErweima, bindEvent, bindEvent_2 } =
+  relate_upload();
 function relate_upload() {
   let showUpload = ref(false);
   let uploadEvent = () => {
-    if (showIpt.value) {
-      message.warning({
-        content: "请先确认修改信息",
-        duration: 2,
-      });
-      return
-    }
-    showUpload.value = !showUpload.value;
+    showUpload.value = true
+  };
+  let uploadEvent_2 = () => {
+    showUpload.value = false;
+  };
+    let uploadEvent_3 = () => {
+    showUpload.value = false;
   };
   let zizhiForm = reactive({
     plat: "",
@@ -186,14 +213,26 @@ function relate_upload() {
     showUpload.value = !showUpload.value;
   };
   // ----
-  let showErweima = ref(false)
+  let showErweima = ref(false);
   let bindEvent = () => {
-    showErweima.value = !showErweima.value
+    showErweima.value = true
     setTimeout(() => {
-      showErweima.value = false
-    }, 150000)
+      showErweima.value = false;
+    }, 150000);
+  };
+  let bindEvent_2 = () => {
+    showErweima.value = false
   }
-  return { showUpload, uploadEvent, zizhiForm, fromSave, showErweima, bindEvent };
+  return {
+    showUpload,
+    uploadEvent,
+    uploadEvent_2,
+    uploadEvent_3,
+    zizhiForm,
+    showErweima,
+    bindEvent,
+    bindEvent_2
+  };
 }
 </script>
 <style lang="scss" scoped>

@@ -25,7 +25,7 @@
     }
 
     &_desc {
-        font-size: 14px;
+        font-size: 16px;
         line-height: 26px;
     }
 
@@ -33,6 +33,7 @@
         padding: 0 20px;
         border: 1px solid #e7e7e7;
         border-radius: 5px;
+
         h3 {
             font-size: 18px;
             line-height: 36px;
@@ -57,9 +58,10 @@
             display: flex;
             flex-wrap: wrap;
             padding: 20px;
+
             p {
                 margin: 10px 0;
-                font-size: 14px;
+                font-size: 16px;
 
                 span {
                     &:first-child {
@@ -88,39 +90,54 @@
         }
 
     }
+
     &_btn {
         text-align: center;
     }
+
     &_topbtn {
         position: relative;
+
         &:after {
             content: '';
             width: 100px;
             height: 100px;
-            background-size: cover;
+            background-size: contain;
             background-position: top right;
             background-repeat: no-repeat;
             position: absolute;
             right: 0;
             top: 0;
         }
+
         &.dsh:after {
             background-image: url(../../assets/images/dsh.png);
         }
+
         &.dqd:after {
             background-image: url(../../assets/images/dqd.png);
         }
+
         &.jxz:after {
             background-image: url(../../assets/images/jxz.png);
         }
+
         &.dqr:after {
             background-image: url(../../assets/images/dqr.png);
         }
+
         &.ywc:after {
             background-image: url(../../assets/images/ywc.png);
         }
+
         &.yqx:after {
             background-image: url(../../assets/images/yqx.png);
+        }
+        &.wjs:after {
+            background-image: url(../../assets/images/wjs.png);
+        }
+        &.yjs:after {
+            background-image: url(../../assets/images/yjs.png);
         }
     }
 }

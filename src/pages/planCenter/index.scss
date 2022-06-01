@@ -1,6 +1,6 @@
 .planTabs {
     padding-top: 20px;
-    margin: 0 40px;
+    margin: 0 60px;
     :deep .ant-tabs {
         &-tab {
             font-size: 16px;
@@ -8,7 +8,7 @@
         }
         &-nav-wrap {
             padding: 0 20px;
-            border-top: 1px solid #fc5731;
+            border-top: 1px solid #ff0000;
             background-color: #fff2ee;
         }
     }
@@ -17,7 +17,9 @@
 .planBox {
     padding: 10px 20px;
     border: 1px solid #f0f0f0;
-    margin: 0 40px 20px 40px;
+    // box-shadow: 0 0 20px #e4e4e4;
+    // box-shadow: 0 -7px 13px #e4e4e4;
+    margin: 0 60px 40px 60px;
     border-radius: 6px;
     font-size: 16px;
     &_title {
@@ -101,7 +103,7 @@
             span {
                 margin: 5px 0;
                 cursor: pointer;
-                color: $baseBlue;
+                color: #1890ff;
                 &:hover {
                     color: #056ac8;
                 }

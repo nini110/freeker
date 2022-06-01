@@ -1,6 +1,7 @@
 @font-face {  
     font-family: 'yahei';
-    src: url('wryahei.ttf');
+    /* src: url('./wryahei.ttf'); */
+    src: url('./苹方黑体-中粗-简.ttf');
     font-weight: normal;  
     font-style: normal;  
   }

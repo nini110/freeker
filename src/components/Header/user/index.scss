@@ -3,6 +3,7 @@
     justify-content: space-around;
     border-bottom: 1px dotted #d7d7d7;
     padding-bottom: 20px;
+
     &_img {
         flex-basis: 40%;
         text-align: center;
@@ -10,6 +11,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
         img {
             width: 70%;
         }
@@ -22,19 +24,21 @@
         p {
             width: 100%;
             font-size: 16px;
-            line-height: 32px;
+            line-height: 26px;
             padding: 4px 0;
             display: flex;
             flex-wrap: nowrap;
             align-content: center;
             justify-content: flex-start;
+            margin-bottom: 0px;
 
             span {
                 &.label {
-                    width: 40%;
+                    // width: 100px;
                     text-align: justify;
                     text-align-last: justify;
-                    color: #606266;
+                    color: #908e8e;
+
                     &:before {
                         margin-right: 3px;
                     }
@@ -45,10 +49,12 @@
                     width: 69%;
                     color: #303133;
                     display: flex;
+
                     input {
                         width: calc(100% - 80px) !important;
                     }
                 }
+
                 &.bind {
                     color: red;
                 }
@@ -57,7 +63,7 @@
             i {
                 font-style: normal;
                 margin-left: 20px;
-                color: $baseBlue;
+                color: #1890ff;
                 cursor: pointer;
 
                 .iconfont {
@@ -71,26 +77,41 @@
     //     padding-bottom: 40px;
     // }
 }
+
 .erweima {
+    transition: all 1s linear;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 20px;
     border-radius: 5px;
-    background-image: linear-gradient(to right,#ff0b95,#ffa22f);
+    background-image: linear-gradient(to right, #ff0b95, #ffa22f);
+    object-fit: cover;
+    height: 160px;
+    flex-basis: 100%;
     img {
         &:nth-child(1) {
-            width: 150px;
+            width: 140px;
         }
+
         &:nth-child(2) {
-        width: 100px;
-            
+            width: 160px;
+        }
+        &:nth-child(3) {
+            width: 100px;
         }
     }
+    &-btn {
+        flex-basis: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
+
 .zizhi {
     padding: 10px 0;
-    background-color: $baseGray;
+    background-color: #f5f5f56e;
+
     h2 {
         font-size: 16px;
         line-height: 36px;
@@ -104,59 +125,80 @@
         }
     }
 
-    :deep .ant {
-        &-form {
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-
-            &-div {
-                flex-basis: 48%;
-            }
-
-            &-item {
-                margin-bottom: 10px;
-            }
-        }
-
-        &-upload {
-            padding: 6px 0 !important;
-
-            &-text {
-                font-size: 12px !important;
-                color: #909399 !important;
-            }
-        }
-
-
-    }
-
     &-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         text-align: center;
+        flex-basis: 100%;
+        .ant-btn {
+            margin: 0 10px;
+        }
     }
 }
 
 :deep .ant {
+    &-form {
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+
+        &-div {
+            flex-basis: 48%;
+        }
+
+        &-item {
+            margin-bottom: 10px;
+            &-label label{
+                font-size: 16px;
+            }
+        }
+    }
+
+    &-upload {
+        padding: 6px 0 !important;
+
+        &-text {
+            font-size: 12px !important;
+            color: #909399 !important;
+        }
+    }
+    &-btn {
+        button {
+            margin: 0 10px;
+        }
+    }
+    &-drawer {
+        &-body {
+            display: flex;
+            align-content: space-between;
+            flex-wrap: wrap;
+        }
+    }
     &-modal {
         &-body {
             padding: 20px 20px 40px 20px;
         }
     }
+
     &-input {
         background-color: transparent;
         border-left-color: transparent;
         border-right-color: transparent;
         border-top-color: transparent;
         box-shadow: none;
+
         &-group {
             input {
                 border-left-color: transparent;
                 border-right-color: transparent;
                 border-top-color: transparent;
+
                 &:focus {
                     box-shadow: none;
                 }
             }
+
             button {
                 border: none;
                 color: #606266;
@@ -164,33 +206,37 @@
                 background-color: transparent;
             }
         }
+
         &-affix-wrapper {
             background-color: transparent;
             border-left-color: transparent;
             border-right-color: transparent;
             border-top-color: transparent;
             box-shadow: none;
+
             &:hover {
                 background-color: transparent;
                 border-left-color: transparent;
                 border-right-color: transparent;
                 border-top-color: transparent;
-                box-shadow: none; 
+                box-shadow: none;
             }
         }
     }
+
     &-select {
         &-focused {
             .ant-select-selector {
-                box-shadow: none!important;
+                box-shadow: none !important;
 
             }
         }
+
         &-selector {
-            background-color: transparent!important;
-            border-left-color: transparent!important;
-            border-right-color: transparent!important;
-            border-top-color: transparent!important;
+            background-color: transparent !important;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-top-color: transparent !important;
         }
     }
 

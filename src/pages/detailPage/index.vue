@@ -29,7 +29,9 @@
         stusCode === 3 ||
         stusCode === 4 ||
         stusCode === 5 ||
-        stusCode === 6
+        stusCode === 6 ||
+        stusCode === 7 ||
+        stusCode === 8
       "
       class="detailBox_div"
     >
@@ -42,7 +44,7 @@
         </div>
       </div>
     </div>
-    <div v-if="stusCode === 4 || stusCode === 5" class="detailBox_div">
+    <div v-if="stusCode === 4 || stusCode === 5  || stusCode === 7 || stusCode === 8" class="detailBox_div">
       <h2>数据信息</h2>
       <div class="detailBox_info">
         <div class="detailBox_info_box">
@@ -52,7 +54,7 @@
         </div>
       </div>
     </div>
-    <div v-if="stusCode === 5" class="detailBox_div">
+    <div v-if="stusCode === 5 || stusCode === 7 || stusCode === 8" class="detailBox_div">
       <h2>评价</h2>
       <div class="detailBox_desc">
         <a-rate :value="2" disabled />
@@ -70,10 +72,12 @@
       </div>
     </div>
     <div class="detailBox_btn">
-      <a-button v-if="stusCode === 'none'" type="primary" block>去申请</a-button>
+      <a-button v-if="stusCode === 'none'" type="primary" block
+        >去申请</a-button
+      >
       <a-button v-if="stusCode === 1" type="primary" block>取消申请</a-button>
       <a-button v-if="stusCode === 4" type="primary" block>确认完成</a-button>
-      <a-button v-if="stusCode === 5" type="primary" block>前往结算</a-button>
+      <a-button v-if="stusCode === 5 || stusCode === 7" type="primary" block>前往结算</a-button>
     </div>
   </div>
 </template>
@@ -85,9 +89,11 @@ const $props = defineProps({
 });
 // 项目详情页相关
 let $emit = defineEmits(["back"]);
-let { detailList, currentPlanCode, backEvent, iconClass, watch_stusCode } = relate_detail();
+let { detailList, currentPlanCode, backEvent, iconClass, watch_stusCode } =
+  relate_detail();
 function relate_detail() {
   let { stusCode } = toRefs($props);
+  console.log('?????',stusCode.value);
   let detailList = reactive([
     {
       label: "服务费",
@@ -171,6 +177,14 @@ function relate_detail() {
           break;
         case 6:
           iconClass = "yqx";
+          break;
+          // 未结算
+        case 7:
+          iconClass = "wjs";
+          break;
+          // 已结算
+        case 8:
+          iconClass = "yjs";
           break;
       }
     },

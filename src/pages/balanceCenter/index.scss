@@ -1,44 +1,163 @@
-.planBox {
-    margin: 20px 40px;
+.banlanceBox {
+    margin: 20px 60px;
 
-    &_info {
+    &_list {
         display: flex;
-        font-size: 16px;
-        justify-content: space-around;
+        flex-wrap: wrap;
+        // justify-content: space-between;
+    }
 
-        p {
-            display: flex;
-            flex-wrap: wrap;
-            flex-basis: 20%;
-            align-content: center;
-            text-align: center;
-            align-items: center;
+    &_item {
+        flex-basis: 31.3%;
+        transition: all .3s linear;
+        margin: 1%;
+        background: url(../../assets/images/itembg.png), linear-gradient(-223.91deg, #fbfbfb 0%, #bea692 100%);
+
+        background-size: cover;
+        border-radius: 8px;
+
+        h2 {
+            padding: 12px 30px;
+            font-size: 18px;
+            border-bottom: 1px solid #f4f5f6;
 
             span {
-                &:nth-child(1) {
-                    font-size: 18px;
-                    color: #909399;
-                    margin-right: 4px;
-                }
-
-                &:nth-child(2) {
-                    color: #909399;
-                    margin-right: 15px;
-
-                }
-
+                color: #6d6c6c;
+                font-weight: bold;
+                cursor: pointer;
             }
+        }
+        &:hover {
+            box-shadow: 0px 0px 24px #5e5e5e;
+            background-color: #4d4d4d;
+        }
 
-            &:nth-child(3) {
-                flex-basis: 20%;
+
+
+        p {
+            margin: 16px 0;
+        }
+
+        &_info {
+            padding: 5px 30px;
+
+            span {
+                margin-right: 5px;
+                font-size: 16px;
+
+                &:nth-child(1),
+                &:nth-child(2) {
+                    color: #908e8e;
+                }
+
+                &:nth-child(3) {
+                    color: #6d6c6c;
+                }
+
+                &.cur {
+                    color: red;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        &_opt {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            padding: 8px 0;
+            transition: all .5s linear;
+            background-color: #dbd6d62e;
+
+            span {
+                font-weight: bold;
+                color: #888 !important;
                 cursor: pointer;
             }
         }
     }
+
 }
 
-:deep .ant-list-item-meta-title {
-    color: $baseBlue;
-    cursor: pointer;
-    font-weight: bold;
+
+:deep .ant {
+    &-tabs {
+        user-select: none;
+        &-nav {
+            &:before {
+                border-color: red;
+            }
+        }
+        &-tab {
+            border-radius: 6px 6px 0 0!important;
+            padding: 10px 20px!important;
+            margin: 0!important;
+            width: 150px!important;
+            box-sizing: border-box;
+            text-align: center;
+            justify-content: center;
+            border-bottom-color: #ff0000!important;
+            &-active {
+                background: #4d4d4d url(../../assets/images/tabbg.png) no-repeat 0 0!important;
+                background-size: cover!important;
+                .ant-tabs-tab-btn {
+                    color: #fff!important;
+    
+                }
+            }
+            &-btn {
+    
+            }
+        }
+    }
+
+    &-modal-body {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+
+        .bind {
+            &_info {
+                flex-basis: 100%;
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                margin-bottom: 30px;
+            }
+
+            &_tip {
+                flex-basis: 100%;
+                text-align: center;
+
+                .anticon {
+                    margin-right: 5px;
+                }
+            }
+
+            &_left {
+                width: 250px;
+                height: 160px;
+
+                img {
+                    object-fit: cover;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+
+            &_right {
+                flex: 1;
+                height: 160px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                img {
+                    object-fit: cover;
+                    width: 110px;
+                    height: 110px;
+                }
+            }
+        }
+    }
 }

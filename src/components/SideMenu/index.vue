@@ -7,13 +7,22 @@
       @select="menuSelect"
     >
       <a-menu-item key="projectCenter">
-        <span class="iconfont icon-xiangmu">项目中心</span>
+        <svg class="icon svg-icon menuIcon" aria-hidden="true">
+          <use xlink:href="#icon-shoufeixiangmu-xiangmuicon"></use>
+        </svg>
+        <span>项目中心</span>
       </a-menu-item>
       <a-menu-item key="planCenter">
-        <span class="iconfont icon-renwubanli1">任务中心</span>
+        <svg class="icon svg-icon menuIcon" aria-hidden="true">
+          <use xlink:href="#icon-renwuguanli"></use>
+        </svg>        
+        <span>任务中心</span>
       </a-menu-item>
       <a-menu-item key="balanceCenter">
-        <span class="iconfont icon-jiesuan">结算中心</span>
+        <svg class="icon svg-icon menuIcon" aria-hidden="true">
+          <use xlink:href="#icon-qian-copy-copy"></use>
+        </svg>        
+        <span>结算中心</span>
       </a-menu-item>
     </a-menu>
   </div>

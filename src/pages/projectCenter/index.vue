@@ -1,16 +1,12 @@
 <template>
   <div v-if="showList">
     <div class="searchIpt">
-      <a-form
-        :model="formData"
-        :label-col="{ style: { width: '80px' } }"
-        layout="inline"
-      >
+      <a-form :model="formData" layout="inline">
         <a-form-item label="项目">
           <a-input v-model:value="formData.projName" />
         </a-form-item>
         <a-form-item label="类目">
-          <a-select v-model:value="formData.catgory">
+          <a-select v-model:value="formData.catgory" size="large">
             <a-select-option value="lucy">家用电器</a-select-option>
           </a-select>
         </a-form-item>
@@ -26,21 +22,18 @@
         class="proj_box_div"
         @click="cardClick"
       >
-        <a-card hoverable>
-          <template #actions>
-            <a-button type="primary"><form-outlined />申请</a-button>
-          </template>
-          <a-card-meta :title="item.title" :description="item.desc">
-            <template #avatar>
-              <a-avatar src="https://joeschmoe.io/api/v1/random" />
-            </template>
-          </a-card-meta>
-          <p><span>所属项目：</span>{{ item.type }}</p>
-          <p><span>预算金额：</span>{{ item.money }}</p>
-          <p><span>预期目标：</span>{{ item.target }}</p>
-          <p><span>投放时间：</span>{{ item.time }}</p>
-          <p><span>投放平台：</span>{{ item.plat }}</p>
-        </a-card>
+        <div class="proj_box_card">
+          <div class="proj_desc">
+            我是项目名称
+          </div>
+          <div class="proj_txt">
+            <p class="proj_p"><span>所属项目：</span>{{ item.type }}</p>
+            <p class="proj_p"><span>预算金额：</span>{{ item.money }}</p>
+            <p class="proj_p"><span>预期目标：</span>{{ item.target }}</p>
+            <p class="proj_p"><span>投放时间：</span>{{ item.time }}</p>
+            <p class="proj_p"><span>投放平台：</span>{{ item.plat }}</p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="pagination fixed">

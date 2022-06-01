@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3596350",
+      "name": "钱",
+      "font_class": "qian-copy-copy",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "25363528",
+      "name": "任务管理",
+      "font_class": "renwuguanli",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "28899295",
+      "name": "收费项目-项目icon",
+      "font_class": "shoufeixiangmu-xiangmuicon",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
       "icon_id": "11855581",
       "name": "项目",
       "font_class": "xiangmu",

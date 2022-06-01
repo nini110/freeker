@@ -1,0 +1,42 @@
+@import "./reset.less";
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 8px;
+    min-height: 15px;
+    background: rgba(50,50,50,0.3) !important;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    border-radius: 2px;
+}
+.content {
+    .ant {
+        &-form {
+            flex-basis: 100%;
+            // padding: 22px 0;
+            margin-bottom: 22px;
+            &-item {
+                flex-basis: 100%;
+                margin-bottom: 22px;
+                &-label {
+                    width: 70px;
+                    label {
+                        height: 100%;
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+    .pagination {
+        display: flex;
+        justify-content: flex-end;
+       padding: 20px 40px; 
+    }
+}

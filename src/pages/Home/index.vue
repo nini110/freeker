@@ -4,22 +4,24 @@
       创造优质广告投放，实现双赢<span @click="toPage">前往项目大厅</span>
     </h2>
     <div class="proj_box">
-      <div v-for="(item, idx) in projectList" :key="idx" class="proj_box_div">
-        <a-card hoverable>
-          <template #actions>
-            <a-button type="primary"><form-outlined />申请</a-button>
-          </template>
-          <a-card-meta :title="item.title" :description="item.desc">
-            <template #avatar>
-              <a-avatar src="https://joeschmoe.io/api/v1/random" />
-            </template>
-          </a-card-meta>
-          <p><span>所属项目：</span>{{ item.type }}</p>
-          <p><span>预算金额：</span>{{ item.money }}</p>
-          <p><span>预期目标：</span>{{ item.target }}</p>
-          <p><span>投放时间：</span>{{ item.time }}</p>
-          <p><span>投放平台：</span>{{ item.plat }}</p>
-        </a-card>
+     <div
+        v-for="(item, idx) in projectList"
+        :key="idx"
+        class="proj_box_div"
+        @click="cardClick"
+      >
+        <div class="proj_box_card">
+          <div class="proj_desc">
+            我是项目名称
+          </div>
+          <div class="proj_txt">
+            <p class="proj_p"><span>所属项目：</span>{{ item.type }}</p>
+            <p class="proj_p"><span>预算金额：</span>{{ item.money }}</p>
+            <p class="proj_p"><span>预期目标：</span>{{ item.target }}</p>
+            <p class="proj_p"><span>投放时间：</span>{{ item.time }}</p>
+            <p class="proj_p"><span>投放平台：</span>{{ item.plat }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -2,8 +2,7 @@
   <Header></Header>
   <div v-if="$route.name === 'home'" class="content ts">
     <div class="content_txt">
-      <img src="../../assets/logo.png" alt="" />
-      <span> 创造优质广告投放，实现双赢</span>
+      <img src="../../assets/images/slide1.jpg" alt="" />
     </div>
     <div class="content_img">
       <a-carousel v-if="$route.name === 'home'" autoplay>
@@ -21,7 +20,7 @@
   </div>
   <div v-else class="content">
     <div class="content_box">
-      <a-affix :offset-top="75">
+      <a-affix :offset-top="85">
         <div class="content_box_lt">
           <SideMenu></SideMenu>
         </div>

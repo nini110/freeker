@@ -23,10 +23,6 @@ module.exports = {
       
                 }
             },
-            // sass-loader版本不同  键名不同  v8- data  v8  prependData  v8+ additionalData
-            sass: {
-                additionalData: `@import './src/styles/_index.scss';`
-              }
        }
     },
     // 关闭eslint
