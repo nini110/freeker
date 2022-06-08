@@ -1,11 +1,15 @@
+$baseFontsize: 14px;
+
 .planTabs {
     padding-top: 20px;
     margin: 0 60px;
+
     :deep .ant-tabs {
         &-tab {
             font-size: 16px;
 
         }
+
         &-nav-wrap {
             padding: 0 20px;
             border-top: 1px solid #ff0000;
@@ -15,13 +19,14 @@
 }
 
 .planBox {
-    padding: 10px 20px;
-    border: 1px solid #f0f0f0;
-    // box-shadow: 0 0 20px #e4e4e4;
-    // box-shadow: 0 -7px 13px #e4e4e4;
+    padding: 10px 0;
+    border: 1px solid transparent;
     margin: 0 60px 40px 60px;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: $baseFontsize;
+    transition: all .4s linear;
+    cursor: pointer;
+
     &_title {
         display: flex;
         flex-wrap: nowrap;
@@ -42,6 +47,67 @@
         display: flex;
         justify-content: space-between;
         line-height: 26px;
+        position: relative;
+        background-color: #f5f5f586;
+        background: linear-gradient(180deg, #fff 50%, #f5f5f5 150%);
+
+        &:before {
+            content: '';
+            width: 3px;
+            height: 0;
+            background-color: #fff;
+            position: absolute;
+            transition: all .3s linear;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        &:hover {
+            &:before {
+                width: 3px;
+                height: 112px;
+                top: 0;
+                bottom: 0;
+                transform: none;
+            }
+        }
+
+        &.dsh {
+            &:before {
+                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+            }
+        }
+
+        &.dqd {
+            &:before {
+                background: linear-gradient(150deg, #e6a23c 50%, #fff 150%);
+            }
+        }
+
+        &.jxz {
+            &:before {
+                background: linear-gradient(150deg, #5cbb7a 50%, #fff 150%);
+            }
+        }
+
+        &.dqr {
+            &:before {
+                background: linear-gradient(150deg, #f56c6c 50%, #fff 150%);
+            }
+        }
+
+        &.ywc {
+            &:before {
+                background: linear-gradient(150deg, #40a0ff 50%, #fff 150%);
+            }
+        }
+
+        &.yqx {
+            &:before {
+                background: linear-gradient(150deg, #c0c4cc 50%, #fff 150%);
+            }
+        }
 
         div {
             flex-basis: 20%;
@@ -51,8 +117,6 @@
             flex-wrap: wrap;
             justify-content: center;
             align-content: center;
-            background-color: #f5f5f586;
-
             span {
                 text-align: center;
                 flex-basis: 100%;
@@ -74,36 +138,40 @@
                 }
 
                 &.dsh {
-                    background-color: #8896b3af;
+                    background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
                 }
 
                 &.dqd {
-                    background-color: #e6a23ca1;
+                    background: linear-gradient(150deg, #e6a23c 50%, #fff 150%);
                 }
 
                 &.jxz {
-                    background-color: #5cbb7aa6;
+                    background: linear-gradient(150deg, #5cbb7a 50%, #fff 150%);
                 }
 
                 &.dqr {
-                    background-color: #f56c6caf;
+                    background: linear-gradient(150deg, #f56c6c 50%, #fff 150%);
                 }
 
                 &.ywc {
-                    background-color: #40a0ff9b;
+                    background: linear-gradient(150deg, #40a0ff 50%, #fff 150%);
                 }
 
                 &.yqx {
-                    background-color: #c0c4cc81;
+                    background: linear-gradient(150deg, #c0c4cc 50%, #fff 150%);
                 }
             }
 
         }
+
         &_btn {
+            min-height: 112px;
+
             span {
                 margin: 5px 0;
                 cursor: pointer;
                 color: #1890ff;
+
                 &:hover {
                     color: #056ac8;
                 }
@@ -111,6 +179,7 @@
         }
     }
 }
+
 .ant-rate {
     margin-bottom: 20px;
 }

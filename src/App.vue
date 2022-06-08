@@ -18,12 +18,12 @@ let locale = ref("cn");
 <style>
 @import "./assets/font/index.css";
 #app {
-  font-family: yahei;
-  /* font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB,
-    Microsoft YaHei, WenQuanYi Micro Hei, sans-serif; */
+  /* font-family: yahei; */
+  font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, WenQuanYi Micro Hei, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: #303133;
   height: 100%;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="detailBox">
+  <div class="detailBox" ref="deta">
     <div class="detailBox_topbtn" :class="iconClass">
       <a-button @click="backEvent">
         <template #icon><LeftOutlined /></template>返回</a-button
@@ -29,7 +29,6 @@
         stusCode === 3 ||
         stusCode === 4 ||
         stusCode === 5 ||
-        stusCode === 6 ||
         stusCode === 7 ||
         stusCode === 8
       "
@@ -38,30 +37,56 @@
       <h2>投放信息</h2>
       <div class="detailBox_info">
         <div class="detailBox_info_box">
-          <p v-for="(item, idx) in toufangList" :key="idx" :class="item.class">
+          <p v-if="stusCode === 5">已过期</p>
+          <p v-else v-for="(item, idx) in toufangList" :key="idx" :class="item.class">
             <span>{{ item.label }}：</span><span>{{ item.value }}</span>
           </p>
         </div>
       </div>
     </div>
-    <div v-if="stusCode === 4 || stusCode === 5  || stusCode === 7 || stusCode === 8" class="detailBox_div">
-      <h2>数据信息</h2>
+    <div
+      v-if="
+        stusCode === 4 || stusCode === 5 || stusCode === 7 || stusCode === 8
+      "
+      class="detailBox_div"
+    >
+      <h2>
+        数据信息<span v-if="showEdit" class="editspan" @click="uploadDataInfo"
+          >（修改数据）</span
+        >
+      </h2>
       <div class="detailBox_info">
         <div class="detailBox_info_box">
-          <p v-for="(item, idx) in shujuList" :key="idx" :class="item.class">
+          <p v-if="noDatainfo">暂无数据</p>
+          <p
+            v-else
+            v-for="(item, idx) in shujuList"
+            :key="idx"
+            :class="item.class"
+          >
             <span>{{ item.label }}：</span><span>{{ item.value }}</span>
           </p>
         </div>
       </div>
     </div>
-    <div v-if="stusCode === 5 || stusCode === 7 || stusCode === 8" class="detailBox_div">
+    <div
+      v-if="stusCode === 5 || stusCode === 7 || stusCode === 8"
+      class="detailBox_div"
+    >
       <h2>评价</h2>
       <div class="detailBox_desc">
+        <span class="rateTxt">项目评分：</span>
         <a-rate :value="2" disabled />
-        <div>
+        <div class="rateInfo">
           任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
           任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
         </div>
+        <span class="rateTxt">投手评分：</span>
+        <a-rate :value="2" disabled />
+        <div class="rateInfo">
+          任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
+          任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
+        </div>        
       </div>
     </div>
     <div v-if="stusCode === 6" class="detailBox_div">
@@ -76,14 +101,103 @@
         >去申请</a-button
       >
       <a-button v-if="stusCode === 1" type="primary" block>取消申请</a-button>
-      <a-button v-if="stusCode === 4" type="primary" block>确认完成</a-button>
-      <a-button v-if="stusCode === 5 || stusCode === 7" type="primary" block>前往结算</a-button>
+      <a-button v-if="stusCode === 4 && !noDatainfo" type="primary" block
+        >确认完成</a-button
+      >
+      <a-button
+        v-if="stusCode === 4 && noDatainfo"
+        type="primary"
+        block
+        @click="uploadDataInfo"
+        >上传数据</a-button
+      >
+      <a-button v-if="stusCode === 5 || stusCode === 7" type="primary" block
+        >前往结算</a-button
+      >
     </div>
+    <a-modal
+      v-model:visible="dataDialog"
+      title="数据信息上传"
+      @ok="handleOk"
+      centered
+      :getContainer="$refs.deta"
+      class="dataDialog"
+    >
+      <a-form :model="formData" v-bind="formItemLayout"
+        ><a-row>
+          <a-col :span="12">
+            <a-form-item label="花费">
+              <a-input
+                v-model:value="formData.cost"
+                placeholder="请输入花费"
+              /> </a-form-item
+          ></a-col>
+          <a-col :span="12">
+            <a-form-item label="展示数">
+              <a-input
+                v-model:value="formData.display"
+                placeholder="请输入展示数"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="点击数">
+              <a-input
+                v-model:value="formData.click"
+                placeholder="请输入点击数"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="点击率">
+              <a-input
+                v-model:value="formData.clickPer"
+                placeholder="请输入点击率"
+                ><template #addonAfter>%</template></a-input
+              >
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-item label="平均千次展示成本">
+              <a-input
+                v-model:value="formData.click1"
+                placeholder="请输入平均千次展示成本"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-item label="平均点击成本">
+              <a-input
+                v-model:value="formData.click2"
+                placeholder="请输入平均点击成本"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="总订单行数">
+              <a-input
+                v-model:value="formData.total"
+                placeholder="请输入总订单行数"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="总订单金额">
+              <a-input
+                v-model:value="formData.totalMoney"
+                placeholder="请输入总订单金额"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 <script setup>
 import { ref, toRefs, toRef, reactive, watch } from "vue";
 import { LeftOutlined } from "@ant-design/icons-vue";
+import { message } from 'ant-design-vue';
 const $props = defineProps({
   stusCode: Number,
 });
@@ -93,7 +207,7 @@ let { detailList, currentPlanCode, backEvent, iconClass, watch_stusCode } =
   relate_detail();
 function relate_detail() {
   let { stusCode } = toRefs($props);
-  console.log('?????',stusCode.value);
+  console.log("?????", stusCode.value);
   let detailList = reactive([
     {
       label: "服务费",
@@ -127,7 +241,7 @@ function relate_detail() {
       class: "one",
     },
     {
-      label: "活动解放节奏",
+      label: "活动投放节奏",
       value: "投放时间：3月2日-3月15日，重点时间：3.4（晚8）3.7-3.8，3.15",
       class: "three",
     },
@@ -178,11 +292,11 @@ function relate_detail() {
         case 6:
           iconClass = "yqx";
           break;
-          // 未结算
+        // 未结算
         case 7:
           iconClass = "wjs";
           break;
-          // 已结算
+        // 已结算
         case 8:
           iconClass = "yjs";
           break;
@@ -216,8 +330,31 @@ function relate_toufang() {
   return { toufangList };
 }
 // 数据信息
-let { shujuList } = relate_shuju();
+let {
+  noDatainfo,
+  showEdit,
+  dataDialog,
+  formData,
+  shujuList,
+  uploadDataInfo,
+  handleOk,
+} = relate_shuju();
 function relate_shuju() {
+  let stateData = reactive({
+    noDatainfo: true,
+    showEdit: false,
+    dataDialog: false,
+    formData: {
+      cost: 0,
+      display: 0,
+      click: 0,
+      clickPer: 0,
+      click1: 0,
+      click2: 0,
+      total: 0,
+      totalMoney: 0,
+    },
+  });
   let shujuList = reactive([
     {
       label: "花费",
@@ -260,7 +397,16 @@ function relate_shuju() {
       class: "one",
     },
   ]);
-  return { shujuList };
+  let uploadDataInfo = () => {
+    stateData.dataDialog = true;
+  };
+  let handleOk = () => {
+    message.success('数据信息上传成功');
+    stateData.noDatainfo = false;
+    stateData.showEdit = true;
+    stateData.dataDialog = false;
+  };
+  return { ...toRefs(stateData), shujuList, uploadDataInfo, handleOk };
 }
 </script>
 <style lang="scss" scoped>

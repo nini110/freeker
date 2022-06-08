@@ -1,3 +1,4 @@
+$baseFontsize: 14px;
 .banlanceBox {
     margin: 20px 60px;
 
@@ -17,8 +18,8 @@
         border-radius: 8px;
 
         h2 {
-            padding: 12px 30px;
-            font-size: 18px;
+            padding: 10px 30px;
+            font-size: 16px;
             border-bottom: 1px solid #f4f5f6;
 
             span {
@@ -35,7 +36,7 @@
 
 
         p {
-            margin: 16px 0;
+            margin: 12px 0;
         }
 
         &_info {
@@ -43,7 +44,7 @@
 
             span {
                 margin-right: 5px;
-                font-size: 16px;
+                font-size: $baseFontsize;
 
                 &:nth-child(1),
                 &:nth-child(2) {

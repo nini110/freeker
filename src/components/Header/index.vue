@@ -32,10 +32,10 @@
           <a-menu-item key="balanceCenter">结算中心</a-menu-item>
         </a-sub-menu>
       </a-menu>
-      <!-- <p class="user" @click="openDialog">
+      <p class="user" @click="openDialog">
         <img src="../../assets/user.png" alt="" />
         <span> 小明</span>
-      </p> -->
+      </p>
       <p class="user" @click="openLoginDialog">
         <frown-outlined /><span>未登录</span>
       </p>

@@ -25,7 +25,6 @@
         display: flex;
         padding: 20px 60px;
         flex-wrap: wrap;
-
         &_div {
             flex-basis: 33.3%;
             padding: 10px;
@@ -34,49 +33,27 @@
         }
 
         &_card {
-            border-radius: 6px;
-            transition: all .5s linear;
-            cursor: pointer;
+            border-radius: 8px;
             position: relative;
-            transition: all .5s linear;
+            transition: all .3s linear;
             position: relative;
             z-index: 3;
             background-size: cover;
             border: 2px solid #fff;
             box-shadow: 8px 8px 20px 0 rgb(55 99 170 / 15%);
-            &:hover {
-                box-shadow: 0px 0px 24px #5e5e5e;
-                &:before {
-                    background-image: url(../../assets/images/red.png);
-                }
-            }
-
-            &:before {
-                content: '';
-                position: absolute;
-                box-sizing: border-box;
-                width: 25%;
-                height: 20px;
-                top: -2px;
-                left: 0;
-                background: url(../../assets/images/blue.png) no-repeat 0 0;
-                background-size: contain;
-            }
-
         }
     }
 
     &_p {
         margin: 8px 0;
-        color: #766f6f;
+        color: #595757;
+        font-size: 14px;
 
         &:nth-child(1),
         &:nth-child(2),
         &:nth-child(3),
         &:nth-child(4),
         &:nth-child(5) {
-            font-size: 16px;
-
             span {
                 color: #989898;
             }
@@ -85,26 +62,57 @@
 
     &_txt {
         padding: 10px 20px;
-        border-radius: 0 0 10px 10px;
         position: relative;
         z-index: 5;
         border-top: 2px solid #fff;
-        background: linear-gradient(-223deg, #fbfbfb85  0%, #e1e1e13b 100%), url(../../assets/images/proj_bg3.jpg) no-repeat 0 0;
+        background: linear-gradient(-223deg, #d7d7d794  0%, #e1e1e13b 100%), url(../../assets/images/proj_bg3.jpg) no-repeat 0 0;
         background-size: contain;
         transition: all .5s linear;
+        cursor: pointer;
     }
 
     &_desc {
         position: relative;
         border-radius: 10px 10px 0 0;
         z-index: 3;
-        border-top: 2px solid #fff;
-        backdrop-filter: blur(14px);
-        background: url(../../assets/images/proj_txt_left.png) no-repeat 0/90px auto, url(../../assets/images/proj_txt_right.png) no-repeat 100%/90px auto;
-        text-align: center;
         font-size: 16px;
-        color: #2c2c2c;
+        color: #fff;
+        font-weight: 600;
         line-height: 26px;
-        padding: 6px;
+        padding: 6px 20px;
+        display: flex;
+        justify-content: space-between;
+        background: url(../../assets//images/carddesc.png) no-repeat 0 0;
+        background-size: cover;
+        span {
+            color: #fff;
+            font-weight: bold;
+        }
+    }
+    &_btn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 5px 5px 20px;
+        i {
+            font-style: normal;
+            color: #909399;
+            font-size: 12px;
+        }
+        span {
+            cursor: pointer;
+            display: inline-block;
+            padding: 3px 26px;
+            border: 1px dashed #eba741;
+            border-radius: 3px;
+            background-color: #fff;
+            transition: all .3s linear;
+            &:hover {
+                background: linear-gradient(90deg,#eba741 50%,#edb25a 150%);
+                border-color: #f56c6c45;
+                color: #fff;
+            }
+        }
+        
     }
 }

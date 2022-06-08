@@ -3,10 +3,10 @@
     <div class="searchIpt">
       <a-form :model="formData" layout="inline">
         <a-form-item label="项目">
-          <a-input v-model:value="formData.projName" />
+          <a-input v-model:value="formData.projName" placeholder="请输入项目名称"/>
         </a-form-item>
         <a-form-item label="类目">
-          <a-select v-model:value="formData.catgory" size="large">
+          <a-select v-model:value="formData.catgory" size="large" placeholder="请选择类目">
             <a-select-option value="lucy">家用电器</a-select-option>
           </a-select>
         </a-form-item>
@@ -20,19 +20,17 @@
         v-for="(item, idx) in projectList"
         :key="idx"
         class="proj_box_div"
-        @click="cardClick"
       >
         <div class="proj_box_card">
-          <div class="proj_desc">
-            我是项目名称
-          </div>
-          <div class="proj_txt">
+          <div class="proj_desc">我是项目名称<span>￥100</span></div>
+          <div class="proj_txt" @click="cardClick">
             <p class="proj_p"><span>所属项目：</span>{{ item.type }}</p>
             <p class="proj_p"><span>预算金额：</span>{{ item.money }}</p>
             <p class="proj_p"><span>预期目标：</span>{{ item.target }}</p>
             <p class="proj_p"><span>投放时间：</span>{{ item.time }}</p>
             <p class="proj_p"><span>投放平台：</span>{{ item.plat }}</p>
           </div>
+          <div class="proj_btn"><i>2022-05-18 18:06:27</i><span>申请</span></div>
         </div>
       </div>
     </div>
@@ -136,7 +134,7 @@ let { formData } = relate_search();
 function relate_search() {
   let formData = ref({
     projName: "",
-    catgory: "",
+    catgory: null
   });
   return { formData };
 }

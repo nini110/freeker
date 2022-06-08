@@ -7,7 +7,7 @@
         :tab="item.label"
       ></a-tab-pane>
     </a-tabs>
-    <div v-for="(item, idx) in dataList" :key="idx" class="planBox">
+    <div v-for="(item, idx) in dataList" :key="idx" class="planBox iconfont">
       <div class="planBox_title">
         <p>
           <span>订单号：</span><span>{{ item.order }}</span>
@@ -16,7 +16,7 @@
           <span>提交时间：</span><span>{{ item.time }}</span>
         </p>
       </div>
-      <div class="planBox_info">
+      <div class="planBox_info" :class="item.cls">
         <div>{{ item.label }}</div>
         <div>
           <span :class="item.cls" class="sts">{{ item.status }}</span>

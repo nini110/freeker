@@ -4,16 +4,14 @@
       创造优质广告投放，实现双赢<span @click="toPage">前往项目大厅</span>
     </h2>
     <div class="proj_box">
-     <div
+      <div
         v-for="(item, idx) in projectList"
         :key="idx"
         class="proj_box_div"
         @click="cardClick"
       >
         <div class="proj_box_card">
-          <div class="proj_desc">
-            我是项目名称
-          </div>
+          <div class="proj_desc">我是项目名称<span>￥100</span></div>
           <div class="proj_txt">
             <p class="proj_p"><span>所属项目：</span>{{ item.type }}</p>
             <p class="proj_p"><span>预算金额：</span>{{ item.money }}</p>
@@ -21,6 +19,7 @@
             <p class="proj_p"><span>投放时间：</span>{{ item.time }}</p>
             <p class="proj_p"><span>投放平台：</span>{{ item.plat }}</p>
           </div>
+          <div class="proj_btn"><i>2022-05-18 18:06:27</i><span>申请</span></div>
         </div>
       </div>
     </div>
@@ -29,10 +28,10 @@
 <script setup>
 import { FormOutlined } from "@ant-design/icons-vue";
 import { reactive, ref } from "vue";
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 // 项目中心
 let { projectList, toPage } = projectFun();
-let $router = useRouter()
+let $router = useRouter();
 function projectFun() {
   let projectList = reactive([
     {
@@ -65,9 +64,9 @@ function projectFun() {
   ]);
   let toPage = () => {
     $router.push({
-      path: '/projectCenter'
-    })
-  }
+      path: "/projectCenter",
+    });
+  };
   return { projectList, toPage };
 }
 </script>

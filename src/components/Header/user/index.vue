@@ -24,7 +24,7 @@
         <div class="user_box" ref="boxref">
           <p>
             <span class="label iconfont icon-xiaolian2">昵称：</span>
-            <a-input-group v-if="showIpt" compact>
+            <a-input-group v-if="showIpt" compact size="small">
               <a-input v-model:value="nickName" allow-clear />
               <a-button @click="confirmEvent">确定</a-button>
             </a-input-group>
