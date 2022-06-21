@@ -1,3 +1,4 @@
 export default {
-    user: state => state.pageData.user
+    account: state => state.pageData.account,
+    userImg: state => state.pageData.userImg
 }

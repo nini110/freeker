@@ -1,6 +1,7 @@
 const routes = [{
     path: '/',
     name: 'layout',
+    redirect: '/home',
     component: () => import('../pages/layout/index.vue'),
     children: [{
             path: 'home',

@@ -40,19 +40,17 @@ function relate_menu() {
   let menuSelect = ({ item, key, keypath }) => {
     selectedMenu.length = 0;
     selectedMenu.push(key);
-    // openKeys.length = 0;
-    // openKeys.push(key);
     $router.push({
       path: `/${key}`,
     });
   };
   let $watch = watch(
-    () => $route.name,
+    () => $route,
     (newval, oldval) => {
       selectedMenu.length = 0;
-      selectedMenu.push(newval);
+      selectedMenu.push(newval.name);
     },
-    { immediate: true }
+    { immediate: true, deep: true }
   );
 
   return { selectedMenu, openKeys, menuSelect, $watch };

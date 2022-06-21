@@ -8,59 +8,16 @@
     <div class="detailBox_div">
       <h2>项目描述</h2>
       <p class="detailBox_desc">
-        任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
-        任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
+        {{ resData.describe }}
       </p>
     </div>
     <div class="detailBox_div">
       <h2>项目信息</h2>
       <div class="detailBox_info">
-        <h3>京东国际******</h3>
+        <h3>{{ resData.project_name }}</h3>
         <div class="detailBox_info_box">
-          <p v-for="(item, idx) in detailList" :key="idx" :class="item.class">
-            <span>{{ item.label }}：</span><span>{{ item.value }}</span>
-          </p>
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="
-        stusCode === 2 ||
-        stusCode === 3 ||
-        stusCode === 4 ||
-        stusCode === 5 ||
-        stusCode === 7 ||
-        stusCode === 8
-      "
-      class="detailBox_div"
-    >
-      <h2>投放信息</h2>
-      <div class="detailBox_info">
-        <div class="detailBox_info_box">
-          <p v-if="stusCode === 5">已过期</p>
-          <p v-else v-for="(item, idx) in toufangList" :key="idx" :class="item.class">
-            <span>{{ item.label }}：</span><span>{{ item.value }}</span>
-          </p>
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="
-        stusCode === 4 || stusCode === 5 || stusCode === 7 || stusCode === 8
-      "
-      class="detailBox_div"
-    >
-      <h2>
-        数据信息<span v-if="showEdit" class="editspan" @click="uploadDataInfo"
-          >（修改数据）</span
-        >
-      </h2>
-      <div class="detailBox_info">
-        <div class="detailBox_info_box">
-          <p v-if="noDatainfo">暂无数据</p>
           <p
-            v-else
-            v-for="(item, idx) in shujuList"
+            v-for="(item, idx) in detailData.detailList"
             :key="idx"
             :class="item.class"
           >
@@ -70,51 +27,124 @@
       </div>
     </div>
     <div
-      v-if="stusCode === 5 || stusCode === 7 || stusCode === 8"
+      v-if="
+        stusCode === 3 ||
+        stusCode === 4 ||
+        stusCode === 5 ||
+        stusCode === 6 ||
+        stusCode === 7 ||
+        stusCode === 11
+      "
       class="detailBox_div"
     >
-      <h2>评价</h2>
-      <div class="detailBox_desc">
-        <span class="rateTxt">项目评分：</span>
-        <a-rate :value="2" disabled />
-        <div class="rateInfo">
-          任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
-          任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
+      <h2>投放信息</h2>
+      <div class="detailBox_info">
+        <div class="detailBox_info_box">
+          <!-- 待通过 + 已完成 -->
+          <p v-if="stusCode === 6 || stusCode === 7">已过期</p>
+          <p
+            v-else
+            v-for="(item, idx) in detailData.toufanglist"
+            :key="idx"
+            :class="item.class"
+          >
+            <span>{{ item.label }}：</span
+            ><span v-if="idx === 2"
+              ><a :href="item.value" target="blank">点击查看</a></span
+            ><span v-else>{{ item.value }}</span>
+          </p>
         </div>
-        <span class="rateTxt">投手评分：</span>
-        <a-rate :value="2" disabled />
-        <div class="rateInfo">
-          任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
-          任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
-        </div>        
       </div>
     </div>
-    <div v-if="stusCode === 6" class="detailBox_div">
+    <!-- 待确认 待通过 已完成 -->
+    <div
+      v-if="
+        stusCode === 5 || stusCode === 6 || stusCode === 7 || stusCode === 11
+      "
+      class="detailBox_div"
+    >
+      <h2>
+        数据信息<span
+          v-if="(stusCode === 5 || stusCode === 11) && showEdit"
+          class="editspan"
+          @click="editDataEvent"
+          >（修改数据）</span
+        >
+      </h2>
+      <div class="detailBox_info">
+        <div class="detailBox_info_box">
+          <p v-if="stusCode === 5 && noDatainfo">暂无数据</p>
+          <p
+            v-else
+            v-for="(item, idx) in detailData.shujuList"
+            :key="idx"
+            :class="item.class || 'one'"
+          >
+            <span>{{ item.label }}：</span><span>{{ item.value }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- 待通过： 可以看到自己的评价 -->
+    <div v-if="stusCode === 6 || stusCode === 7" class="detailBox_div">
+      <h2>评价</h2>
+      <div class="detailBox_desc">
+        <span class="rateTxt">项目评价：</span>
+        <a-rate :value="resData.user_evaluate_score" disabled />
+        <div class="rateInfo">
+          {{ resData.user_evaluate_content }}
+        </div>
+        <div v-if="stusCode === 7">
+          <span class="rateTxt">投手评价：</span>
+          <a-rate :value="resData.merchant_evaluate_score" disabled />
+          <div class="rateInfo">
+            {{ resData.merchant_evaluate_content }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="stusCode === 11" class="detailBox_div">
+      <h2>驳回原因</h2>
+      <div class="detailBox_desc">{{ resData.project_cancel_reason }}</div>
+    </div>
+    <div v-if="stusCode === 0" class="detailBox_div">
       <h2>取消原因</h2>
       <div class="detailBox_desc">
-        任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
-        任务描述任务描述任务描述任务描述任务描述任务描述任务描述任务描述
+        {{ resData.project_cancel_reason }}
       </div>
     </div>
     <div class="detailBox_btn">
-      <a-button v-if="stusCode === 'none'" type="primary" block
-        >去申请</a-button
+      <a-button v-if="stusCode === 99" type="primary" block @click="applyEvent"
+        >申请</a-button
       >
-      <a-button v-if="stusCode === 1" type="primary" block>取消申请</a-button>
-      <a-button v-if="stusCode === 4 && !noDatainfo" type="primary" block
-        >确认完成</a-button
-      >
+      <a-button v-if="stusCode === 2" type="primary" block>取消申请</a-button>
+      <!-- 待确认 + 有数据 -->
       <a-button
-        v-if="stusCode === 4 && noDatainfo"
+        v-if="stusCode === 5 && !noDatainfo"
         type="primary"
         block
-        @click="uploadDataInfo"
+        @click="finishEvent"
+        >确认完成</a-button
+      >
+      <!-- 待确认 + 无数据 -->
+      <a-button
+        v-if="stusCode === 5 && noDatainfo"
+        type="primary"
+        block
+        @click="uploadDataEvent"
         >上传数据</a-button
       >
-      <a-button v-if="stusCode === 5 || stusCode === 7" type="primary" block
-        >前往结算</a-button
+      <!-- 已驳回 -->
+      <a-button
+        v-if="stusCode === 11"
+        type="primary"
+        block
+        @click="upAgainEvent"
+        >重新确认完成</a-button
       >
+      <a-button v-if="stusCode === 7" type="primary" block>前往结算</a-button>
     </div>
+    <!-- 数据信息上传 -->
     <a-modal
       v-model:visible="dataDialog"
       title="数据信息上传"
@@ -160,7 +190,7 @@
           <a-col :span="24">
             <a-form-item label="平均千次展示成本">
               <a-input
-                v-model:value="formData.click1"
+                v-model:value="formData.thDisCost"
                 placeholder="请输入平均千次展示成本"
               />
             </a-form-item>
@@ -168,7 +198,7 @@
           <a-col :span="24">
             <a-form-item label="平均点击成本">
               <a-input
-                v-model:value="formData.click2"
+                v-model:value="formData.disCost"
                 placeholder="请输入平均点击成本"
               />
             </a-form-item>
@@ -192,221 +222,468 @@
         </a-row>
       </a-form>
     </a-modal>
+    <!-- 确认完成的评价 -->
+    <a-modal
+      v-model:visible="evalueVisible"
+      title="评价"
+      ok-text="确认"
+      cancel-text="取消"
+      centered
+      :maskClosable="false"
+      :keyboard="false"
+      @ok="evalueEvent"
+    >
+      <a-rate v-model:value="rateValue" />
+      <a-textarea
+        v-model:value="areaValue"
+        placeholder="请输入评价内容"
+        :auto-size="{ minRows: 2, maxRows: 5 }"
+        allow-clear
+      />
+    </a-modal>
   </div>
 </template>
 <script setup>
-import { ref, toRefs, toRef, reactive, watch } from "vue";
-import { LeftOutlined } from "@ant-design/icons-vue";
-import { message } from 'ant-design-vue';
+import { ref, toRefs, toRef, reactive, watch, createVNode } from "vue";
+import { LeftOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { message, Modal } from "ant-design-vue";
+import dayjs from "dayjs";
+import { applyProj, uploadData, okFinish, upAagain } from "@/api/api";
+
 const $props = defineProps({
   stusCode: Number,
+  resData: Object,
+  userID: Number,
 });
+let { stusCode, resData, userID } = toRefs($props);
+let noDatainfo = ref(true);
+let showEdit = ref(false);
 // 项目详情页相关
-let $emit = defineEmits(["back"]);
-let { detailList, currentPlanCode, backEvent, iconClass, watch_stusCode } =
-  relate_detail();
+let $emit = defineEmits(["back", "finish"]);
+let { iconClass, detailData, backEvent } = relate_detail();
 function relate_detail() {
-  let { stusCode } = toRefs($props);
-  console.log("?????", stusCode.value);
-  let detailList = reactive([
-    {
-      label: "服务费",
-      value: 100,
-      class: "one",
+  let stateDate = reactive({
+    iconClass: "",
+    detailData: {
+      detailList: [], // 项目信息
+      toufanglist: [], // 投放信息
+      shujuList: [], //数据信息
     },
-    {
-      label: "预算金额",
-      value: 3500000,
-      class: "one",
-    },
-    {
-      label: "服务类型",
-      value: "美妆护肤,个人护理",
-      class: "one",
-    },
-    {
-      label: "投放平台",
-      value: "京准通",
-      class: "one",
-    },
-
-    {
-      label: "投放比例",
-      value: "站内：80%  站外：20%",
-      class: "two",
-    },
-    {
-      label: "活动投放类型",
-      value: "联合活动系统",
-      class: "one",
-    },
-    {
-      label: "活动投放节奏",
-      value: "投放时间：3月2日-3月15日，重点时间：3.4（晚8）3.7-3.8，3.15",
-      class: "three",
-    },
-    {
-      label: "参与品牌",
-      value: "--",
-      class: "two",
-    },
-    {
-      label: "投放代理数量",
-      value: 1,
-      class: "one",
-    },
-    {
-      label: "投放时间",
-      value: "2022.02.28-2022.03.17",
-      class: "two",
-    },
-    {
-      label: "应标截止日期",
-      value: "2022.02.24",
-      class: "one",
-    },
-  ]);
+  });
   let backEvent = () => {
     $emit("back");
   };
-  let iconClass;
+  let watch_resData = watch(
+    resData,
+    (newval, oldval) => {
+      let target = stateDate.detailData;
+      // 投放比例
+      let proportion = JSON.parse(newval.delivery_proportion);
+      target.delivery_proportion = `站内${proportion.percentInner}%、站外${proportion.percentOutter}%`;
+      // 目标  节奏  数量等等
+      let info = JSON.parse(newval.delivery_target);
+      // 投放数量
+      target.delivery_num = info[info.length - 1].value;
+      // 投放节奏
+      target.delivery_jiezou = info[info.length - 2].value;
+      // 投放时间
+      let startdate = dayjs(newval.delivery_start_date).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      let enddate = dayjs(newval.delivery_end_date).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      (target.delivery_date = startdate + "-" + enddate),
+        // 截止时间
+        (target.project_end_date = dayjs(newval.project_end_date).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ));
+      // 上传时间
+      target.create_time = dayjs(newval.create_time).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      // 产品类型
+      switch (parseInt(newval.category)) {
+        case 1:
+          target.categoryCn = "家用电器";
+          break;
+        case 2:
+          target.categoryCn = "手机数码";
+          break;
+        case 3:
+          target.categoryCn = "电脑办公";
+          break;
+        case 4:
+          target.categoryCn = "家居厨具";
+          break;
+        case 5:
+          target.categoryCn = "服饰鞋品";
+          break;
+        case 6:
+          target.categoryCn = "美妆";
+          break;
+        case 7:
+          target.categoryCn = "母婴用品";
+          break;
+        case 8:
+          target.categoryCn = "玩具乐器";
+          break;
+        case 9:
+          target.categoryCn = "食品饮料";
+          break;
+        case 10:
+          target.categoryCn = "医药保健";
+          break;
+        case 11:
+          target.categoryCn = "图书";
+          break;
+      }
+      // 投放平台
+      switch (parseInt(newval.delivery_platform)) {
+        case 1:
+          target.platformCn = "京准通";
+          break;
+      }
+      target.detailList = [
+        {
+          label: "服务费",
+          value: newval.brokerage + "元",
+          class: "one",
+        },
+        {
+          label: "预算金额",
+          value: newval.budget + "元",
+          class: "one",
+        },
+        {
+          label: "产品类型",
+          value: target.categoryCn,
+          class: "one",
+        },
+        {
+          label: "投放平台",
+          value: target.platformCn,
+          class: "one",
+        },
+        {
+          label: "投放比例",
+          value: target.delivery_proportion,
+          class: "two",
+        },
+        {
+          label: "投放时间",
+          value: target.delivery_date,
+          class: "three",
+        },
+        {
+          label: "活动投放类型",
+          value: newval.service_type,
+          class: "one",
+        },
+        {
+          label: "活动投放节奏",
+          value: target.delivery_jiezou,
+          class: "one",
+        },
+        {
+          label: "参与品牌",
+          value: newval.delivery_brand,
+          class: "one",
+        },
+        {
+          label: "投放数量",
+          value: target.delivery_num,
+          class: "one",
+        },
+        {
+          label: "任务领取截止时间",
+          value: target.project_end_date,
+          class: "one",
+        },
+      ];
+      // 投放信息:待启动 进行中 待确认
+      if (newval.delivery_info) {
+        let toufang = JSON.parse(newval.delivery_info);
+        target.toufanglist = [
+          {
+            label: "账号",
+            value: toufang.account,
+            class: "one",
+          },
+          {
+            label: "密码",
+            value: toufang.pwd,
+            class: "one",
+          },
+          {
+            label: "地址链接",
+            value: toufang.url,
+            class: "one",
+          },
+        ];
+      }
+      // 数据信息: 待确认(有数据)  待通过 已完成
+      if (newval.delivery_result) {
+        noDatainfo.value = false;
+        showEdit.value = true;
+        let delRes = JSON.parse(newval.delivery_result);
+        target.shujuList = [
+          {
+            label: "花费",
+            value: delRes.cost,
+          },
+          {
+            label: "展示数",
+            value: delRes.display,
+          },
+          {
+            label: "点击数",
+            value: delRes.click,
+          },
+          {
+            label: "点击率",
+            value: delRes.clickPer,
+          },
+          {
+            label: "平均千次展示成本",
+            value: delRes.thDisCost,
+          },
+          {
+            label: "平均点击成本",
+            value: delRes.disCost,
+          },
+          {
+            label: "总订单行数",
+            value: delRes.total,
+          },
+          {
+            label: "总订单金额",
+            value: delRes.totalMoney,
+          },
+        ];
+      }
+    },
+    { immediate: true, deep: true }
+  );
   let watch_stusCode = watch(
     stusCode,
     (newval, oldval) => {
       switch (newval) {
-        case 1:
-          iconClass = "dsh";
-          break;
-        case 2:
-          iconClass = "dqd";
-          break;
-        case 3:
-          iconClass = "jxz";
-          break;
-        case 4:
-          iconClass = "dqr";
-          break;
-        case 5:
-          iconClass = "ywc";
-          break;
-        case 6:
+        case 0:
           iconClass = "yqx";
           break;
-        // 未结算
+        case 1:
+          iconClass = "xtshz";
+          break;
+        case 2:
+          iconClass = "dsh";
+          break;
+        case 3:
+          iconClass = "dqd";
+          break;
+        case 4:
+          iconClass = "jxz";
+          break;
+        case 5:
+          iconClass = "dqr";
+          break;
+        case 6:
+          iconClass = "dtg";
+          break;
         case 7:
-          iconClass = "wjs";
+          iconClass = "ywc";
+          break;
+        // 待汇款
+        case 8:
+          iconClass = "dhk";
+          break;
+        // 打款中
+        case 9:
+          iconClass = "dkz";
           break;
         // 已结算
-        case 8:
+        case 10:
           iconClass = "yjs";
           break;
       }
     },
     { immediate: true }
   );
-  return { detailList, currentPlanCode, backEvent, iconClass, watch_stusCode };
-}
-// 投放信息
-let { toufangList } = relate_toufang();
-function relate_toufang() {
-  let toufangList = reactive([
-    {
-      label: "账号",
-      value: 100,
-      class: "one",
-    },
-    {
-      label: "密码",
-      value: 3500000,
-      class: "one",
-    },
-    {
-      label: "地址",
-      value:
-        "https://agency.jd.com/?ReturnUrl=https://agency.jd.com/crm/agent/#/bid/manage",
-      class: "three",
-    },
-  ]);
-  return { toufangList };
+  return { ...toRefs(stateDate), backEvent, iconClass };
 }
 // 数据信息
 let {
-  noDatainfo,
-  showEdit,
   dataDialog,
+  evalueVisible,
+  rateValue,
+  areaValue,
   formData,
-  shujuList,
-  uploadDataInfo,
+  uploadDataEvent,
+  editDataEvent,
   handleOk,
+  applyEvent,
+  finishEvent,
+  evalueEvent,
+  upAgainEvent,
 } = relate_shuju();
 function relate_shuju() {
   let stateData = reactive({
-    noDatainfo: true,
-    showEdit: false,
     dataDialog: false,
+    evalueVisible: false,
+    rateValue: 0,
+    areaValue: "",
     formData: {
-      cost: 0,
-      display: 0,
-      click: 0,
-      clickPer: 0,
-      click1: 0,
-      click2: 0,
-      total: 0,
-      totalMoney: 0,
+      cost: 0, // 花费
+      display: 0, // 展示数
+      click: 0, // 点击数
+      clickPer: 0, //点击率
+      thDisCost: 0, // 平均千次展示成本
+      disCost: 0, // 平均点击成本
+      total: 0, // 总订单行数
+      totalMoney: 0, // 总订单金额
     },
   });
-  let shujuList = reactive([
-    {
-      label: "花费",
-      value: 100,
-      class: "one",
-    },
-    {
-      label: "展示数",
-      value: 141148,
-      class: "one",
-    },
-    {
-      label: "点击数",
-      value: 100,
-      class: "one",
-    },
-    {
-      label: "点击率",
-      value: 141148,
-      class: "one",
-    },
-    {
-      label: "平均千次展示成本",
-      value: 100,
-      class: "one",
-    },
-    {
-      label: "平均点击成本",
-      value: 141148,
-      class: "one",
-    },
-    {
-      label: "总订单行数",
-      value: 100,
-      class: "one",
-    },
-    {
-      label: "总订单金额",
-      value: 141148,
-      class: "one",
-    },
-  ]);
-  let uploadDataInfo = () => {
+  // 申请事件
+  let apiPort_apply = (id) => {
+    applyProj({
+      ad_project: id,
+    }).then((res) => {
+      if (res.data.code === 200) {
+        message.success("申请成功，等待审核");
+        $emit("back");
+      } else if (res.data.code === 4105) {
+        message.error("请先上传资质信息");
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
+  let applyEvent = () => {
+    Modal.confirm({
+      title: `是否确认申请当前项目`,
+      centered: true,
+      icon: createVNode(ExclamationCircleOutlined),
+      onOk() {
+        apiPort_apply(resData.value.id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+      class: "test",
+    });
+  };
+  // 上传数据--打开弹层---------------------
+  let uploadDataEvent = () => {
     stateData.dataDialog = true;
   };
-  let handleOk = () => {
-    message.success('数据信息上传成功');
-    stateData.noDatainfo = false;
-    stateData.showEdit = true;
-    stateData.dataDialog = false;
+  let editDataEvent = () => {
+    stateData.dataDialog = true;
+    let delRes = JSON.parse(resData.value.delivery_result);
+    stateData.formData.cost = delRes.cost;
+    stateData.formData.display = delRes.display;
+    stateData.formData.click = delRes.click;
+    stateData.formData.clickPer = delRes.clickPer;
+    stateData.formData.thDisCost = delRes.thDisCost;
+    stateData.formData.disCost = delRes.disCost;
+    stateData.formData.total = delRes.total;
+    stateData.formData.totalMoney = delRes.totalMoney;
   };
-  return { ...toRefs(stateData), shujuList, uploadDataInfo, handleOk };
+  // 上传数据--确认操作
+  let handleOk = () => {
+    uploadData(
+      {
+        delivery_result: JSON.stringify(stateData.formData),
+      },
+      userID.value
+    ).then((res) => {
+      if (res.data.code === 200) {
+        message.success("数据信息上传成功");
+        noDatainfo.value = false;
+        showEdit.value = true;
+        stateData.dataDialog = false;
+        let delRes = JSON.parse(res.data.data.delivery_result);
+        detailData.value.shujuList = [
+          {
+            label: "花费",
+            value: delRes.cost,
+          },
+          {
+            label: "展示数",
+            value: delRes.display,
+          },
+          {
+            label: "点击数",
+            value: delRes.click,
+          },
+          {
+            label: "点击率",
+            value: delRes.clickPer,
+          },
+          {
+            label: "平均千次展示成本",
+            value: delRes.thDisCost,
+          },
+          {
+            label: "平均点击成本",
+            value: delRes.disCost,
+          },
+          {
+            label: "总订单行数",
+            value: delRes.total,
+          },
+          {
+            label: "总订单金额",
+            value: delRes.totalMoney,
+          },
+        ];
+      } else {
+        message.error(res.data.msg);
+      }
+    });
+  };
+  // 确认完成--打开弹层----------------------
+  let finishEvent = () => {
+    stateData.evalueVisible = true;
+  };
+  // 确认完成--评价操作
+  let evalueEvent = () => {
+    okFinish({
+      ad_project: resData.value.id,
+      user_evaluate_score: stateData.rateValue,
+      user_evaluate_content: stateData.areaValue,
+    }).then((res) => {
+      if (res.data.code === 200) {
+        message.success("已确认完成");
+        stateData.evalueVisible = false;
+        $emit("back");
+      } else {
+        message.error(res.data.msg);
+      }
+    });
+  };
+  let upAgainEvent = () => {
+    upAagain({
+      ad_project: resData.value.id,
+    }).then((res) => {
+      if (res.data.code === 200) {
+        message.success("操作成功");
+        $emit("back");
+      } else {
+        message.error(res.data.msg);
+      }
+    });
+  };
+
+  return {
+    ...toRefs(stateData),
+    uploadDataEvent,
+    editDataEvent,
+    handleOk,
+    applyEvent,
+    finishEvent,
+    evalueEvent,
+    upAgainEvent,
+  };
 }
 </script>
 <style lang="scss" scoped>

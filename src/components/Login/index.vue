@@ -20,25 +20,14 @@
         </div>
         <div class="login_right">
           <div class="login_right_box" v-if="tabTag === 1">
-            <div class="login_right_txt">
-              <svg class="icon svg-icon titleicon" aria-hidden="true">
-                <use xlink:href="#icon-qiyeweixin1"></use>
-              </svg>
-              <span>企业微信扫码登陆</span>
-            </div>
-            <div class="login_right_wx">
-              <div id="weChat"></div>
-            </div>
-          </div>
-          <div class="login_right_box" v-else>
             <a-tabs v-model:activeKey="activeTabKey" @tabClick="tabClick">
               <a-tab-pane key="1" tab="密码登录" force-render></a-tab-pane>
               <a-tab-pane key="2" tab="免密登录"></a-tab-pane>
             </a-tabs>
             <a-form :model="formState" name="normal_login">
-              <a-form-item label="" name="username" placeholder="用户名">
+              <a-form-item label="" name="account" placeholder="用户名">
                 <a-input
-                  v-model:value="formState.username"
+                  v-model:value="formState.account"
                   placeholder="用户名"
                   allow-clear
                 >
@@ -77,18 +66,30 @@
                   type="primary"
                   html-type="submit"
                   class="login-form-button"
+                  @click="loginEvent"
                 >
                   登录
                 </a-button>
               </a-form-item>
             </a-form>
           </div>
+          <div class="login_right_box" v-else>
+            <div class="login_right_txt">
+              <svg class="icon svg-icon titleicon" aria-hidden="true">
+                <use xlink:href="#icon-qiyeweixin1"></use>
+              </svg>
+              <span>企业微信扫码登陆</span>
+            </div>
+            <div class="login_right_wx">
+              <div id="weChat"></div>
+            </div>
+          </div>
           <div class="login_right_fs">
-            <span @click="wayClick(1)" class="iconfont icon-qiyeweixin"
-              >企业微信登录</span
-            >
-            <span @click="wayClick(2)" class="iconfont icon-yonghu"
+            <span @click="wayClick(1)" class="iconfont icon-yonghu"
               >用户登录</span
+            >
+            <span @click="wayClick(2)" class="iconfont icon-qiyeweixin"
+              >企业微信登录</span
             >
           </div>
         </div>
@@ -104,11 +105,16 @@ import {
   LockOutlined,
 } from "@ant-design/icons-vue";
 import { ref, watch, toRefs, onMounted, reactive } from "vue";
+import { useStore } from 'vuex'
+import { userLogin } from "@/api/api";
+import { message } from "ant-design-vue";
+const store = useStore()
 let $props = defineProps({
   showLogin: {
     type: Boolean,
   },
 });
+let { showLogin } = toRefs($props);
 let $emit = defineEmits(["changeLogTag"]);
 // tab切换相关
 let { activeTabKey, tabClick, tabTag, wayClick } = relate_tab();
@@ -128,29 +134,47 @@ function relate_tab() {
   return { activeTabKey, tabClick, tabTag, wayClick };
 }
 // 登录相关
-let { diaVisible, watchLogTag, handlecancel, formState } = relate_login();
+let { formState, diaVisible, handlecancel, loginEvent } = relate_login();
 function relate_login() {
   // ---
-  let formState = reactive({
-    username: "",
-    password: "",
-    phoneCode: "",
+  let stateData = reactive({
+    formState: {
+      account: "",
+      password: "",
+      phoneCode: "",
+    },
+    diaVisible: false,
   });
-  let propsData = toRefs($props);
-  let diaVisible = ref(false);
   let watchLogTag = watch(
-    propsData.showLogin,
+    showLogin,
     (newval, oldval) => {
-      diaVisible.value = newval;
+      stateData.diaVisible = newval;
     },
     { immediate: true }
   );
   let handlecancel = () => {
     $emit("changeLogTag");
   };
+  // 登录接口
+  let apiPort_login = () => {
+    userLogin({ ...stateData.formState }).then((res) => {
+      if (res.data.code === 200) {
+        localStorage.setItem("token", res.data.data.token);
+        store.commit('pageData/SET_ACCOUNT', res.data.data.username)
+        store.commit('pageData/SET_USERIMG', res.data.data.thumb_avatar)
+        message.success('登陆成功');
+        $emit("changeLogTag");
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
+  let loginEvent = () => {
+    apiPort_login();
+  };
   // ----
 
-  return { diaVisible, watchLogTag, handlecancel, formState };
+  return { ...toRefs(stateData), handlecancel, loginEvent };
 }
 // 微信相关
 onMounted(() => {

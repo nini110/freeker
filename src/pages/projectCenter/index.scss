@@ -14,11 +14,11 @@
       width: 100%;
       display: flex;
       &-item {
-         width: 45%;
+         flex-basis: 45%!important;
          margin: 0;
 
          &:last-child {
-            width: 10%;
+            flex-basis: 10%!important;
             text-align: right;
          }
       }

@@ -1,9 +1,13 @@
 const state = {
-    user: '诺基亚'
+    account: '',
+    userImg: ''
 }
 const mutations = {
-    SET_USER: (state, view) => {
-        state.user = view
+    SET_ACCOUNT: (state, view) => {
+        state.account = view
+    },
+    SET_USERIMG: (state, view) => {
+        state.userImg = view
     }
 }
 export default {

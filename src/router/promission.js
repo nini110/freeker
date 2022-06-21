@@ -5,6 +5,7 @@ import 'nprogress/nprogress.css'
 const _import = require('./_import_' + process.env.NODE_ENV)
 // 动态路由的配置
 let getRouter;
+let tag = true
 router.beforeEach((to, from, next) => {
     NProgress.start()
     let userId = localStorage.getItem('wx')
@@ -13,6 +14,11 @@ router.beforeEach((to, from, next) => {
         getRouter = handleRoutes(routes)
         routerGo(to, next)
         NProgress.done()
+    } else if (getRouter && tag && !localStorage.getItem('token')) {
+        tag = false
+        next({
+            path: "/home",
+        });
     } else {
         next()
         NProgress.done()

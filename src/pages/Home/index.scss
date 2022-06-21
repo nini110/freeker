@@ -33,14 +33,14 @@
         }
 
         &_card {
-            border-radius: 8px;
+            border-radius: 6px;
             position: relative;
             transition: all .3s linear;
             position: relative;
             z-index: 3;
             background-size: cover;
             border: 2px solid #fff;
-            box-shadow: 8px 8px 20px 0 rgb(55 99 170 / 15%);
+            box-shadow: 8px 8px 20px 0 rgb(55 99 170 / 10%);
         }
     }
 
@@ -73,16 +73,16 @@
 
     &_desc {
         position: relative;
-        border-radius: 10px 10px 0 0;
+        border-radius: 6px 6px 0 0;
         z-index: 3;
-        font-size: 16px;
+        font-size: 14px;
         color: #fff;
         font-weight: 600;
         line-height: 26px;
         padding: 6px 20px;
         display: flex;
         justify-content: space-between;
-        background: url(../../assets//images/carddesc.png) no-repeat 0 0;
+        background: linear-gradient(-223deg, #1890ff, #0063bf);
         background-size: cover;
         span {
             color: #fff;
