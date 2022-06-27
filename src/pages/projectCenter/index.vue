@@ -22,7 +22,10 @@
         </a-form-item>
       </a-form>
     </div>
-    <div class="proj_box">
+    <div v-if="projectList.length === 0" class="proj_box proj_box_empty">
+      <a-empty />
+    </div>
+    <div v-else class="proj_box">
       <div v-for="(item, idx) in projectList" :key="idx" class="proj_box_div">
         <div class="proj_box_card">
           <div class="proj_desc">
@@ -40,16 +43,16 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="pagination fixed">
-      <a-pagination
-        v-model:current="pageNation.currentPage"
-        v-model:pageSize="pageNation.pageSize"
-        :pageSizeOptions="['6', '12', '18']"
-        show-size-changer
-        :total="pageNation.totalNum"
-        @change="sizeChange"
-      />
+      <div class="pagination fixed">
+        <a-pagination
+          v-model:current="pageNation.currentPage"
+          v-model:pageSize="pageNation.pageSize"
+          :pageSizeOptions="['6', '12', '18']"
+          show-size-changer
+          :total="pageNation.totalNum"
+          @change="sizeChange"
+        />
+      </div>
     </div>
   </div>
   <DetailPage
@@ -66,8 +69,7 @@ import DetailPage from "../detailPage/index.vue";
 import { useRoute } from "vue-router";
 import { getProjList, applyProj, getProjDetail } from "@/api/api";
 import dayjs from "dayjs";
-import { message, Modal } from "ant-design-vue";
-// import { Item } from "ant-design-vue/lib/menu";
+import { message, Modal, Empty } from "ant-design-vue";
 
 let $route = useRoute();
 let pageNation = reactive({
@@ -84,7 +86,7 @@ function relate_proj() {
   // 获取列表
   let apiPort_list = (page, page_size) => {
     getProjList({
-      haha: "",
+      no: "",
       ordering: "-create_time",
       page,
       page_size,
@@ -211,7 +213,7 @@ function relate_detail() {
   const apiPort_detail = (id) => {
     getProjDetail(
       {
-        haha: "",
+        no: "",
       },
       id
     ).then((res) => {

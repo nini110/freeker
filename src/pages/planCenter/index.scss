@@ -20,8 +20,8 @@ $baseFontsize: 14px;
 
 .planBox {
     padding: 10px 0;
-    border: 1px solid transparent;
-    margin: 0 60px 40px 60px;
+    border-top: 1px solid #f4f4f4;
+    margin: 0 60px 15px 60px;
     border-radius: 6px;
     font-size: $baseFontsize;
     transition: all .4s linear;
@@ -61,15 +61,13 @@ $baseFontsize: 14px;
             left: 0;
             top: 50%;
             transform: translateY(-50%);
+            border-radius: 10px;
         }
 
         &:hover {
             &:before {
                 width: 3px;
-                height: 112px;
-                top: 0;
-                bottom: 0;
-                transform: none;
+                height: 50px;
             }
         }
 
@@ -93,19 +91,28 @@ $baseFontsize: 14px;
 
         &.dqr {
             &:before {
-                background: linear-gradient(150deg, #f56c6c 50%, #fff 150%);
+                background: linear-gradient(150deg, #2bbccd  50%, #fff 150%);
             }
         }
+        &.dtg {
+            &:before {
+                background: linear-gradient(150deg, #2bbccd  50%, #fff 150%);
+            }
+        }        
 
         &.ywc {
             &:before {
                 background: linear-gradient(150deg, #40a0ff 50%, #fff 150%);
             }
         }
-
         &.yqx {
             &:before {
-                background: linear-gradient(150deg, #c0c4cc 50%, #fff 150%);
+                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+            }
+        }
+        &.ybh {
+            &:before {
+                background: linear-gradient(150deg, #ff4d4f 50%, #fff 150%);
             }
         }
 

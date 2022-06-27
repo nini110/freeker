@@ -38,6 +38,12 @@ export const registerUser = request({
     url:`${BASE_PATH2}/index_api/user`,
     method:'post',
 })
+// ------------------------------------------------------
+// 站内信-列表
+export const stationMailList = request({
+    url:`${BASE_PATH2}/index_api/station_mail`,
+    method:'get',
+})
 
 // 项目中心列表
 export const getProjList = request({

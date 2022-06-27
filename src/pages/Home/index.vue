@@ -44,7 +44,7 @@ function projectFun() {
   // 获取列表
   let apiPort_list = () => {
     getProjList({
-      haha: "",
+      no: "",
       page: 1,
       page_size: 3,
       ordering: "-create_time",

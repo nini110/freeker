@@ -36,8 +36,6 @@
               alt="avatar"
             />
             <div v-else>
-              <loading-outlined v-if="loading"></loading-outlined>
-              <plus-outlined v-else></plus-outlined>
               <div class="ant-upload-text">Upload</div>
             </div>
           </a-upload>
@@ -202,16 +200,16 @@
               <a-col :span="12"
                 ><a-form-item label="上传">
                   <a-upload-dragger
-                    v-model:fileList="fileArr"
+                    :fileList="fileArr"
                     name="file"
                     :showUploadList="false"
                     :maxCount="1"
                     :multiple="false"
                     action=""
-                    @change="handleChange"
+                    :before-upload="beforeUpload"
                   >
-                    <div v-if="zizhiForm.img">
-                      <p v-if="zizhiForm.img" class="ant-upload-drag-icon">
+                    <div v-if="fileArr.length > 0">
+                      <p class="ant-upload-drag-icon">
                         <verified-outlined />
                       </p>
                       <p class="ant-upload-text">资质证书已上传</p>
@@ -347,6 +345,7 @@ function relate_nick() {
     showIpt: false,
     userImageUrl: "",
   });
+  // 修改用户相关信息
   let apiPort_nickname = (id) => {
     editNickName(
       {
@@ -376,9 +375,25 @@ function relate_nick() {
     }
   };
 
-  let handleImgChange = (val) => {
-    // val.file.originFileObj
-    // debugger;
+  let handleImgChange = (info) => {
+    // if (info.file.status === 'error') {
+    //       editNickName(
+    //   {
+    //     username: stateData.nickName,
+    //   },
+    //   id
+    // ).then((res) => {
+    //   if (res.data.code === 200) {
+    //     message.success("操作成功");
+    //     stateData.showIpt = false;
+    //     store.commit("pageData/SET_ACCOUNT", res.data.data.username);
+    //     // 昵称回显
+    //     $emit("closeMstDialog");
+    //   } else {
+    //     message.error(`${res.data.msg}`);
+    //   }
+    // });
+    // }
   };
   return { ...toRefs(stateData), editEvent, confirmEvent, handleImgChange };
 }
@@ -395,7 +410,7 @@ let {
   submitEvent,
   bindEvent,
   knowEvent,
-  handleChange,
+  beforeUpload
 } = relate_upload();
 function relate_upload() {
   let stateData = reactive({
@@ -406,7 +421,7 @@ function relate_upload() {
       platform: "",
       cert_level: "",
       cert_number: "",
-      img: "",
+      file: [],
     },
     erweimaForm: {
       account: "",
@@ -439,11 +454,12 @@ function relate_upload() {
     ],
   });
   let reset = () => {
+    stateData.fileArr = [] 
     stateData.zizhiForm = {
       platform: "",
       cert_level: "",
       cert_number: "",
-      img: "",
+      file: [],
     };
     stateData.erweimaForm = {
       account: "",
@@ -486,8 +502,8 @@ function relate_upload() {
       apiPort_upload({ ...stateData.zizhiForm });
     } else {
       stateData.showUpload = false;
-      reset();
     }
+    reset();
   };
   // 打开绑定美事通弹层
   let bindEvent = (e) => {
@@ -500,11 +516,12 @@ function relate_upload() {
       apiPort_mst({ ...stateData.erweimaForm });
     } else {
       stateData.showErweima = false;
-      reset();
     }
+    reset();
   };
-  let handleChange = (file) => {
-    stateData.zizhiForm.img = file.file.originFileObj;
+  let beforeUpload = (file) => {
+    stateData.zizhiForm.file = [file]
+    return false
   };
 
   return {
@@ -513,7 +530,7 @@ function relate_upload() {
     submitEvent,
     bindEvent,
     knowEvent,
-    handleChange,
+    beforeUpload
   };
 }
 </script>

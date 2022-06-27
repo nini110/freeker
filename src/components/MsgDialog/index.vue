@@ -13,7 +13,7 @@
       forceRender
       :getContainer="$refs.aff1"
     >
-      <div class="msgBox" v-for="(item, idx) in msgList" :key="idx">
+      <div class="msgBox" v-for="(item, idx) in mailList" :key="idx">
         <a-comment>
           <template #actions>
             <span key="comment-basic-reply-to">去查看</span>
@@ -44,31 +44,37 @@ import {
   CheckOutlined,
   LockOutlined,
 } from "@ant-design/icons-vue";
-import { ref, watch, toRefs, onMounted, reactive } from "vue";
+import { ref, watch, toRefs, onMounted, reactive, onBeforeMount } from "vue";
+
 import dayjs from "dayjs";
 let $props = defineProps({
   showMsg: {
     type: Boolean,
   },
 });
+let { showMsg }  = toRefs($props)
 let $emit = defineEmits(["changeMsgTag"]);
 // 消息相关
-let { diaVisible, watchShow, handlecancel, msgList } = relate_msg();
+let { diaVisible, mailList, watchShow, handlecancel } = relate_msg();
 function relate_msg() {
-  let diaVisible = ref(false);
-  let propsData = toRefs($props);
+  let stateData = reactive({
+    diaVisible: false,
+    mailList: []
+  })
+
   let watchShow = watch(
-    propsData.showMsg,
+    showMsg,
     (newval, oldval) => {
-      diaVisible.value = newval;
+      stateData.diaVisible = newval;
     },
     { immediate: true }
   );
   let handlecancel = () => {
     $emit("changeMsgTag");
   };
+
   //   ---------
-  let msgList = reactive([
+  stateData.mailList = reactive([
     {
       time: "2022-05-05",
       txt: "您的******项目已经申请通过了快去查看吧",
@@ -118,7 +124,7 @@ function relate_msg() {
       flag: 2,
     },
   ]);
-  return { diaVisible, watchShow, handlecancel, msgList };
+  return { ...toRefs(stateData), watchShow, handlecancel };
 }
 </script>
 

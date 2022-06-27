@@ -7,52 +7,59 @@
         :tab="item.label"
       ></a-tab-pane>
     </a-tabs>
-    <div v-for="(item, idx) in projList" :key="idx" class="planBox iconfont">
-      <div class="planBox_title">
-        <p v-if="item.project_status === 1 || item.project_status === 2">
-          <span>申请时间：</span><span>{{ item.sqTime }}</span>
-        </p>
-        <p v-else>
-          <span>接单时间：</span><span>{{ item.jdTime }}</span>
-        </p>
-      </div>
-      <div class="planBox_info" :class="item.cls">
-        <div>{{ item.project_name }}</div>
-        <div>
-          <span :class="item.statusClass" class="sts">{{ item.statusCn }}</span>
-        </div>
-        <div>
-          <span class="label">投放平台</span>
-          <span>{{ item.platCn }}</span>
-        </div>
-        <div>
-          <span class="label">服务费</span>
-          <span class="mny">{{ item.brokerage }}</span>
-        </div>
-        <div class="planBox_info_btn">
-          <span @click="toDetail(item)">查看详情</span>
-          <!-- 待审核 -->
-          <span v-if="item.project_status === 2" @click="cancelEvent(item)"
-            >取消申请</span
-          >
-          <!-- 待确认 -->
-          <span v-if="item.project_status === 5" @click="confirmEvent(item)"
-            >确认完成</span
-          >
-          <!-- 已完成 -->
-          <span v-if="item.project_status === 7">前往结算</span>
-        </div>
-      </div>
+    <div v-if="projList.length === 0" class="planBox proj_box_empty">
+      <a-empty />
     </div>
-    <div class="pagination fixed">
-      <a-pagination
-        v-model:current="pageNation.currentPage"
-        v-model:pageSize="pageNation.pageSize"
-        show-size-changer
-        :pageSizeOptions="['5', '10', '30']"
-        :total="pageNation.totalNum"
-        @change="sizeChange"
-      />
+    <div v-else>
+      <div v-for="(item, idx) in projList" :key="idx" class="planBox iconfont">
+        <div class="planBox_title">
+          <p v-if="item.project_status === 1 || item.project_status === 2">
+            <span>申请时间：</span><span>{{ item.sqTime }}</span>
+          </p>
+          <p v-else>
+            <span>接单时间：</span><span>{{ item.jdTime }}</span>
+          </p>
+        </div>
+        <div class="planBox_info" :class="item.statusClass">
+          <div>{{ item.project_name }}</div>
+          <div>
+            <span :class="item.statusClass" class="sts">{{
+              item.statusCn
+            }}</span>
+          </div>
+          <div>
+            <span class="label">投放平台</span>
+            <span>{{ item.platCn }}</span>
+          </div>
+          <div>
+            <span class="label">服务费</span>
+            <span class="mny">{{ item.brokerage }}</span>
+          </div>
+          <div class="planBox_info_btn">
+            <span @click="toDetail(item)">查看详情</span>
+            <!-- 待审核 -->
+            <span v-if="item.project_status === 2" @click="cancelEvent(item)"
+              >取消申请</span
+            >
+            <!-- 待确认 -->
+            <span v-if="item.project_status === 5" @click="confirmEvent(item)"
+              >确认完成</span
+            >
+            <!-- 已完成 -->
+            <span v-if="item.project_status === 7">前往结算</span>
+          </div>
+        </div>
+      </div>
+      <div class="pagination fixed">
+        <a-pagination
+          v-model:current="pageNation.currentPage"
+          v-model:pageSize="pageNation.pageSize"
+          show-size-changer
+          :pageSizeOptions="['5', '10', '30']"
+          :total="pageNation.totalNum"
+          @change="sizeChange"
+        />
+      </div>
     </div>
     <a-modal
       v-model:visible="evalueVisible"
@@ -149,7 +156,7 @@ function relate_plan() {
   // 获取列表
   let apiPort_list = (status, page, page_size) => {
     planProj({
-      haha: "",
+      no: "",
       project_status: status,
       ordering: "-create_time",
       page,
@@ -164,62 +171,62 @@ function relate_plan() {
             // 已取消
             case 0:
               val.statusCn = "已取消";
-              val.statusClass = "yqx iconfont icon-dengdai";
+              val.statusClass = "yqx";
               break;
             // 申请列表：系统审核中
             case 1:
               val.statusCn = "系统审核中";
-              val.statusClass = "shz iconfont icon-shenhezhong";
+              val.statusClass = "shz";
               break;
             // 申请列表：待审核
             case 2:
               val.statusCn = "待人工审核";
-              val.statusClass = "dsh iconfont icon-dengdai";
+              val.statusClass = "dsh";
               break;
             // 下发列表：待启动
             case 3:
               val.statusCn = "待开始";
-              val.statusClass = "dqd iconfont icon-dengdai";
+              val.statusClass = "dqd";
               break;
             // 下发列表：进行中
             case 4:
               val.statusCn = "进行中";
-              val.statusClass = "jxz iconfont icon-zhengzaijinhang";
+              val.statusClass = "jxz";
               break;
             // 下发列表：待确认
             case 5:
               val.statusCn = "待确认";
-              val.statusClass = "dqr iconfont icon-gantanhao-xianxingyuankuang";
+              val.statusClass = "dqr";
               break;
             // 下发列表：待通过
             case 6:
               val.statusCn = "待通过";
-              val.statusClass = "dtg iconfont icon-gantanhao-xianxingyuankuang";
+              val.statusClass = "dtg";
               break;
             // 下发列表：已完成
             case 7:
               val.statusCn = "已完成";
-              val.statusClass = "ywc iconfont icon-wancheng";
+              val.statusClass = "ywc";
               break;
             // 下发列表：已驳回
             case 11:
               val.statusCn = "已驳回";
-              val.statusClass = "ybh iconfont icon-shenhebutongguo";
+              val.statusClass = "ybh";
               break;
             // 结算列表：待汇款
             case 8:
               val.statusCn = "待汇款";
-              val.statusClass = "dqd iconfont icon-dengdai";
+              val.statusClass = "dqd";
               break;
             // 结算列表：打款中
             case 9:
               val.statusCn = "打款中";
-              val.statusClass = "jxz iconfont icon-zhengzaijinhang";
+              val.statusClass = "jxz";
               break;
             // 结算列表：已结算
             case 10:
               val.statusCn = "已结算";
-              val.statusClass = "ywc iconfont icon-wancheng";
+              val.statusClass = "ywc";
               break;
           }
           switch (val.delivery_platform) {
@@ -273,12 +280,7 @@ function relate_detail() {
   });
   // 获取详情
   const apiPort_detail = (id) => {
-    getProjDetail(
-      {
-        haha: "",
-      },
-      id
-    ).then((res) => {
+    getProjDetail(id).then((res) => {
       if (res.data.code === 200) {
         stateDate2.showList = false;
         stateDate2.resData = res.data.data;
@@ -302,7 +304,7 @@ function relate_detail() {
   let apiPort_calcel = (id) => {
     calcelApply(
       {
-        haha: "",
+        no: "",
       },
       id
     ).then((res) => {

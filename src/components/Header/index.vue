@@ -4,20 +4,6 @@
       <div class="headerBox_img">
         <img src="../../assets/logo.png" alt="" />
       </div>
-      <div class="headerBox_search">
-        <div class="headerBox_search_txt" @click="openMsgDialog">
-          <a-badge count="new">
-            <sound-outlined />
-          </a-badge>
-          <p>消息</p>
-        </div>
-        <a-input
-          size="large"
-          v-model:value="searchVal"
-          placeholder="搜索"
-          @pressEnter="onEnterSearch"
-        />
-      </div>
       <div class="headerBox_menu">
         <a-menu
           v-model:selectedKeys="currentMenu"
@@ -28,7 +14,7 @@
             <a-sub-menu
               v-if="item.children"
               :key="item.name"
-              popupClassName="submenu"
+              popupClassName="headerMenu"
             >
               <template #title>{{ item.meta.txt }}</template>
               <a-menu-item v-for="item1 in item.children" :key="item1.name">{{
@@ -40,14 +26,28 @@
             }}</a-menu-item>
           </div>
         </a-menu>
-        <p class="user" @click="openDialog">
-          <img :src="store.getters.userImg" alt="" />
-          <span>{{ store.getters.account }}</span>
-        </p>
-        <p class="user log" @click="openLoginDialog">
-          <poweroff-outlined v-if="store.getters.account" />
-          <span v-else>登录</span>
-        </p>
+      </div>
+      <div class="headerBox_user">
+        <div class="headerBox_search_txt" @click="openMsgDialog">
+          <a-badge count="new">
+            <sound-outlined />
+          </a-badge>
+          <p>消息</p>
+        </div>        
+        <div v-if="store.getters.account">
+          <a-popover placement="bottom" overlayClassName="userPopver">
+            <template #content>
+              <p class="t3" @click="openDialog"><user-outlined />个人信息</p>
+              <p class="t4" @click="logoutEvent"><poweroff-outlined />退出登录</p>
+            </template>
+            <template #title>
+              <p class="t1"><smile-outlined />{{ store.getters.account }}</p>
+              <p class="t2"><span>账号</span>{{ store.getters.account }}</p>
+            </template>
+            <img :src="store.getters.userImg" alt="" @click="openDialog" />
+          </a-popover>
+        </div>
+        <div v-else @click="openLoginDialog">登录</div>
       </div>
     </div>
   </div>
@@ -56,7 +56,6 @@
     :showDialog="showDialog"
     @changeDialogTag="changeDialogTag"
     @closeMstDialog="closeMstDialog"
-    @changeNick="changeNick"
     :userInfo="userInfo"
     :zizhiList="zizhiList"
     :mstList="mstList"
@@ -68,18 +67,20 @@
 </template>
 <script setup>
 import {
+  UserOutlined,
   FrownOutlined,
   SoundOutlined,
   PoweroffOutlined,
+  SmileOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
-import { ref, reactive, watch, toRefs, computed } from "vue";
+import { ref, reactive, watch, toRefs, computed, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import UserDialog from "./user/index.vue";
 import LoginDialog from "../Login/index.vue";
 import MsgDialog from "../MsgDialog/index.vue";
-import { userDetail, getZizhi } from "@/api/api";
+import { userDetail, getZizhi, stationMailList } from "@/api/api";
 
 const store = useStore();
 let $route = useRoute();
@@ -125,16 +126,27 @@ function relate_menu() {
   return { ...toRefs(stateData), menuClick };
 }
 // 消息弹层
-let { showMsg, openMsgDialog, changeMsgTag } = relate_msg();
+let { showMsg, mailList, openMsgDialog, changeMsgTag } = relate_msg();
 function relate_msg() {
-  let showMsg = ref(false);
+  let stateData = reactive({
+    showMsg: false,
+    mailList: [],
+  });
+  let apiPort_list = () => {
+    stationMailList({
+      no: "",
+    }).then((res) => {});
+  };
   let openMsgDialog = () => {
-    showMsg.value = true;
+    stateData.showMsg = true;
   };
   let changeMsgTag = () => {
-    showMsg.value = false;
+    stateData.showMsg = false;
   };
-  return { showMsg, openMsgDialog, changeMsgTag };
+  onBeforeMount(() => {
+    apiPort_list();
+  });
+  return { ...toRefs(stateData), openMsgDialog, changeMsgTag };
 }
 // 用户弹层相关
 let {
@@ -151,30 +163,32 @@ function relate_user() {
     showDialog: false,
     userInfo: {},
     zizhiList: [], // 资质列表
-    mstList: [] // 美事通列表
+    mstList: [], // 美事通列表
   });
   // 用户信息
   let apiPort_user = () => {
     Promise.all([
-      userDetail({ haha: "" }),
+      userDetail({ no: "" }),
       getZizhi({
-        haha: "",
+        no: "",
         page: 1,
         page_size: 100,
       }),
     ]).then((res) => {
       // 用户
       if (res[0].data.code === 200) {
-        let result = res[0].data.data
+        let result = res[0].data.data;
         stateData.userInfo = result;
-        stateData.userInfo.imageUrl = store.getters.userImg
-        stateData.mstList = result.mst_account ? result.mst_account.split(",") : [];
+        stateData.userInfo.imageUrl = store.getters.userImg;
+        stateData.mstList = result.mst_account
+          ? result.mst_account.split(",")
+          : [];
       } else {
         message.error("用户信息查询失败");
       }
       // 资质
       if (res[0].data.code === 200) {
-        stateData.zizhiList = []
+        stateData.zizhiList = [];
         let result = res[1].data.data;
         result.forEach((val, idx) => {
           switch (val.platform) {
@@ -218,52 +232,55 @@ function relate_user() {
   let changeDialogTag = () => {
     stateData.showDialog = false;
   };
-  let watch_acountId = watch(store, (newval, oldval)=> {
-    if(store.getters.accountId) {
-      apiPort_user()
-    }
-  }, {immediate: true, deep: true})
+  let watch_acountId = watch(
+    store,
+    (newval, oldval) => {
+      if (store.getters.accountId) {
+        apiPort_user();
+      }
+    },
+    { immediate: true, deep: true }
+  );
   let closeMstDialog = () => {
     apiPort_user();
   };
   return { ...toRefs(stateData), openDialog, changeDialogTag, closeMstDialog };
 }
 // 登录
-let { showLogin, openLoginDialog, changeLogTag } = relate_login();
+let { showLogin, logoutEvent, openLoginDialog, changeLogTag } = relate_login();
 function relate_login() {
   let stateData = reactive({
     showLogin: false,
   });
+
   let openLoginDialog = () => {
-    if (store.getters.account) {
-      // 已经登录
-      Modal.confirm({
-        title: "是否确认退出当前账号?",
-        centered: true,
-        okText: "退出",
-        cancelText: "取消",
-        onOk() {
-          localStorage.removeItem("token");
-          store.commit("pageData/SET_ACCOUNT", "");
-          store.commit("pageData/SET_ACCOUNTID", null);
-          store.commit("pageData/SET_USERIMG", "");
-          $router.replace({
-            path: "/home",
-          });
-        },
-        onCancel() {
-          console.log("Cancel");
-        },
-      });
-    } else {
-      // 未登录
-      stateData.showLogin = true;
-    }
+    stateData.showLogin = true;
+  };
+  // 退出登录
+  let logoutEvent = () => {
+    Modal.confirm({
+      title: "是否确认退出当前账号?",
+      centered: true,
+      okText: "退出",
+      cancelText: "取消",
+      onOk() {
+        localStorage.removeItem("token");
+        store.commit("pageData/SET_ACCOUNT", "");
+        store.commit("pageData/SET_ACCOUNTID", null);
+        store.commit("pageData/SET_USERIMG", "");
+        $router.replace({
+          path: "/home",
+        });
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
   };
   let changeLogTag = () => {
     stateData.showLogin = false;
   };
-  return { ...toRefs(stateData), openLoginDialog, changeLogTag };
+  return { ...toRefs(stateData), logoutEvent, openLoginDialog, changeLogTag };
 }
 </script>
 <style lang="scss" scoped>

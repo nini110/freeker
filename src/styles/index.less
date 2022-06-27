@@ -1,4 +1,5 @@
 @import "./reset.less";
+
 ::-webkit-scrollbar {
     height: 8px;
     width: 8px;
@@ -11,31 +12,38 @@
 ::-webkit-scrollbar-thumb {
     width: 8px;
     min-height: 15px;
-    background: rgba(50,50,50,0.3) !important;
+    background: rgba(50, 50, 50, 0.3) !important;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
     border-radius: 2px;
 }
+
 .content {
     .ant {
         &-modal-body {
             padding: 10px 30px;
+
             .ant-rate {
                 margin-bottom: 12px;
             }
         }
+
         &-page {
             &-header {
                 padding: 0 0 10px 0;
             }
         }
+
         &-form {
             flex-basis: 100%;
+
             &-item {
                 flex-basis: 100%;
                 margin: 11px 0;
+
                 &-label {
                     width: 130px;
+
                     label {
                         height: 100%;
                         font-size: 14px;
@@ -44,9 +52,58 @@
             }
         }
     }
+
     .pagination {
         display: flex;
         justify-content: flex-end;
-       padding: 20px 40px; 
+        padding: 20px 40px;
+    }
+}
+
+.userPopver {
+    .ant-popover-title {
+        padding: 10px 0;
+    }
+    .ant-popover-inner-content {
+        padding: 0 0 10px 0;
+    }
+    p { 
+        padding: 10px 20px;
+        font-size: 16px;
+        span {
+            margin-right: 10px;
+        }
+        &.t1 {
+            color: #303133;
+            font-size: 16px;
+            padding: 5px 20px;
+        }
+        &.t2 {
+            padding: 0 20px;
+            color: #909399;
+            font-size: 14px;
+        }
+        &.t3,
+        &.t4 {
+            cursor: pointer;
+            &:hover {
+                background-color: #fbf5ee;
+                color: #ff5c5c!important;
+            }
+
+        }
+    }
+
+}
+.headerMenu {
+    .ant-menu-title-content {
+        font-size: 16px;
+    }
+    .ant-menu-item {
+        &-selected,
+        &:hover {
+            color: #ff5c5c!important;
+            background-color: #fbf5ee!important;
+        }
     }
 }

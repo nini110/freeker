@@ -25,6 +25,9 @@
         display: flex;
         padding: 20px 60px;
         flex-wrap: wrap;
+        &_empty {
+            justify-content: center;
+        }
         &_div {
             flex-basis: 33.3%;
             padding: 10px;
