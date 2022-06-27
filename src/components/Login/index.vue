@@ -240,7 +240,8 @@ function relate_login() {
     userLogin({ ...stateData.formState }).then((res) => {
       if (res.data.code === 200) {
         localStorage.setItem("token", res.data.data.token);
-        store.commit("pageData/SET_ACCOUNT", res.data.data.username);
+        store.commit("pageData/SET_USERNAME", res.data.data.username);
+        store.commit("pageData/SET_ACCOUNT", res.data.data.account);
         store.commit("pageData/SET_ACCOUNTID", res.data.data.user);
         store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
         message.success("登陆成功");

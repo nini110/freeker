@@ -64,7 +64,7 @@ service.interceptors.response.use(response => {
         message.error('登录失效，请重新登录')
         setTimeout(() => {
             localStorage.removeItem("token");
-            window.location.replace('/#/home')
+            window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
         }, 1000);
         return
     }

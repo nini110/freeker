@@ -32,12 +32,16 @@ $headerTheme: #fff;
 
 
     &_img {
-        width: 220px;
         height: 40%;
         text-align: center;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        align-items: center;
 
         img {
-            width: 50%;
+            width: 100px;
+            margin-right: 50px;
         }
     }
 

@@ -356,7 +356,7 @@ function relate_nick() {
       if (res.data.code === 200) {
         message.success("操作成功");
         stateData.showIpt = false;
-        store.commit("pageData/SET_ACCOUNT", res.data.data.username);
+        store.commit("pageData/SET_USERNAME", res.data.data.username);
         // 昵称回显
         $emit("closeMstDialog");
       } else {
@@ -520,6 +520,7 @@ function relate_upload() {
     reset();
   };
   let beforeUpload = (file) => {
+    stateData.fileArr = [file]
     stateData.zizhiForm.file = [file]
     return false
   };

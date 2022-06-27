@@ -1,9 +1,13 @@
 const state = {
+    username: '',
     account: '',
     accountId: null,
     userImg: ''
 }
 const mutations = {
+    SET_USERNAME: (state, view) => {
+        state.username = view
+    },    
     SET_ACCOUNT: (state, view) => {
         state.account = view
     },

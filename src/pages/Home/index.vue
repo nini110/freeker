@@ -156,8 +156,9 @@ function projectFun() {
 
   onBeforeMount(() => {
     if (!localStorage.getItem("token")) {
+      store.commit("pageData/SET_USERNAME", "");
       store.commit("pageData/SET_ACCOUNT", "");
-      store.commit('pageData/SET_ACCOUNTID', null)
+      store.commit("pageData/SET_ACCOUNTID", null);
       store.commit("pageData/SET_USERIMG", "");
     }
     apiPort_list();

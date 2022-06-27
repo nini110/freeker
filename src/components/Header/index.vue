@@ -3,8 +3,6 @@
     <div class="headerBox ts">
       <div class="headerBox_img">
         <img src="../../assets/logo.png" alt="" />
-      </div>
-      <div class="headerBox_menu">
         <a-menu
           v-model:selectedKeys="currentMenu"
           mode="horizontal"
@@ -33,15 +31,17 @@
             <sound-outlined />
           </a-badge>
           <p>消息</p>
-        </div>        
+        </div>
         <div v-if="store.getters.account">
           <a-popover placement="bottom" overlayClassName="userPopver">
             <template #content>
               <p class="t3" @click="openDialog"><user-outlined />个人信息</p>
-              <p class="t4" @click="logoutEvent"><poweroff-outlined />退出登录</p>
+              <p class="t4" @click="logoutEvent">
+                <poweroff-outlined />退出登录
+              </p>
             </template>
             <template #title>
-              <p class="t1"><smile-outlined />{{ store.getters.account }}</p>
+              <p class="t1"><smile-outlined />{{ store.getters.username }}</p>
               <p class="t2"><span>账号</span>{{ store.getters.account }}</p>
             </template>
             <img :src="store.getters.userImg" alt="" @click="openDialog" />
@@ -71,7 +71,7 @@ import {
   FrownOutlined,
   SoundOutlined,
   PoweroffOutlined,
-  SmileOutlined
+  SmileOutlined,
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import { ref, reactive, watch, toRefs, computed, onBeforeMount } from "vue";
@@ -265,6 +265,7 @@ function relate_login() {
       cancelText: "取消",
       onOk() {
         localStorage.removeItem("token");
+        store.commit("pageData/SET_USERNAME", '');
         store.commit("pageData/SET_ACCOUNT", "");
         store.commit("pageData/SET_ACCOUNTID", null);
         store.commit("pageData/SET_USERIMG", "");
