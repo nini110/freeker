@@ -1,7 +1,7 @@
 $baseFontsize: 14px;
 $baseHsize: 18px;
 .detailBox {
-    padding: 40px;
+    padding: 25px 40px;
 
     h2 {
         font-size: $baseHsize;
@@ -35,21 +35,21 @@ $baseHsize: 18px;
     &_desc {
         font-size: $baseFontsize;
         line-height: 26px;
+        margin-bottom: 10px;
         .rateInfo {
             margin: 5px 0 15px 0;
             text-indent: 2em;
         }
-        .rateTxt {
-            color: #303133;
-            font-weight: bold;
+        .label {
+            margin-right: 15px;
         }
     }
 
     &_info {
-        padding: 0 20px;
-        border: 1px solid #e7e7e7;
+        padding: 10px 20px;
+        border: 1px solid #e7e7e72e;
         border-radius: 5px;
-
+        background-color: #e7e7e726;
         h3 {
             font-size: 16px;
             line-height: 30px;
@@ -83,23 +83,20 @@ $baseHsize: 18px;
                 span {
                     &:first-child {
                         color: #606266;
-                    }
-
-                    &:nth-child(2) {
-                        color: #303133;
+                        margin-right: 15px;
                     }
                 }
 
-                &.one {
+                &.w33 {
                     flex-basis: 33.3%;
                 }
 
-                &.two {
-                    flex-basis: 60%;
+                &.w50 {
+                    flex-basis: 50%;
 
                 }
 
-                &.three {
+                &.w100 {
                     flex-basis: 100%;
 
                 }
@@ -118,7 +115,7 @@ $baseHsize: 18px;
 
     &_topbtn {
         position: relative;
-
+        border-bottom: 1px solid #f3f1f1;
         &:after {
             content: '';
             width: 100px;
@@ -129,6 +126,7 @@ $baseHsize: 18px;
             position: absolute;
             right: 0;
             top: 0;
+            z-index: 10;
         }
 
         &.dsh:after {

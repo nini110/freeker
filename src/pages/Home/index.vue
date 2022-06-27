@@ -1,24 +1,23 @@
 <template>
   <div>
     <h2 class="proj_title">
-      创造优质广告投放，实现双赢<span @click="toPage">前往项目大厅</span>
+      创造优质广告投放，实现双赢<span @click="toPage">前往项目中心</span>
     </h2>
     <div class="proj_box">
       <div v-for="(item, idx) in projectList" :key="idx" class="proj_box_div">
         <div class="proj_box_card">
           <div class="proj_desc">
-            {{ item.project_name }}<span>￥{{ item.brokerage }}</span>
+            {{ item.project_name }}
           </div>
           <div class="proj_txt">
-            <p class="proj_p"><span>所属类目：</span>{{ item.categoryCn }}</p>
-            <p class="proj_p"><span>预算金额：</span>{{ item.budget }}</p>
-            <p class="proj_p"><span>投放平台：</span>{{ item.platCn }}</p>
-            <p class="proj_p"><span>预期目标：</span>{{ item.target }}</p>
-            <p class="proj_p"><span>截止时间：</span>{{ item.time }}</p>
+            <p class="proj_p"><span>投放平台</span>{{ item.platCn }}</p>
+            <p class="proj_p"><span>预算金额</span>￥{{ item.budget }}</p>
+            <p class="proj_p"><span>服务费</span>￥{{ item.brokerage }}</p>
+            <p class="proj_p"><span>所属类目</span>{{ item.categoryCn }}</p>
+            <p class="proj_p"><span>截止时间</span>{{ item.time }}</p>
           </div>
           <div class="proj_btn">
-            <i>{{ item.create_time }}</i
-            ><span @click="applyEvent(item)">申请</span>
+            <span @click="applyEvent(item)">申请</span>
           </div>
         </div>
       </div>
@@ -48,6 +47,7 @@ function projectFun() {
       haha: "",
       page: 1,
       page_size: 3,
+      ordering: "-create_time",
     }).then((res) => {
       if (res.data.code === 200) {
         stateDate.projectList = [];
@@ -157,13 +157,14 @@ function projectFun() {
   onBeforeMount(() => {
     if (!localStorage.getItem("token")) {
       store.commit("pageData/SET_ACCOUNT", "");
+      store.commit('pageData/SET_ACCOUNTID', null)
       store.commit("pageData/SET_USERIMG", "");
     }
     apiPort_list();
   });
   let toPage = () => {
     $router.push({
-      path: "/projectCenter",
+      path: "/tem/projectCenter",
     });
   };
   return { ...toRefs(stateDate), apiPort_list, applyEvent, toPage };

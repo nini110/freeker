@@ -1,9 +1,7 @@
 <template>
   <div class="detailBox" ref="deta">
     <div class="detailBox_topbtn" :class="iconClass">
-      <a-button @click="backEvent">
-        <template #icon><LeftOutlined /></template>返回</a-button
-      >
+      <a-page-header title="返回" @back="backEvent"> </a-page-header>
     </div>
     <div class="detailBox_div">
       <h2>项目描述</h2>
@@ -19,9 +17,10 @@
           <p
             v-for="(item, idx) in detailData.detailList"
             :key="idx"
-            :class="item.class"
+            class="w50"
           >
-            <span>{{ item.label }}：</span><span>{{ item.value }}</span>
+            <span>{{ item.label }}</span
+            ><span>{{ item.value }}</span>
           </p>
         </div>
       </div>
@@ -46,9 +45,9 @@
             v-else
             v-for="(item, idx) in detailData.toufanglist"
             :key="idx"
-            :class="item.class"
+            class="w33"
           >
-            <span>{{ item.label }}：</span
+            <span>{{ item.label }}</span
             ><span v-if="idx === 2"
               ><a :href="item.value" target="blank">点击查看</a></span
             ><span v-else>{{ item.value }}</span>
@@ -78,9 +77,10 @@
             v-else
             v-for="(item, idx) in detailData.shujuList"
             :key="idx"
-            :class="item.class || 'one'"
+            class="w33"
           >
-            <span>{{ item.label }}：</span><span>{{ item.value }}</span>
+            <span>{{ item.label }}</span
+            ><span>{{ item.value }}</span>
           </p>
         </div>
       </div>
@@ -89,13 +89,13 @@
     <div v-if="stusCode === 6 || stusCode === 7" class="detailBox_div">
       <h2>评价</h2>
       <div class="detailBox_desc">
-        <span class="rateTxt">项目评价：</span>
+        <span class="label">项目评价</span>
         <a-rate :value="resData.user_evaluate_score" disabled />
         <div class="rateInfo">
           {{ resData.user_evaluate_content }}
         </div>
         <div v-if="stusCode === 7">
-          <span class="rateTxt">投手评价：</span>
+          <span class="label">投手评价</span>
           <a-rate :value="resData.merchant_evaluate_score" disabled />
           <div class="rateInfo">
             {{ resData.merchant_evaluate_content }}
@@ -151,6 +151,7 @@
       @ok="handleOk"
       centered
       :getContainer="$refs.deta"
+      :maskClosable="false"
       class="dataDialog"
     >
       <a-form :model="formData" v-bind="formItemLayout"
@@ -231,6 +232,7 @@
       centered
       :maskClosable="false"
       :keyboard="false"
+      :getContainer="$refs.deta"
       @ok="evalueEvent"
     >
       <a-rate v-model:value="rateValue" />
@@ -288,20 +290,24 @@ function relate_detail() {
       target.delivery_jiezou = info[info.length - 2].value;
       // 投放时间
       let startdate = dayjs(newval.delivery_start_date).format(
-        "YYYY-MM-DD HH:mm:ss"
+        "YYYY-MM-DD HH:mm"
       );
-      let enddate = dayjs(newval.delivery_end_date).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      (target.delivery_date = startdate + "-" + enddate),
+      let enddate = dayjs(newval.delivery_end_date).format("YYYY-MM-DD HH:mm");
+      (target.delivery_date = startdate + " 至 " + enddate),
         // 截止时间
         (target.project_end_date = dayjs(newval.project_end_date).format(
-          "YYYY-MM-DD HH:mm:ss"
+          "YYYY-MM-DD HH:mm"
         ));
       // 上传时间
-      target.create_time = dayjs(newval.create_time).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
+      target.create_time = dayjs(newval.create_time).format("YYYY-MM-DD HH:mm");
+      // 目标
+      target.delivery_target = "";
+      let delivery_target = JSON.parse(newval.delivery_target);
+      delivery_target
+        .slice(0, delivery_target.length - 2)
+        .forEach((val, index) => {
+          target.delivery_target += `${val.label}：${val.value}`;
+        });
       // 产品类型
       switch (parseInt(newval.category)) {
         case 1:
@@ -348,57 +354,51 @@ function relate_detail() {
         {
           label: "服务费",
           value: newval.brokerage + "元",
-          class: "one",
         },
         {
           label: "预算金额",
           value: newval.budget + "元",
-          class: "one",
         },
         {
           label: "产品类型",
           value: target.categoryCn,
-          class: "one",
         },
         {
           label: "投放平台",
           value: target.platformCn,
-          class: "one",
         },
+
         {
           label: "投放比例",
           value: target.delivery_proportion,
-          class: "two",
+        },
+        {
+          label: "投放目标",
+          value: target.delivery_target,
         },
         {
           label: "投放时间",
           value: target.delivery_date,
-          class: "three",
         },
         {
           label: "活动投放类型",
           value: newval.service_type,
-          class: "one",
         },
         {
           label: "活动投放节奏",
           value: target.delivery_jiezou,
-          class: "one",
         },
         {
           label: "参与品牌",
           value: newval.delivery_brand,
-          class: "one",
         },
         {
           label: "投放数量",
           value: target.delivery_num,
-          class: "one",
         },
         {
           label: "任务领取截止时间",
           value: target.project_end_date,
-          class: "one",
         },
       ];
       // 投放信息:待启动 进行中 待确认
@@ -408,17 +408,14 @@ function relate_detail() {
           {
             label: "账号",
             value: toufang.account,
-            class: "one",
           },
           {
             label: "密码",
             value: toufang.pwd,
-            class: "one",
           },
           {
             label: "地址链接",
             value: toufang.url,
-            class: "one",
           },
         ];
       }

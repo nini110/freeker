@@ -24,32 +24,28 @@
           mode="horizontal"
           @select="menuClick"
         >
-          <a-menu-item key="home">首页</a-menu-item>
-          <a-sub-menu key="option" popupClassName="submenu">
-            <template #title>菜单</template>
-            <a-menu-item key="projectCenter">项目中心</a-menu-item>
-            <a-menu-item key="planCenter">任务中心</a-menu-item>
-            <a-menu-item key="balanceCenter">结算中心</a-menu-item>
-          </a-sub-menu>
+          <div v-for="(item, idx) in routeMenu" :key="idx">
+            <a-sub-menu
+              v-if="item.children"
+              :key="item.name"
+              popupClassName="submenu"
+            >
+              <template #title>{{ item.meta.txt }}</template>
+              <a-menu-item v-for="item1 in item.children" :key="item1.name">{{
+                item1.meta.txt
+              }}</a-menu-item>
+            </a-sub-menu>
+            <a-menu-item v-else :key="item.name">{{
+              item.meta.txt
+            }}</a-menu-item>
+          </div>
         </a-menu>
-        <!-- <a-popover>
-          <template #content>
-            <p class="user" @click="openLoginDialog">
-              <span>{{ loginTxt }}</span>
-            </p>
-          </template>
-          <p class="user" @click="openDialog">
-            <img :src="store.getters.userImg" alt="" />
-            <span>{{ store.getters.account }}</span>
-          </p>
-        </a-popover> -->
-
         <p class="user" @click="openDialog">
           <img :src="store.getters.userImg" alt="" />
           <span>{{ store.getters.account }}</span>
         </p>
-        <p class="user" @click="openLoginDialog">
-          <poweroff-outlined v-if="store.getters.account"/>
+        <p class="user log" @click="openLoginDialog">
+          <poweroff-outlined v-if="store.getters.account" />
           <span v-else>登录</span>
         </p>
       </div>
@@ -59,6 +55,11 @@
   <UserDialog
     :showDialog="showDialog"
     @changeDialogTag="changeDialogTag"
+    @closeMstDialog="closeMstDialog"
+    @changeNick="changeNick"
+    :userInfo="userInfo"
+    :zizhiList="zizhiList"
+    :mstList="mstList"
   ></UserDialog>
   <LoginDialog
     :showLogin="showLogin"
@@ -66,17 +67,26 @@
   ></LoginDialog>
 </template>
 <script setup>
-import { FrownOutlined, SoundOutlined, PoweroffOutlined } from "@ant-design/icons-vue";
+import {
+  FrownOutlined,
+  SoundOutlined,
+  PoweroffOutlined,
+} from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
-import { ref, reactive, watch, toRefs } from "vue";
+import { ref, reactive, watch, toRefs, computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import UserDialog from "./user/index.vue";
 import LoginDialog from "../Login/index.vue";
 import MsgDialog from "../MsgDialog/index.vue";
+import { userDetail, getZizhi } from "@/api/api";
+
 const store = useStore();
 let $route = useRoute();
 let $router = useRouter();
+const routeMenu = computed(() => {
+  return global.antRouter;
+});
 // 搜索相关
 let { searchVal, onEnterSearch } = relate_search();
 function relate_search() {
@@ -91,25 +101,28 @@ function relate_search() {
   return { searchVal, onEnterSearch };
 }
 // 菜单相关
-let { currentMenu, menuClick, $watch } = relate_menu();
+let { currentMenu, menuClick } = relate_menu();
 function relate_menu() {
-  const currentMenu = reactive([$route.name]);
+  const stateData = reactive({
+    currentMenu: [],
+  });
   let menuClick = (item) => {
-    currentMenu.length = 0;
-    currentMenu.push(item.key);
+    stateData.currentMenu = [item.key];
     $router.push({
-      path: `/${item.key}`,
+      path:
+        item.keyPath.length > 1
+          ? `/${item.keyPath[0]}/${item.keyPath[1]}`
+          : `/${item.keyPath[0]}`,
     });
   };
   let $watch = watch(
-    () => $route.name,
+    $route,
     (newval, oldval) => {
-      currentMenu.length = 0;
-      currentMenu.push(newval);
+      stateData.currentMenu = [newval.name];
     },
-    { immediate: false }
+    { immediate: true, deep: true }
   );
-  return { currentMenu, menuClick, $watch };
+  return { ...toRefs(stateData), menuClick };
 }
 // 消息弹层
 let { showMsg, openMsgDialog, changeMsgTag } = relate_msg();
@@ -124,16 +137,96 @@ function relate_msg() {
   return { showMsg, openMsgDialog, changeMsgTag };
 }
 // 用户弹层相关
-let { showDialog, openDialog, changeDialogTag } = relate_user();
+let {
+  showDialog,
+  userInfo,
+  zizhiList,
+  mstList,
+  openDialog,
+  changeDialogTag,
+  closeMstDialog,
+} = relate_user();
 function relate_user() {
-  let showDialog = ref(false);
+  let stateData = reactive({
+    showDialog: false,
+    userInfo: {},
+    zizhiList: [], // 资质列表
+    mstList: [] // 美事通列表
+  });
+  // 用户信息
+  let apiPort_user = () => {
+    Promise.all([
+      userDetail({ haha: "" }),
+      getZizhi({
+        haha: "",
+        page: 1,
+        page_size: 100,
+      }),
+    ]).then((res) => {
+      // 用户
+      if (res[0].data.code === 200) {
+        let result = res[0].data.data
+        stateData.userInfo = result;
+        stateData.userInfo.imageUrl = store.getters.userImg
+        stateData.mstList = result.mst_account ? result.mst_account.split(",") : [];
+      } else {
+        message.error("用户信息查询失败");
+      }
+      // 资质
+      if (res[0].data.code === 200) {
+        stateData.zizhiList = []
+        let result = res[1].data.data;
+        result.forEach((val, idx) => {
+          switch (val.platform) {
+            case 1:
+              val.platformCn = "京东";
+              val.color = "#e1251b";
+
+              break;
+            case 2:
+              val.platformCn = "抖音";
+              val.color = "#333";
+
+              break;
+          }
+          switch (val.cert_level) {
+            case 1:
+              val.cert_levelCn = "初级投手";
+              break;
+            case 2:
+              val.cert_levelCn = "中级投手";
+              break;
+            case 3:
+              val.cert_levelCn = "高级投手";
+              break;
+          }
+          stateData.zizhiList.push({
+            platform: val.platform,
+            color: val.color,
+            txt: val.platformCn + val.cert_levelCn,
+          });
+        });
+      } else {
+        message.error("资质信息查询失败");
+      }
+    });
+  };
   let openDialog = () => {
-    showDialog.value = true;
+    apiPort_user();
+    stateData.showDialog = true;
   };
   let changeDialogTag = () => {
-    showDialog.value = false;
+    stateData.showDialog = false;
   };
-  return { showDialog, openDialog, changeDialogTag };
+  let watch_acountId = watch(store, (newval, oldval)=> {
+    if(store.getters.accountId) {
+      apiPort_user()
+    }
+  }, {immediate: true, deep: true})
+  let closeMstDialog = () => {
+    apiPort_user();
+  };
+  return { ...toRefs(stateData), openDialog, changeDialogTag, closeMstDialog };
 }
 // 登录
 let { showLogin, openLoginDialog, changeLogTag } = relate_login();
@@ -152,6 +245,7 @@ function relate_login() {
         onOk() {
           localStorage.removeItem("token");
           store.commit("pageData/SET_ACCOUNT", "");
+          store.commit("pageData/SET_ACCOUNTID", null);
           store.commit("pageData/SET_USERIMG", "");
           $router.replace({
             path: "/home",

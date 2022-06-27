@@ -21,14 +21,14 @@
         <div class="login_right">
           <div class="login_right_box" v-if="tabTag === 1">
             <a-tabs v-model:activeKey="activeTabKey" @tabClick="tabClick">
-              <a-tab-pane key="1" tab="密码登录" force-render></a-tab-pane>
-              <a-tab-pane key="2" tab="免密登录"></a-tab-pane>
+              <a-tab-pane :key="1" tab="密码登录" force-render></a-tab-pane>
+              <a-tab-pane :key="2" tab="免密登录"></a-tab-pane>
             </a-tabs>
             <a-form :model="formState" name="normal_login">
-              <a-form-item label="" name="account" placeholder="用户名">
+              <a-form-item label="" name="account" placeholder="账户">
                 <a-input
                   v-model:value="formState.account"
-                  placeholder="用户名"
+                  placeholder="账户"
                   allow-clear
                 >
                   <template #prefix>
@@ -36,7 +36,7 @@
                   </template>
                 </a-input>
               </a-form-item>
-              <a-form-item v-if="activeTabKey === '1'" label="" name="密码">
+              <a-form-item v-if="activeTabKey === 1" label="" name="密码">
                 <a-input-password
                   v-model:value="formState.password"
                   placeholder="密码"
@@ -61,7 +61,7 @@
                     <LockOutlined class="site-form-item-icon" /> </template
                 ></a-input-search>
               </a-form-item>
-              <a-form-item>
+              <a-form-item class="zhuceItem">
                 <a-button
                   type="primary"
                   html-type="submit"
@@ -69,6 +69,65 @@
                   @click="loginEvent"
                 >
                   登录
+                </a-button>
+                <span class="zhuce" @click="wayClick(3)">注册</span>
+              </a-form-item>
+            </a-form>
+          </div>
+          <div class="login_right_box" v-else-if="tabTag === 3">
+            <a-form :model="formRegister" name="normal_login">
+              <a-form-item label="" name="account" placeholder="账号">
+                <a-input
+                  v-model:value="formRegister.account"
+                  placeholder="账号"
+                  allow-clear
+                >
+                  <template #prefix>
+                    <UserOutlined class="site-form-item-icon" />
+                  </template>
+                </a-input>
+              </a-form-item>
+              <a-form-item label="" name="username" placeholder="昵称">
+                <a-input
+                  v-model:value="formRegister.username"
+                  placeholder="昵称"
+                  allow-clear
+                >
+                  <template #prefix>
+                    <smile-outlined class="site-form-item-icon"/>
+                  </template>
+                </a-input>
+              </a-form-item>
+              <a-form-item label="" name="密码">
+                <a-input-password
+                  v-model:value="formRegister.password"
+                  placeholder="密码"
+                  allow-clear
+                >
+                  <template #prefix>
+                    <LockOutlined class="site-form-item-icon" />
+                  </template>
+                </a-input-password>
+              </a-form-item>
+              <a-form-item label="" name="手机号">
+                <a-input
+                  v-model:value="formRegister.mobile"
+                  placeholder="手机号"
+                  allow-clear
+                >
+                  <template #prefix>
+                    <phone-outlined class="site-form-item-icon"/>
+                  </template>
+                </a-input>
+              </a-form-item>
+              <a-form-item class="zhuceItem">
+                <a-button
+                  type="primary"
+                  html-type="submit"
+                  class="login-form-button"
+                  @click="registerEvent"
+                >
+                  注册
                 </a-button>
               </a-form-item>
             </a-form>
@@ -85,10 +144,16 @@
             </div>
           </div>
           <div class="login_right_fs">
-            <span @click="wayClick(1)" class="iconfont icon-yonghu"
+            <span
+              @click="wayClick(1)"
+              :class="{ active: tabTag === 1 }"
+              class="iconfont icon-yonghu"
               >用户登录</span
             >
-            <span @click="wayClick(2)" class="iconfont icon-qiyeweixin"
+            <span
+              @click="wayClick(2)"
+              :class="{ active: tabTag === 2 }"
+              class="iconfont icon-qiyeweixin"
               >企业微信登录</span
             >
           </div>
@@ -103,12 +168,14 @@ import {
   MobileOutlined,
   CheckOutlined,
   LockOutlined,
+  PhoneOutlined,
+  SmileOutlined
 } from "@ant-design/icons-vue";
 import { ref, watch, toRefs, onMounted, reactive } from "vue";
-import { useStore } from 'vuex'
-import { userLogin } from "@/api/api";
+import { useStore } from "vuex";
+import { userLogin, registerUser } from "@/api/api";
 import { message } from "ant-design-vue";
-const store = useStore()
+const store = useStore();
 let $props = defineProps({
   showLogin: {
     type: Boolean,
@@ -116,25 +183,19 @@ let $props = defineProps({
 });
 let { showLogin } = toRefs($props);
 let $emit = defineEmits(["changeLogTag"]);
-// tab切换相关
-let { activeTabKey, tabClick, tabTag, wayClick } = relate_tab();
-function relate_tab() {
-  let activeTabKey = ref("1");
-  let tabClick = (val) => {
-    activeTabKey.value = val;
-  };
-
-  let tabTag = ref(1);
-  let wayClick = (val) => {
-    tabTag.value = val;
-    if (val === 1) {
-      relate_wx();
-    }
-  };
-  return { activeTabKey, tabClick, tabTag, wayClick };
-}
 // 登录相关
-let { formState, diaVisible, handlecancel, loginEvent } = relate_login();
+let {
+  formState,
+  formRegister,
+  activeTabKey,
+  tabTag,
+  diaVisible,
+  handlecancel,
+  loginEvent,
+  registerEvent,
+  tabClick,
+  wayClick,
+} = relate_login();
 function relate_login() {
   // ---
   let stateData = reactive({
@@ -143,6 +204,14 @@ function relate_login() {
       password: "",
       phoneCode: "",
     },
+    formRegister: {
+      account: "",
+      username: "",
+      account: "",
+      mobile: ''
+    },
+    activeTabKey: 1,
+    tabTag: 1,
     diaVisible: false,
   });
   let watchLogTag = watch(
@@ -155,26 +224,60 @@ function relate_login() {
   let handlecancel = () => {
     $emit("changeLogTag");
   };
+  let tabClick = (val) => {
+    stateData.activeTabKey = val;
+  };
+  let wayClick = (val) => {
+    stateData.tabTag = val;
+    if (val === 1) {
+      stateData.activeTabKey = 1;
+    } else if (val === 2) {
+      relate_wx();
+    }
+  };
   // 登录接口
   let apiPort_login = () => {
     userLogin({ ...stateData.formState }).then((res) => {
       if (res.data.code === 200) {
         localStorage.setItem("token", res.data.data.token);
-        store.commit('pageData/SET_ACCOUNT', res.data.data.username)
-        store.commit('pageData/SET_USERIMG', res.data.data.thumb_avatar)
-        message.success('登陆成功');
+        store.commit("pageData/SET_ACCOUNT", res.data.data.username);
+        store.commit("pageData/SET_ACCOUNTID", res.data.data.user);
+        store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
+        message.success("登陆成功");
         $emit("changeLogTag");
       } else {
         message.error(`${res.data.msg}`);
       }
     });
   };
+  let apiPort_register = () => {
+    registerUser({
+      ...stateData.formRegister,
+    }).then((res) => {
+      if (res.data.code === 200) {
+        message.success("注册成功，请登录");
+        stateData.tabTag = 1;
+        stateData.activeTabKey = 1;
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
+  let registerEvent = () => {
+    apiPort_register();
+  };
   let loginEvent = () => {
     apiPort_login();
   };
   // ----
-
-  return { ...toRefs(stateData), handlecancel, loginEvent };
+  return {
+    ...toRefs(stateData),
+    handlecancel,
+    loginEvent,
+    registerEvent,
+    tabClick,
+    wayClick,
+  };
 }
 // 微信相关
 onMounted(() => {

@@ -26,18 +26,17 @@
       <div v-for="(item, idx) in projectList" :key="idx" class="proj_box_div">
         <div class="proj_box_card">
           <div class="proj_desc">
-            {{ item.project_name }}<span>￥{{ item.brokerage }}</span>
+            {{ item.project_name }}
           </div>
           <div class="proj_txt" @click="cardClick(item)">
-            <p class="proj_p"><span>所属类目：</span>{{ item.categoryCn }}</p>
-            <p class="proj_p"><span>预算金额：</span>{{ item.budget }}</p>
-            <p class="proj_p"><span>预期目标：</span>{{ item.target }}</p>
-            <p class="proj_p"><span>投放平台：</span>{{ item.platCn }}</p>
-            <p class="proj_p"><span>截止时间：</span>{{ item.time }}</p>
+            <p class="proj_p"><span>投放平台</span>{{ item.platCn }}</p>
+            <p class="proj_p"><span>预算金额</span>￥{{ item.budget }}</p>
+            <p class="proj_p"><span>服务费</span>￥{{ item.brokerage }}</p>
+            <p class="proj_p"><span>所属类目</span>{{ item.categoryCn }}</p>
+            <p class="proj_p"><span>截止时间</span>{{ item.time }}</p>
           </div>
           <div class="proj_btn">
-            <i>{{ item.create_time }}</i
-            ><span @click="applyEvent(item)">申请</span>
+            <span @click="applyEvent(item)">申请</span>
           </div>
         </div>
       </div>

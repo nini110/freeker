@@ -39,7 +39,7 @@
             position: relative;
             z-index: 3;
             background-size: cover;
-            border: 2px solid #fff;
+            // border: 2px solid #fff;
             box-shadow: 8px 8px 20px 0 rgb(55 99 170 / 10%);
         }
     }
@@ -55,7 +55,11 @@
         &:nth-child(4),
         &:nth-child(5) {
             span {
+                display: inline-block;
                 color: #989898;
+                margin-right: 15px;
+                text-align: right;
+                width: 70px;
             }
         }
     }
@@ -76,13 +80,14 @@
         border-radius: 6px 6px 0 0;
         z-index: 3;
         font-size: 14px;
-        color: #fff;
+        color: #f7b234;
         font-weight: 600;
         line-height: 26px;
         padding: 6px 20px;
         display: flex;
         justify-content: space-between;
-        background: linear-gradient(-223deg, #1890ff, #0063bf);
+        // background: linear-gradient(-223deg, #1890ff, #0063bf);
+        background: linear-gradient(-223deg, #262626, #808080);
         background-size: cover;
         span {
             color: #fff;
@@ -91,9 +96,12 @@
     }
     &_btn {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
         padding: 5px 5px 5px 20px;
+        border-radius: 0 0 5px 5px;
+        border-top: 1px solid #26262621;
+        border-bottom: 1px solid #26262621;
         i {
             font-style: normal;
             color: #909399;
@@ -103,12 +111,12 @@
             cursor: pointer;
             display: inline-block;
             padding: 3px 26px;
-            border: 1px dashed #eba741;
+            border: 1px dashed #f7b234;
             border-radius: 3px;
             background-color: #fff;
             transition: all .3s linear;
             &:hover {
-                background: linear-gradient(90deg,#eba741 50%,#edb25a 150%);
+                background: linear-gradient(90deg,#f7b234 50%,#f7b234 150%);
                 border-color: #f56c6c45;
                 color: #fff;
             }

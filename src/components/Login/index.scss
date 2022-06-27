@@ -71,6 +71,9 @@
                 &:before {
                     margin-right: 5px;
                 }
+                &.active {
+                    color: #1890ff;
+                }
             }
         }
     }
@@ -84,7 +87,14 @@
     }
     &-form {
         &-item {
-
+            &.zhuceItem {
+                position: relative;
+                .zhuce {
+                    position: absolute;
+                    bottom: -30px;
+                    right: 0;
+                }
+            }
         }
     }
     &-btn {

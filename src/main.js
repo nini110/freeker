@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import './utils/global'// 全局
 const app = createApp(App)
 // 公共的scss文件不在这里引用，参考config.js中css配置项
 import './styles/index.less'

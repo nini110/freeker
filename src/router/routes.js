@@ -2,39 +2,52 @@ const routes = [{
     path: '/',
     name: 'layout',
     redirect: '/home',
-    component: () => import('../pages/layout/index.vue'),
+    component: 'layout',
     children: [{
             path: 'home',
             name: 'home',
-            mata: {
+            meta: {
                 txt: '首页'
             },
-            component: () => import('../pages/home/index.vue')
+            component: 'home'
         },
         {
-            path: 'projectCenter',
-            name: 'projectCenter',
-            mata: {
-                txt: '项目中心'
+            path: 'tem',
+            name: 'tem',
+            meta: {
+                txt: '菜单'
             },
-            component: () => import('../pages/projectCenter/index.vue')
+            component: 'tem',
+            children: [{
+                    path: 'projectCenter',
+                    name: 'projectCenter',
+                    meta: {
+                        txt: '项目中心',
+                        icon: '#icon-shoufeixiangmu-xiangmuicon'
+                    },
+                    component: 'projectCenter'
+                },
+                {
+                    path: 'planCenter',
+                    name: 'planCenter',
+                    meta: {
+                        txt: '任务中心',
+                        icon: '#icon-renwuguanli'
+                    },
+                    component: 'planCenter'
+                },
+                {
+                    path: 'balanceCenter',
+                    name: 'balanceCenter',
+                    meta: {
+                        txt: '结算中心',
+                        icon: '#icon-qian-copy-copy'
+                    },
+                    component: 'balanceCenter'
+                },
+            ],
         },
-        {
-            path: 'planCenter',
-            name: 'planCenter',
-            mata: {
-                txt: '任务中心'
-            },
-            component: () => import('../pages/planCenter/index.vue'),
-        },
-        {
-            path: 'balanceCenter',
-            name: 'balanceCenter',
-            mata: {
-                txt: '结算中心'
-            },
-            component: () => import('../pages/balanceCenter/index.vue')
-        },
+
     ]
 }]
 export default routes

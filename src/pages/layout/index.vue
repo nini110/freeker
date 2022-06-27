@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <a-back-top visibilityHeight="100" />
+  <a-back-top :visibilityHeight="100" />
 </template>
 <script setup>
 import Header from "@/components/Header";

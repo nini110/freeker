@@ -5,6 +5,7 @@
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
     border-radius: 2px;
+    display: none;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -17,13 +18,22 @@
 }
 .content {
     .ant {
+        &-modal-body {
+            padding: 10px 30px;
+            .ant-rate {
+                margin-bottom: 12px;
+            }
+        }
+        &-page {
+            &-header {
+                padding: 0 0 10px 0;
+            }
+        }
         &-form {
             flex-basis: 100%;
-            // padding: 22px 0;
-            margin-bottom: 22px;
             &-item {
                 flex-basis: 100%;
-                margin-bottom: 22px;
+                margin: 11px 0;
                 &-label {
                     width: 130px;
                     label {

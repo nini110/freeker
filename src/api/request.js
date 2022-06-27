@@ -45,7 +45,7 @@ service.interceptors.request.use(config => {
                 let item = data[i]
                 if (Array.isArray(item) && item.length > 0) {
                     item.forEach((val) => {
-                        formData.append('file', val)
+                        formData.append('img', val)
                     })
                 } else {
                     formData.append(i, item)
@@ -56,7 +56,6 @@ service.interceptors.request.use(config => {
     }
     if (localStorage.getItem('token')) {
         config.headers.AUTHORIZATION = localStorage.getItem('token')
-
     }
     return config
 })
@@ -65,7 +64,7 @@ service.interceptors.response.use(response => {
         message.error('登录失效，请重新登录')
         setTimeout(() => {
             localStorage.removeItem("token");
-            window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
+            window.location.replace('/#/home')
         }, 1000);
         return
     }

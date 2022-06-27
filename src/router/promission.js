@@ -8,7 +8,6 @@ let getRouter;
 let tag = true
 router.beforeEach((to, from, next) => {
     NProgress.start()
-    let userId = localStorage.getItem('wx')
     if (!getRouter) {
         // 没有路有，先拿到动态路由
         getRouter = handleRoutes(routes)
@@ -32,23 +31,12 @@ function handleRoutes(menuList) {
     if (!menuList || menuList.length === 0) {
         return false
     }
-    let whiteList = ['55555', '12']
-    let userId = localStorage.getItem('wx')
-    for (let i in whiteList) {
-        if (whiteList[i] === userId) {
-            menuList.push({
-                path: '/tem',
-                name: 'Tem',
-                component: () => import('../pages/Tem/index.vue')
-            })
-            break
-        }
-    }
     return [...menuList]
 }
 
 function routerGo(to, next) {
     getRouter = filterAsyncRouter(getRouter)
+    global.antRouter = getRouter[0].children; // 将路由数据传递给全局变量，做侧边栏菜单渲染工作
     getRouter.forEach((val, idx) => {
         router.addRoute(val)
     })
@@ -60,8 +48,14 @@ function routerGo(to, next) {
 
 function filterAsyncRouter(RouterMap) {
     const accessedRouters = RouterMap.filter(route => {
-        route.component = _import(route.name)
+        if (route.component) {
+            route.component = _import(route.component)
+        }
+        if (route.children && route.children.length) {
+            route.children = filterAsyncRouter(route.children)
+        }
+
         return true
-    })
+    })    
     return accessedRouters
 }

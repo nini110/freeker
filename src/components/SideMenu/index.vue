@@ -3,57 +3,63 @@
     <a-menu
       v-model:selectedKeys="selectedMenu"
       mode="inline"
-      :open-keys="openKeys"
-      @select="menuSelect"
     >
-      <a-menu-item key="projectCenter">
+      <a-menu-item
+        v-for="item in menuList"
+        :key="item.name"
+        @click="menuSelect(item)"
+      >
         <svg class="icon svg-icon menuIcon" aria-hidden="true">
-          <use xlink:href="#icon-shoufeixiangmu-xiangmuicon"></use>
+          <use :xlink:href="item.meta.icon"></use>
         </svg>
-        <span>项目中心</span>
-      </a-menu-item>
-      <a-menu-item key="planCenter">
-        <svg class="icon svg-icon menuIcon" aria-hidden="true">
-          <use xlink:href="#icon-renwuguanli"></use>
-        </svg>        
-        <span>任务中心</span>
-      </a-menu-item>
-      <a-menu-item key="balanceCenter">
-        <svg class="icon svg-icon menuIcon" aria-hidden="true">
-          <use xlink:href="#icon-qian-copy-copy"></use>
-        </svg>        
-        <span>结算中心</span>
+        <span>{{ item.meta.txt }}</span>
       </a-menu-item>
     </a-menu>
   </div>
 </template>
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, reactive, watch, onBeforeMount } from "vue";
+import { ref, reactive, watch, onBeforeMount, toRefs, computed } from "vue";
 let $route = useRoute();
 let $router = useRouter();
+const routeMenu = computed(() => {
+  return global.antRouter;
+});
 // 菜单相关
-let { selectedMenu, openKeys, menuSelect, $watch } = relate_menu();
+let { menuList, selectedMenu, menuSelect } = relate_menu();
 function relate_menu() {
-  const selectedMenu = reactive(["projectCenter"]);
-  const openKeys = reactive(["planCenter"]);
-  let menuSelect = ({ item, key, keypath }) => {
-    selectedMenu.length = 0;
-    selectedMenu.push(key);
+  const stateData = reactive({
+    menuList: [],
+    selectedMenu: ["projectCenter"],
+  });
+  let menuSelect = (item) => {
+    stateData.selectedMenu = [item.name];
     $router.push({
-      path: `/${key}`,
+      path: `/${item.faName}/${item.name}`,
     });
   };
-  let $watch = watch(
-    () => $route,
+  let watchRouteMenu = watch(
+    routeMenu,
     (newval, oldval) => {
-      selectedMenu.length = 0;
-      selectedMenu.push(newval.name);
+      newval.forEach((val, idx) => {
+        if (val.children) {
+          val.children.forEach((item, index) => {
+            item.faName = val.name;
+            stateData.menuList.push(item);
+          });
+        }
+      });
     },
     { immediate: true, deep: true }
   );
-
-  return { selectedMenu, openKeys, menuSelect, $watch };
+  let $watchCurrentRoute = watch(
+    $route,
+    (newval, oldval) => {
+      stateData.selectedMenu = [newval.name];
+    },
+    { immediate: true, deep: true }
+  );
+  return { ...toRefs(stateData), menuSelect };
 }
 </script>
 <style lang="scss" scoped>

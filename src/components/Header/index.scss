@@ -1,4 +1,5 @@
 $headerTheme: #fff;
+
 .header {
     position: fixed;
     z-index: 999;
@@ -8,11 +9,13 @@ $headerTheme: #fff;
     height: 70px;
     display: flex;
     justify-content: center;
+
     &.ts {
         background-color: #1a1a2a;
         // background: url(../../assets/images/imghome.png) no-repeat center center;
     }
 }
+
 .headerBox {
     min-width: 1200px;
     max-width: 1400px;
@@ -24,7 +27,7 @@ $headerTheme: #fff;
     align-items: center;
     font-size: 16px;
     color: #fff;
-    background: #1a1a2a  url(../../assets/images/imghome.png) no-repeat 50%;
+    background: #1a1a2a url(../../assets/images/imghome.png) no-repeat 50%;
     background-size: cover;
 
 
@@ -60,6 +63,7 @@ $headerTheme: #fff;
                 margin-right: 10px;
                 color: #fff;
             }
+
             p {
                 margin: 0;
             }
@@ -71,6 +75,7 @@ $headerTheme: #fff;
         justify-content: space-between;
         align-items: center;
         align-content: center;
+        box-sizing: border-box;
         p {
             cursor: pointer;
 
@@ -81,6 +86,7 @@ $headerTheme: #fff;
         }
 
         .user {
+            width: 200px;
             font-size: 16px;
             margin-left: 80px;
             display: flex;
@@ -89,9 +95,12 @@ $headerTheme: #fff;
             align-items: center;
             margin: 0;
             padding: 0 20px;
+  
             span {
                 margin-right: 6px;
-
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
 
             svg {
@@ -106,6 +115,11 @@ $headerTheme: #fff;
                 margin-right: 8px;
             }
         }
+        .log {
+            width: 100px;
+            padding: 0;
+            justify-content: center;
+        }
     }
 
     &_user {
@@ -117,11 +131,13 @@ $headerTheme: #fff;
     :deep .ant {
         &-badge {
             margin-right: 20px;
+
             sup {
-               height: 16px;
-               line-height: 16px; 
+                height: 16px;
+                line-height: 16px;
             }
         }
+
         &-input {
             font-size: 16px;
             background-color: transparent;
@@ -129,6 +145,7 @@ $headerTheme: #fff;
             border-bottom: 1px solid #c7c7c7;
             color: #fff;
             width: 100px;
+
             &:focus {
                 width: 200px;
                 box-shadow: none;
@@ -136,39 +153,51 @@ $headerTheme: #fff;
         }
 
         &-menu {
+            width: 200px;
             font-size: 22px;
-            padding: 0 40px;
+            padding: 0 0 0 40px;
             background-color: transparent;
             border: none;
 
             &-item {
                 color: rgb(221, 220, 220);
-                font-size: 22px;
+                font-size: 18px;
+                transition: font-size .4s linear;
 
                 &-selected,
                 &-active,
                 &:hover {
-                    color: #fff !important;
+                    color: #ff5c5c !important;
                     font-weight: bold;
-
+                    background-color: transparent;
                     &:after {
                         border-color: $headerTheme;
                     }
                 }
+
+                &-selected {
+                    font-size: 22px;
+                }
             }
 
             &-submenu {
-                font-size: 22px;
+                font-size: 18px;
+                transition: font-size .4s linear;
 
                 &-selected,
                 &-active,
                 &-open,
                 &:hover {
-                    // color: $headerTheme !important;
                     font-weight: bold;
-
                     &:after {
                         border-color: $headerTheme;
+                    }
+                }
+
+                &-selected {
+                    .ant-menu-title-content {
+                        font-size: 22px;
+                        color: #ff5c5c !important;
                     }
                 }
             }
@@ -178,9 +207,10 @@ $headerTheme: #fff;
             &-submenu {
                 &-title {
                     color: #fff;
-
+                    &:active,
                     &:hover {
                         color: $headerTheme;
+                    background-color: transparent;
                     }
                 }
             }

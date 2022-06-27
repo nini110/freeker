@@ -7,6 +7,37 @@ export const userLogin = request({
     url:`${BASE_PATH2}/index_api/user/login`,
     method:'post',
 })
+// 个人详情
+export const userDetail = request({
+    url:`${BASE_PATH2}/index_api/user/user_info`,
+    method:'get',
+})
+// 上传资质信息
+export const uploadZizhi = request({
+    url:`${BASE_PATH2}/index_api/certificate`,
+    method:'post',
+    responseType: 'form-data'
+})
+// 查询资质信息
+export const getZizhi = request({
+    url:`${BASE_PATH2}/index_api/certificate`,
+    method:'get',
+})
+// 绑定美事通
+export const bindMst = request({
+    url:`${BASE_PATH2}/index_api/mst_account`,
+    method:'post',
+})
+// 修改昵称
+export const editNickName = request({
+    url:`${BASE_PATH2}/index_api/user`,
+    method:'patch',
+})
+// 注册
+export const registerUser = request({
+    url:`${BASE_PATH2}/index_api/user`,
+    method:'post',
+})
 
 // 项目中心列表
 export const getProjList = request({

@@ -9,7 +9,7 @@
       :keyboard="false"
       :maskClosable="false"
       centered
-      :width="620"
+      :width="580"
       :getContainer="$refs.aff2"
     >
       <template #footer>
@@ -19,41 +19,94 @@
       </template>
       <div class="user">
         <div class="user_img">
-          <img src="../../../assets/user.png" alt="" />
+          <a-upload
+            v-model:file-list="fileList"
+            name="avatar"
+            list-type="picture-card"
+            class="uploader-user"
+            :showUploadList="false"
+            :maxCount="1"
+            :multiple="false"
+            action=""
+            @change="handleImgChange"
+          >
+            <img
+              v-if="userInfo.imageUrl"
+              :src="userInfo.imageUrl"
+              alt="avatar"
+            />
+            <div v-else>
+              <loading-outlined v-if="loading"></loading-outlined>
+              <plus-outlined v-else></plus-outlined>
+              <div class="ant-upload-text">Upload</div>
+            </div>
+          </a-upload>
         </div>
         <div class="user_box" ref="boxref">
-          <p>
-            <span class="label iconfont icon-xiaolian2">昵称：</span>
-            <a-input-group v-if="showIpt" compact size="small">
+          <div class="user_box_item">
+            <span class="label iconfont icon-xiaolian2">昵称</span>
+            <a-input-group v-if="showIpt" compact size="small" class="cnt">
               <a-input v-model:value="nickName" allow-clear />
-              <a-button @click="confirmEvent">确定</a-button>
+              <a-button @click="confirmEvent(false)">取消</a-button>
+              <a-button @click="confirmEvent(true)">确定</a-button>
             </a-input-group>
-            <span v-else
-              >张山<i @click="editEvent"><edit-outlined /></i
+            <span v-else class="cnt"
+              >{{ userInfo.username }}<i @click="editEvent"><edit-outlined /></i
             ></span>
-          </p>
-          <p>
+          </div>
+          <div class="user_box_item">
             <span class="label iconfont icon-zhanghaozhongxinzhanghaoguanli"
-              >账号：</span
+              >账号</span
             >
-            <span>123456789</span>
-          </p>
-          <p>
-            <span class="label iconfont icon-dengji">等级：</span>
-            <span>高级</span>
-          </p>
-          <p>
-            <span class="label iconfont icon-zizhi">资质：</span>
-            <span
-              >京东五星投手<i @click="uploadEvent"><edit-outlined /></i
-            ></span>
-          </p>
-          <p>
-            <span class="label iconfont icon-yinxingqia">美事通：</span>
-            <span class="bind"
-              >未绑定<i @click="bindEvent"><link-outlined /></i
-            ></span>
-          </p>
+            <span class="cnt">{{ userInfo.account }}</span>
+          </div>
+          <div class="user_box_item">
+            <span class="label iconfont icon-dengji">等级</span>
+            <span class="cnt">{{ userInfo.levelCn }}</span>
+          </div>
+          <div class="user_box_item">
+            <span class="label iconfont icon-zizhi">资质</span>
+            <div class="cnt">
+              <a-collapse
+                v-model:activeKey="activeKey"
+                ghost
+                :collapsible="collapsibleZizhi"
+              >
+                <a-collapse-panel key="1" :header="collapseHeader">
+                  <a-tag
+                    v-for="(item, idx) in zizhiList"
+                    :key="idx"
+                    :color="item.color"
+                  >
+                    {{ item.txt }}
+                  </a-tag>
+                  <template #extra
+                    ><i @click="uploadEvent"><edit-outlined /></i
+                  ></template>
+                </a-collapse-panel>
+              </a-collapse>
+            </div>
+          </div>
+          <div class="user_box_item">
+            <!-- <span class="label iconfont icon-yinxingqia">美事通</span> -->
+            <span class="label iconfont">美事通</span>
+            <div class="cnt">
+              <a-collapse
+                v-model:activeKey="activeKey2"
+                ghost
+                :collapsible="collapsibleMst"
+              >
+                <a-collapse-panel key="1" :header="collapseHeader2">
+                  <a-tag v-for="(item, idx) in mstList" :key="idx" color="blue">
+                    {{ item }}
+                  </a-tag>
+                  <template #extra
+                    ><i @click="bindEvent"><link-outlined /></i
+                  ></template>
+                </a-collapse-panel>
+              </a-collapse>
+            </div>
+          </div>
         </div>
       </div>
       <a-drawer
@@ -69,10 +122,35 @@
         <div class="erweima">
           <img src="../../../assets/images/nobind3.png" alt="" />
           <img src="../../../assets/images/mst.png" alt="" />
-          <img src="../../../assets/images/weweima.webp" alt="" />
         </div>
-        <div class="erweima-btn">
-          <a-button type="primary" @click="bindEvent_2">知道了</a-button>
+        <div class="erweima-form">
+          <a-form
+            :model="erweimaForm"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 18 }"
+          >
+            <a-row type="flex">
+              <a-col :span="24">
+                <a-form-item label="账号">
+                  <a-input v-model:value="erweimaForm.account" allow-clear />
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-item label="用户名">
+                  <a-input v-model:value="erweimaForm.username" allow-clear />
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-item label="手机号">
+                  <a-input v-model:value="erweimaForm.mobile" allow-clear />
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+        </div>
+        <div class="erweima-btn zizhi-btn">
+          <a-button @click="knowEvent(false)">取消</a-button>
+          <a-button type="primary" @click="knowEvent(true)">确认</a-button>
         </div>
       </a-drawer>
       <a-drawer
@@ -86,152 +164,356 @@
         width="500"
       >
         <div class="zizhi">
-          <h2><edit-outlined />投手资质修改</h2>
+          <h2><edit-outlined />投手资质上传</h2>
           <a-form
             :model="zizhiForm"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 18 }"
           >
-            <div class="ant-form-div">
-              <a-form-item label="平台">
-                <a-select
-                  v-model:value="zizhiForm.plat"
-                  :options="options"
-                  allow-clear
-                ></a-select>
-              </a-form-item>
-              <a-form-item label="等级">
-                <a-select
-                  v-model:value="zizhiForm.level"
-                  :options="options"
-                  allow-clear
-                ></a-select>
-              </a-form-item>
-              <a-form-item label="编号">
-                <a-input v-model:value="zizhiForm.code" allow-clear />
-              </a-form-item>
-            </div>
-            <div class="ant-form-div">
-              <a-form-item label="上传">
-                <a-upload-dragger
-                  v-model:fileList="fileList"
-                  name="file"
-                  :multiple="true"
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  @change="handleChange"
-                  @drop="handleDrop"
-                >
-                  <p class="ant-upload-drag-icon">
-                    <inbox-outlined></inbox-outlined>
-                  </p>
-                  <p class="ant-upload-text">点击或拖拽至区域上传</p>
-                </a-upload-dragger>
-              </a-form-item>
-            </div>
+            <a-row>
+              <a-col :span="12">
+                <a-form-item label="平台">
+                  <a-select v-model:value="zizhiForm.platform" allow-clear>
+                    <a-select-option
+                      v-for="(item, idx) in platOptions"
+                      :key="idx"
+                      :value="item.code"
+                      >{{ item.label }}</a-select-option
+                    ></a-select
+                  >
+                </a-form-item>
+                <a-form-item label="等级">
+                  <a-select
+                    v-model:value="zizhiForm.cert_level"
+                    :options="options"
+                    allow-clear
+                    ><a-select-option
+                      v-for="(item, idx) in certOptions"
+                      :key="idx"
+                      :value="item.code"
+                      >{{ item.label }}</a-select-option
+                    ></a-select
+                  >
+                </a-form-item>
+                <a-form-item label="编号">
+                  <a-input v-model:value="zizhiForm.cert_number" allow-clear />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12"
+                ><a-form-item label="上传">
+                  <a-upload-dragger
+                    v-model:fileList="fileArr"
+                    name="file"
+                    :showUploadList="false"
+                    :maxCount="1"
+                    :multiple="false"
+                    action=""
+                    @change="handleChange"
+                  >
+                    <div v-if="zizhiForm.img">
+                      <p v-if="zizhiForm.img" class="ant-upload-drag-icon">
+                        <verified-outlined />
+                      </p>
+                      <p class="ant-upload-text">资质证书已上传</p>
+                    </div>
+                    <div v-else>
+                      <p class="ant-upload-drag-icon">
+                        <inbox-outlined></inbox-outlined>
+                      </p>
+                      <p class="ant-upload-text">点击或拖拽至区域上传</p>
+                    </div>
+                  </a-upload-dragger>
+                </a-form-item></a-col
+              >
+            </a-row>
           </a-form>
         </div>
         <div class="zizhi-btn">
-          <a-button @click="uploadEvent_3">取消</a-button>
-          <a-button type="primary" @click="uploadEvent_2">确认</a-button>
+          <a-button @click="submitEvent(false)">取消</a-button>
+          <a-button type="primary" @click="submitEvent(true)">确认</a-button>
         </div>
       </a-drawer>
     </a-modal>
   </div>
 </template>
 <script setup>
-import { reactive, ref, toRefs, watch } from "vue";
-import { message } from "ant-design-vue";
+import { reactive, ref, toRefs, watch, createVNode } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { useStore } from "vuex";
+import { uploadZizhi, bindMst, editNickName } from "@/api/api";
+import { message, Modal } from "ant-design-vue";
+
+const store = useStore();
+
 import {
   InboxOutlined,
   EditOutlined,
   UploadOutlined,
   LinkOutlined,
+  VerifiedOutlined,
 } from "@ant-design/icons-vue";
 let $props = defineProps({
-  showDialog: {
-    type: Boolean,
-  },
+  showDialog: Boolean,
+  userInfo: Object,
+  zizhiList: Array,
+  mstList: Array,
 });
-let $emit = defineEmits(["changeDialogTag"]);
-let { visibleDia, watchTag, dialogEvent } = realte_dialog();
+let { showDialog, userInfo, zizhiList, mstList } = toRefs($props);
+let $emit = defineEmits(["changeDialogTag", "closeMstDialog"]);
+let {
+  visibleDia,
+  activeKey,
+  activeKey2,
+  collapseHeader,
+  collapseHeader2,
+  collapsibleZizhi,
+  collapsibleMst,
+  dialogEvent,
+} = realte_dialog();
 function realte_dialog() {
-  let propsData = toRefs($props);
-  let visibleDia = ref(true);
+  let stateData = reactive({
+    visibleDia: true,
+    activeKey: 0,
+    activeKey2: 0,
+    collapseHeader: "",
+    collapseHeader2: "",
+    collapsibleZizhi: false,
+    collapsibleMst: false,
+  });
   let watchTag = watch(
-    propsData.showDialog,
+    showDialog,
     (newval, oldval) => {
-      visibleDia.value = newval;
+      stateData.visibleDia = newval;
     },
     { immediate: true }
+  );
+  let watch_user = watch(
+    userInfo,
+    (newval, oldval) => {
+      switch (newval.level) {
+        case 0:
+          newval.levelCn = "初级投手";
+          break;
+        case 1:
+          newval.levelCn = "中级投手";
+          break;
+        case 2:
+          newval.levelCn = "高级投手";
+          break;
+        default:
+          newval.levelCn = "暂无评级";
+      }
+      stateData.collapseHeader =
+        zizhiList.value.length > 0 ? zizhiList.value[0].txt : "暂无数据";
+      stateData.collapseHeader2 =
+        mstList.value.length > 0 ? mstList.value[0] : "暂无数据";
+
+      stateData.collapsibleZizhi =
+        zizhiList.value.length > 0 ? true : "disabled";
+      stateData.collapsibleMst = mstList.value.length > 0 ? true : "disabled";
+    },
+    {
+      deep: true,
+    }
   );
   let dialogEvent = () => {
     $emit("changeDialogTag", false);
   };
-  return { visibleDia, watchTag, dialogEvent };
+  let collapseZizhiCge = () => {
+    if (zizhiList.value.length === 0) return;
+  };
+  let collapseMstCge = () => {
+    if (mstList.value.length === 0) return;
+  };
+  return {
+    ...toRefs(stateData),
+    dialogEvent,
+    collapseZizhiCge,
+    collapseMstCge,
+  };
 }
 // 修改昵称
-let { nickName, showIpt, editEvent, confirmEvent } = relate_nick();
+let {
+  nickName,
+  showIpt,
+  userImageUrl,
+  editEvent,
+  confirmEvent,
+  handleImgChange,
+} = relate_nick();
 function relate_nick() {
-  let nickName = ref("");
-  let showIpt = ref(false);
+  let stateData = reactive({
+    nickName: "",
+    showIpt: false,
+    userImageUrl: "",
+  });
+  let apiPort_nickname = (id) => {
+    editNickName(
+      {
+        username: stateData.nickName,
+      },
+      id
+    ).then((res) => {
+      if (res.data.code === 200) {
+        message.success("操作成功");
+        stateData.showIpt = false;
+        store.commit("pageData/SET_ACCOUNT", res.data.data.username);
+        // 昵称回显
+        $emit("closeMstDialog");
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
   let editEvent = () => {
-    if (showUpload.value) {
-      message.warning({
-        content: "请先确认修改信息",
-        duration: 2,
-      });
-      return;
+    stateData.showIpt = true;
+  };
+  let confirmEvent = (val) => {
+    if (val) {
+      apiPort_nickname(store.getters.accountId);
+    } else {
+      stateData.showIpt = false;
     }
-    showIpt.value = true;
   };
-  let confirmEvent = () => {
-    showIpt.value = false;
+
+  let handleImgChange = (val) => {
+    // val.file.originFileObj
+    // debugger;
   };
-  return { nickName, showIpt, editEvent, confirmEvent };
+  return { ...toRefs(stateData), editEvent, confirmEvent, handleImgChange };
 }
 // 认证资质
-let { showUpload, uploadEvent, uploadEvent_2, uploadEvent_3, zizhiForm, fromSave, showErweima, bindEvent, bindEvent_2 } =
-  relate_upload();
+let {
+  showUpload,
+  showErweima,
+  fileArr,
+  zizhiForm,
+  erweimaForm,
+  platOptions,
+  certOptions,
+  uploadEvent,
+  submitEvent,
+  bindEvent,
+  knowEvent,
+  handleChange,
+} = relate_upload();
 function relate_upload() {
-  let showUpload = ref(false);
-  let uploadEvent = () => {
-    showUpload.value = true
-  };
-  let uploadEvent_2 = () => {
-    showUpload.value = false;
-  };
-    let uploadEvent_3 = () => {
-    showUpload.value = false;
-  };
-  let zizhiForm = reactive({
-    plat: "",
-    level: "",
-    code: "",
-    file: "",
+  let stateData = reactive({
+    showUpload: false,
+    showErweima: false,
+    fileArr: [],
+    zizhiForm: {
+      platform: "",
+      cert_level: "",
+      cert_number: "",
+      img: "",
+    },
+    erweimaForm: {
+      account: "",
+      username: "",
+      mobile: "",
+    },
+    platOptions: [
+      {
+        label: "京东",
+        code: 1,
+      },
+      {
+        label: "抖音",
+        code: 2,
+      },
+    ],
+    certOptions: [
+      {
+        label: "初级投手",
+        code: 1,
+      },
+      {
+        label: "中级投手",
+        code: 2,
+      },
+      {
+        label: "高级投手",
+        code: 3,
+      },
+    ],
   });
-  let fromSave = () => {
-    showUpload.value = !showUpload.value;
+  let reset = () => {
+    stateData.zizhiForm = {
+      platform: "",
+      cert_level: "",
+      cert_number: "",
+      img: "",
+    };
+    stateData.erweimaForm = {
+      account: "",
+      username: "",
+      mobile: "",
+    };
   };
-  // ----
-  let showErweima = ref(false);
-  let bindEvent = () => {
-    showErweima.value = true
-    setTimeout(() => {
-      showErweima.value = false;
-    }, 150000);
+  let apiPort_upload = (val) => {
+    uploadZizhi(val).then((res) => {
+      if (res.data.code === 200) {
+        message.success("操作成功");
+        stateData.showUpload = false;
+        reset();
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
   };
-  let bindEvent_2 = () => {
-    showErweima.value = false
-  }
+  let apiPort_mst = (val) => {
+    bindMst(val).then((res) => {
+      if (res.data.code === 200) {
+        message.success("操作成功");
+        stateData.showErweima = false;
+        // 需要重新调取展示mst账户
+        $emit("closeMstDialog");
+        reset();
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
+  // 打开上传资质弹层
+  let uploadEvent = (e) => {
+    e.stopPropagation();
+    stateData.showUpload = true;
+  };
+  // 确认 取消
+  let submitEvent = (val) => {
+    if (val) {
+      apiPort_upload({ ...stateData.zizhiForm });
+    } else {
+      stateData.showUpload = false;
+      reset();
+    }
+  };
+  // 打开绑定美事通弹层
+  let bindEvent = (e) => {
+    e.stopPropagation();
+    stateData.showErweima = true;
+  };
+  // 确认 取消
+  let knowEvent = (val) => {
+    if (val) {
+      apiPort_mst({ ...stateData.erweimaForm });
+    } else {
+      stateData.showErweima = false;
+      reset();
+    }
+  };
+  let handleChange = (file) => {
+    stateData.zizhiForm.img = file.file.originFileObj;
+  };
+
   return {
-    showUpload,
+    ...toRefs(stateData),
     uploadEvent,
-    uploadEvent_2,
-    uploadEvent_3,
-    zizhiForm,
-    showErweima,
+    submitEvent,
     bindEvent,
-    bindEvent_2
+    knowEvent,
+    handleChange,
   };
 }
 </script>
