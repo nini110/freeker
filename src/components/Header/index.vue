@@ -33,7 +33,7 @@
           <p>消息</p>
         </div>
         <div v-if="store.getters.account">
-          <a-popover placement="bottom" overlayClassName="userPopver">
+          <a-popover placement="bottom" overlayClassName="userPopver" arrow-point-at-center>
             <template #content>
               <p class="t3" @click="openDialog"><user-outlined />个人信息</p>
               <p class="t4" @click="logoutEvent">
@@ -44,7 +44,7 @@
               <p class="t1"><smile-outlined />{{ store.getters.username }}</p>
               <p class="t2"><span>账号</span>{{ store.getters.account }}</p>
             </template>
-            <img :src="store.getters.userImg" alt="" @click="openDialog" />
+            <img :src="store.getters.userImg" alt=""/>
           </a-popover>
         </div>
         <div v-else @click="openLoginDialog">登录</div>

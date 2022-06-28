@@ -9,7 +9,7 @@
       :keyboard="false"
       :maskClosable="false"
       centered
-      :width="580"
+      :width="560"
       :getContainer="$refs.aff2"
     >
       <template #footer>
@@ -43,10 +43,16 @@
         <div class="user_box" ref="boxref">
           <div class="user_box_item">
             <span class="label iconfont icon-xiaolian2">昵称</span>
-            <a-input-group v-if="showIpt" compact size="small" class="cnt">
-              <a-input v-model:value="nickName" allow-clear />
-              <a-button @click="confirmEvent(false)">取消</a-button>
-              <a-button @click="confirmEvent(true)">确定</a-button>
+            <a-input-group compact v-if="showIpt" size="small" class="cnt">
+              <a-input
+                v-model:value="nickName"
+                allow-clear
+                size="middle"
+                @change="nickIptEvent"
+              />
+              <a-button type="primary" size="middle" @click="confirmEvent">{{
+                nickBtnTxt
+              }}</a-button>
             </a-input-group>
             <span v-else class="cnt"
               >{{ userInfo.username }}<i @click="editEvent"><edit-outlined /></i
@@ -76,6 +82,15 @@
                     :key="idx"
                     :color="item.color"
                   >
+                    <span
+                      v-if="item.platform === 1"
+                      class="iconfont icon-pay-jingdong"
+                    ></span>
+                    <span
+                      v-if="item.platform === 2"
+                      class="iconfont icon-douyin"
+                    >
+                    </span>
                     {{ item.txt }}
                   </a-tag>
                   <template #extra
@@ -115,7 +130,7 @@
         :visible="showErweima"
         :get-container="false"
         :style="{ position: 'absolute' }"
-        width="500"
+        width="520"
       >
         <div class="erweima">
           <img src="../../../assets/images/nobind3.png" alt="" />
@@ -124,8 +139,8 @@
         <div class="erweima-form">
           <a-form
             :model="erweimaForm"
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 18 }"
+            :label-col="{ span: 7 }"
+            :wrapper-col="{ span: 14 }"
           >
             <a-row type="flex">
               <a-col :span="24">
@@ -159,7 +174,7 @@
         :visible="showUpload"
         :get-container="false"
         :style="{ position: 'absolute' }"
-        width="500"
+        width="520"
       >
         <div class="zizhi">
           <h2><edit-outlined />投手资质上传</h2>
@@ -302,9 +317,9 @@ function realte_dialog() {
           newval.levelCn = "暂无评级";
       }
       stateData.collapseHeader =
-        zizhiList.value.length > 0 ? zizhiList.value[0].txt : "暂无数据";
+        zizhiList.value.length > 0 ? zizhiList.value[0].txt : "暂无认证";
       stateData.collapseHeader2 =
-        mstList.value.length > 0 ? mstList.value[0] : "暂无数据";
+        mstList.value.length > 0 ? mstList.value[0] : "暂未绑定";
 
       stateData.collapsibleZizhi =
         zizhiList.value.length > 0 ? true : "disabled";
@@ -333,8 +348,10 @@ function realte_dialog() {
 // 修改昵称
 let {
   nickName,
+  nickBtnTxt,
   showIpt,
   userImageUrl,
+  nickIptEvent,
   editEvent,
   confirmEvent,
   handleImgChange,
@@ -342,9 +359,14 @@ let {
 function relate_nick() {
   let stateData = reactive({
     nickName: "",
+    nickBtnTxt: "取消",
     showIpt: false,
     userImageUrl: "",
   });
+  // nick输入框值的按钮相关变化
+  let nickIptEvent = (e) => {
+    stateData.nickBtnTxt = e.target.value ? "确认" : "取消";
+  };
   // 修改用户相关信息
   let apiPort_nickname = (id) => {
     editNickName(
@@ -367,8 +389,8 @@ function relate_nick() {
   let editEvent = () => {
     stateData.showIpt = true;
   };
-  let confirmEvent = (val) => {
-    if (val) {
+  let confirmEvent = () => {
+    if (stateData.nickName) {
       apiPort_nickname(store.getters.accountId);
     } else {
       stateData.showIpt = false;
@@ -395,7 +417,13 @@ function relate_nick() {
     // });
     // }
   };
-  return { ...toRefs(stateData), editEvent, confirmEvent, handleImgChange };
+  return {
+    ...toRefs(stateData),
+    nickIptEvent,
+    editEvent,
+    confirmEvent,
+    handleImgChange,
+  };
 }
 // 认证资质
 let {
@@ -410,7 +438,7 @@ let {
   submitEvent,
   bindEvent,
   knowEvent,
-  beforeUpload
+  beforeUpload,
 } = relate_upload();
 function relate_upload() {
   let stateData = reactive({
@@ -454,7 +482,7 @@ function relate_upload() {
     ],
   });
   let reset = () => {
-    stateData.fileArr = [] 
+    stateData.fileArr = [];
     stateData.zizhiForm = {
       platform: "",
       cert_level: "",
@@ -520,9 +548,9 @@ function relate_upload() {
     reset();
   };
   let beforeUpload = (file) => {
-    stateData.fileArr = [file]
-    stateData.zizhiForm.file = [file]
-    return false
+    stateData.fileArr = [file];
+    stateData.zizhiForm.file = [file];
+    return false;
   };
 
   return {
@@ -531,7 +559,7 @@ function relate_upload() {
     submitEvent,
     bindEvent,
     knowEvent,
-    beforeUpload
+    beforeUpload,
   };
 }
 </script>

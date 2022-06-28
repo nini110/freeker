@@ -78,6 +78,7 @@ $headerTheme: #fff;
         align-items: center;
         align-content: center;
         box-sizing: border-box;
+
         img {
             width: 35px;
             height: 35px;
@@ -117,11 +118,13 @@ $headerTheme: #fff;
         }
 
         &-menu {
+            user-select: none;
             width: 200px;
             font-size: 22px;
             background-color: transparent;
             border: none;
             justify-content: center;
+
             &-item {
                 color: rgb(221, 220, 220);
                 font-size: 22px;
@@ -138,6 +141,7 @@ $headerTheme: #fff;
                         border-color: $headerTheme;
                     }
                 }
+
                 &-selected {
                     font-size: 22px;
                 }
@@ -146,13 +150,12 @@ $headerTheme: #fff;
             &-submenu {
                 font-size: 22px;
                 transition: font-size .4s linear;
+                font-weight: bold;
 
                 &-selected,
                 &-active,
                 &-open,
                 &:hover {
-                    font-weight: bold;
-
                     &:after {
                         border-color: $headerTheme;
                     }

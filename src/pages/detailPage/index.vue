@@ -27,12 +27,12 @@
     </div>
     <div
       v-if="
-        stusCode === 3 ||
         stusCode === 4 ||
         stusCode === 5 ||
         stusCode === 6 ||
         stusCode === 7 ||
-        stusCode === 11
+        stusCode === 8 ||
+        stusCode === 9
       "
       class="detailBox_div"
     >
@@ -40,7 +40,7 @@
       <div class="detailBox_info">
         <div class="detailBox_info_box">
           <!-- 待通过 + 已完成 -->
-          <p v-if="stusCode === 6 || stusCode === 7">已过期</p>
+          <p v-if="stusCode === 7 || stusCode === 9">已过期</p>
           <p
             v-else
             v-for="(item, idx) in detailData.toufanglist"
@@ -55,16 +55,17 @@
         </div>
       </div>
     </div>
-    <!-- 待确认 待通过 已完成 -->
+    <!-- 待确认 待通过 未通过 已完成 -->
     <div
       v-if="
-        stusCode === 5 || stusCode === 6 || stusCode === 7 || stusCode === 11
+        stusCode === 6 || stusCode === 7 || stusCode === 8|| stusCode === 9
       "
       class="detailBox_div"
     >
+      <!-- 待确认 未通过 -->
       <h2>
         数据信息<span
-          v-if="(stusCode === 5 || stusCode === 11) && showEdit"
+          v-if="(stusCode === 6 || stusCode === 8) && showEdit"
           class="editspan"
           @click="editDataEvent"
           >（修改数据）</span
@@ -72,7 +73,7 @@
       </h2>
       <div class="detailBox_info">
         <div class="detailBox_info_box">
-          <p v-if="stusCode === 5 && noDatainfo">暂无数据</p>
+          <p v-if="stusCode === 6 && noDatainfo">暂无数据</p>
           <p
             v-else
             v-for="(item, idx) in detailData.shujuList"
@@ -86,7 +87,8 @@
       </div>
     </div>
     <!-- 待通过： 可以看到自己的评价 -->
-    <div v-if="stusCode === 6 || stusCode === 7" class="detailBox_div">
+    <!-- 待通过 已完成 -->
+    <div v-if="stusCode === 7 || stusCode === 9" class="detailBox_div">
       <h2>评价</h2>
       <div class="detailBox_desc">
         <span class="label">项目评价</span>
@@ -94,7 +96,7 @@
         <div class="rateInfo">
           {{ resData.user_evaluate_content }}
         </div>
-        <div v-if="stusCode === 7">
+        <div v-if="stusCode === 9">
           <span class="label">投手评价</span>
           <a-rate :value="resData.merchant_evaluate_score" disabled />
           <div class="rateInfo">
@@ -103,12 +105,12 @@
         </div>
       </div>
     </div>
-    <div v-if="stusCode === 11" class="detailBox_div">
-      <h2>驳回原因</h2>
+    <div v-if="stusCode === 8" class="detailBox_div">
+      <h2>未通过原因</h2>
       <div class="detailBox_desc">{{ resData.project_cancel_reason }}</div>
     </div>
-    <div v-if="stusCode === 0" class="detailBox_div">
-      <h2>取消原因</h2>
+    <div v-if="stusCode === 3" class="detailBox_div">
+      <h2>驳回原因</h2>
       <div class="detailBox_desc">
         {{ resData.project_cancel_reason }}
       </div>
@@ -117,10 +119,11 @@
       <a-button v-if="stusCode === 99" type="primary" block @click="applyEvent"
         >申请</a-button
       >
-      <a-button v-if="stusCode === 2" type="primary" block>取消申请</a-button>
+      <!-- 申请中 -->
+      <a-button v-if="stusCode === 0" type="primary" block>取消申请</a-button>
       <!-- 待确认 + 有数据 -->
       <a-button
-        v-if="stusCode === 5 && !noDatainfo"
+        v-if="stusCode === 6 && !noDatainfo"
         type="primary"
         block
         @click="finishEvent"
@@ -128,21 +131,21 @@
       >
       <!-- 待确认 + 无数据 -->
       <a-button
-        v-if="stusCode === 5 && noDatainfo"
+        v-if="stusCode === 6 && noDatainfo"
         type="primary"
         block
         @click="uploadDataEvent"
         >上传数据</a-button
       >
-      <!-- 已驳回 -->
+      <!-- 未通过 -->
       <a-button
-        v-if="stusCode === 11"
+        v-if="stusCode === 8"
         type="primary"
         block
         @click="upAgainEvent"
         >重新确认完成</a-button
       >
-      <a-button v-if="stusCode === 7" type="primary" block>前往结算</a-button>
+      <a-button v-if="stusCode === 9" type="primary" block>前往结算</a-button>
     </div>
     <!-- 数据信息上传 -->
     <a-modal
@@ -467,41 +470,40 @@ function relate_detail() {
     (newval, oldval) => {
       switch (newval) {
         case 0:
-          iconClass = "yqx";
-          break;
         case 1:
-          iconClass = "xtshz";
-          break;
         case 2:
           iconClass = "dsh";
           break;
         case 3:
-          iconClass = "dqd";
+          iconClass = "ybh";
           break;
         case 4:
-          iconClass = "jxz";
+          iconClass = "dqd";
           break;
         case 5:
-          iconClass = "dqr";
+          iconClass = "jxz";
           break;
         case 6:
-          iconClass = "dtg";
+          iconClass = "dqr";
           break;
         case 7:
+          iconClass = "dtg";
+          break;
+        case 8:
+          iconClass = "wtg";
+          break;
+        case 9:
           iconClass = "ywc";
           break;
-        // 待汇款
-        case 8:
+        case 10:
           iconClass = "dhk";
           break;
-        // 打款中
-        case 9:
-          iconClass = "dkz";
+        case 11:
+          iconClass = "ddk";
           break;
-        // 已结算
-        case 10:
+        case 12:
           iconClass = "yjs";
-          break;
+          break;                    
       }
     },
     { immediate: true }

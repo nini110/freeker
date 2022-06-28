@@ -38,15 +38,15 @@
           <div class="planBox_info_btn">
             <span @click="toDetail(item)">查看详情</span>
             <!-- 待审核 -->
-            <span v-if="item.project_status === 2" @click="cancelEvent(item)"
+            <span v-if="item.project_status === 0" @click="cancelEvent(item)"
               >取消申请</span
             >
             <!-- 待确认 -->
-            <span v-if="item.project_status === 5" @click="confirmEvent(item)"
+            <span v-if="item.project_status === 6" @click="confirmEvent(item)"
               >确认完成</span
             >
             <!-- 已完成 -->
-            <span v-if="item.project_status === 7">前往结算</span>
+            <span v-if="item.project_status === 9">前往结算</span>
           </div>
         </div>
       </div>
@@ -105,40 +105,36 @@ const menuList = reactive([
     code: null,
   },
   {
-    label: "系统审核中",
-    code: 1,
-  },
-  {
-    label: "待人工审核",
-    code: 2,
-  },
-  {
-    label: "待开始",
-    code: 3,
-  },
-  {
-    label: "进行中",
-    code: 4,
-  },
-  {
-    label: "待确认",
-    code: 5,
-  },
-  {
-    label: "待通过",
-    code: 6,
-  },
-  {
-    label: "已完成",
-    code: 7,
+    label: "待审核",
+    code: "0, 1, 2",
   },
   {
     label: "已驳回",
-    code: 11,
+    code: "3",
   },
   {
-    label: "已取消",
-    code: 0,
+    label: "待启动",
+    code: "4",
+  },
+  {
+    label: "进行中",
+    code: "5",
+  },
+  {
+    label: "待确认",
+    code: "6",
+  },
+  {
+    label: "待通过",
+    code: "7",
+  },
+  {
+    label: "未通过",
+    code: "8",
+  },
+  {
+    label: "已完成",
+    code: "9",
   },
 ]);
 let pageNation = reactive({
@@ -168,65 +164,52 @@ function relate_plan() {
         let result = res.data.data;
         result.forEach((val, idx) => {
           switch (val.project_status) {
-            // 已取消
+            // 申请中-系统审核中-待审核
             case 0:
-              val.statusCn = "已取消";
-              val.statusClass = "yqx";
-              break;
-            // 申请列表：系统审核中
             case 1:
-              val.statusCn = "系统审核中";
-              val.statusClass = "shz";
-              break;
-            // 申请列表：待审核
             case 2:
-              val.statusCn = "待人工审核";
+              val.statusCn = "待审核";
               val.statusClass = "dsh";
               break;
-            // 下发列表：待启动
             case 3:
-              val.statusCn = "待开始";
-              val.statusClass = "dqd";
-              break;
-            // 下发列表：进行中
-            case 4:
-              val.statusCn = "进行中";
-              val.statusClass = "jxz";
-              break;
-            // 下发列表：待确认
-            case 5:
-              val.statusCn = "待确认";
-              val.statusClass = "dqr";
-              break;
-            // 下发列表：待通过
-            case 6:
-              val.statusCn = "待通过";
-              val.statusClass = "dtg";
-              break;
-            // 下发列表：已完成
-            case 7:
-              val.statusCn = "已完成";
-              val.statusClass = "ywc";
-              break;
-            // 下发列表：已驳回
-            case 11:
               val.statusCn = "已驳回";
               val.statusClass = "ybh";
               break;
-            // 结算列表：待汇款
-            case 8:
-              val.statusCn = "待汇款";
+            case 4:
+              val.statusCn = "待启动";
               val.statusClass = "dqd";
               break;
-            // 结算列表：打款中
-            case 9:
-              val.statusCn = "打款中";
+            case 5:
+              val.statusCn = "进行中";
               val.statusClass = "jxz";
               break;
-            // 结算列表：已结算
-            case 10:
-              val.statusCn = "已结算";
+            case 6:
+              val.statusCn = "待确认";
+              val.statusClass = "dqr";
+              break;
+            case 7:
+              val.statusCn = "待通过";
+              val.statusClass = "dtg";
+              break;
+            case 8:
+              val.statusCn = "未通过";
+              val.statusClass = "wtg";
+              break;
+            case 9:
+              val.statusCn = "已完成";
               val.statusClass = "ywc";
+              break;
+            case 10:
+              val.statusCn = "待汇款";
+              val.statusClass = "dhk";
+              break;
+            case 11:
+              val.statusCn = "待打款";
+              val.statusClass = "ddk";
+              break;
+            case 12:
+              val.statusCn = "已结算";
+              val.statusClass = "yjs";
               break;
           }
           switch (val.delivery_platform) {
@@ -280,7 +263,9 @@ function relate_detail() {
   });
   // 获取详情
   const apiPort_detail = (id) => {
-    getProjDetail(id).then((res) => {
+    getProjDetail({
+      haha: '',
+    }, id).then((res) => {
       if (res.data.code === 200) {
         stateDate2.showList = false;
         stateDate2.resData = res.data.data;

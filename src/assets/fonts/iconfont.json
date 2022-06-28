@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18166694",
+      "name": "抖音",
+      "font_class": "douyin",
+      "unicode": "e8db",
+      "unicode_decimal": 59611
+    },
+    {
+      "icon_id": "18166714",
+      "name": "支付,京东",
+      "font_class": "pay-jingdong",
+      "unicode": "e8dd",
+      "unicode_decimal": 59613
+    },
+    {
       "icon_id": "3596350",
       "name": "钱",
       "font_class": "qian-copy-copy",

@@ -62,10 +62,10 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(response => {
     if (response.data.code === 4101) {
         message.error('登录失效，请重新登录')
-        setTimeout(() => {
-            localStorage.removeItem("token");
-            window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
-        }, 1000);
+        // setTimeout(() => {
+        //     localStorage.removeItem("token");
+        //     window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
+        // }, 1000);
         return
     }
     return response
