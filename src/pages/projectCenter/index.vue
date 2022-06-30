@@ -43,16 +43,16 @@
           </div>
         </div>
       </div>
-      <div class="pagination fixed">
-        <a-pagination
-          v-model:current="pageNation.currentPage"
-          v-model:pageSize="pageNation.pageSize"
-          :pageSizeOptions="['6', '12', '18']"
-          show-size-changer
-          :total="pageNation.totalNum"
-          @change="sizeChange"
-        />
-      </div>
+    </div>
+    <div class="pagination fixed">
+      <a-pagination
+        v-model:current="pageNation.currentPage"
+        v-model:pageSize="pageNation.pageSize"
+        :pageSizeOptions="['6', '12', '18']"
+        show-size-changer
+        :total="pageNation.totalNum"
+        @change="sizeChange"
+      />
     </div>
   </div>
   <DetailPage

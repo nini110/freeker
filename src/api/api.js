@@ -12,6 +12,12 @@ export const userDetail = request({
     url:`${BASE_PATH2}/index_api/user/user_info`,
     method:'get',
 })
+// 修改头像
+export const editAvatar = request({
+    url:`${BASE_PATH2}/index_api/user/update_avatar`,
+    method:'post',
+    responseType: 'form-data'
+})
 // 上传资质信息
 export const uploadZizhi = request({
     url:`${BASE_PATH2}/index_api/certificate`,
@@ -27,6 +33,11 @@ export const getZizhi = request({
 export const bindMst = request({
     url:`${BASE_PATH2}/index_api/mst_account`,
     method:'post',
+})
+// 查询美事通
+export const searchMst = request({
+    url:`${BASE_PATH2}/index_api/mst_account`,
+    method:'get',
 })
 // 修改昵称
 export const editNickName = request({
@@ -84,4 +95,14 @@ export const upAagain = request({
 export const calcelApply = request({
     url:`${BASE_PATH2}/index_api/ad_project_user`,
     method:'delete',
+})
+// 结算列表 -- 申请结算
+export const applyPay = request({
+    url:`${BASE_PATH2}/index_api/ad_project_user/apply_settlement`,
+    method:'post',
+})
+// 结算中心 -- 列表
+export const payCenterList = request({
+    url:`${BASE_PATH2}/index_api/ad_project_user/settlement_center`,
+    method:'get',
 })

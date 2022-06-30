@@ -12,7 +12,7 @@
     </div>
     <div v-else>
       <div v-for="(item, idx) in projList" :key="idx" class="planBox iconfont">
-        <div class="planBox_title">
+        <div v-if="item.project_status !== 0" class="planBox_title">
           <p v-if="item.project_status === 1 || item.project_status === 2">
             <span>申请时间：</span><span>{{ item.sqTime }}</span>
           </p>
@@ -46,7 +46,7 @@
               >确认完成</span
             >
             <!-- 已完成 -->
-            <span v-if="item.project_status === 9">前往结算</span>
+            <span v-if="item.project_status === 9" @click="payEvent(item)">申请结算</span>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@ import { Modal } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import DetailPage from "../detailPage/index.vue";
-import { planProj, getProjDetail, okFinish, calcelApply } from "@/api/api";
+import { planProj, getProjDetail, okFinish, calcelApply, applyPay } from "@/api/api";
 import { message } from "ant-design-vue";
 import dayjs from "dayjs";
 
@@ -253,6 +253,7 @@ let {
   toDetail,
   detailClose,
   cancelEvent,
+  payEvent
 } = relate_detail();
 function relate_detail() {
   const stateDate2 = reactive({
@@ -318,12 +319,28 @@ function relate_detail() {
       onCancel() {},
     });
   };
+  // 申请结算
+  let payEvent = (item) => {
+    applyPay({
+      ad_project: item.ad_project
+    }).then(res => {
+      if (res.data.code === 200) {
+        message.success("申请结算成功");
+        pageNation.currentPage = 1;
+        pageNation.pageSize = 5;
+        apiPort_list(activeKey.value, 1, 5);
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    })
+  }
   return {
     ...toRefs(stateDate2),
     apiPort_detail,
     toDetail,
     detailClose,
     cancelEvent,
+    payEvent
   };
 }
 // 确认完成相关

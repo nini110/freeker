@@ -129,7 +129,7 @@ $baseFontsize: 14px;
             &_tip {
                 flex-basis: 100%;
                 text-align: center;
-
+                color: #909399;
                 .anticon {
                     margin-right: 5px;
                 }
@@ -150,15 +150,28 @@ $baseFontsize: 14px;
                 flex: 1;
                 height: 160px;
                 display: flex;
-                justify-content: center;
-                align-items: center;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                // align-items: center;
+                align-content: space-between;
 
                 img {
+                    flex: 1;
                     object-fit: cover;
                     width: 110px;
                     height: 110px;
                 }
+                .ant-radio-wrapper {
+                    margin: 5px 0;
+                }
+                .rigist {
+                    flex: 1;
+                    line-height: 14px;
+                    text-align: center;
+                }
+
             }
+
         }
     }
 }

@@ -31,8 +31,8 @@
             @change="handleImgChange"
           >
             <img
-              v-if="userInfo.imageUrl"
-              :src="userInfo.imageUrl"
+              v-if="store.getters.userImg"
+              :src="store.getters.userImg"
               alt="avatar"
             />
             <div v-else>
@@ -253,7 +253,7 @@
 import { reactive, ref, toRefs, watch, createVNode } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useStore } from "vuex";
-import { uploadZizhi, bindMst, editNickName } from "@/api/api";
+import { uploadZizhi, bindMst, editNickName, editAvatar } from "@/api/api";
 import { message, Modal } from "ant-design-vue";
 
 const store = useStore();
@@ -351,6 +351,7 @@ let {
   nickBtnTxt,
   showIpt,
   userImageUrl,
+  fileList,
   nickIptEvent,
   editEvent,
   confirmEvent,
@@ -362,6 +363,7 @@ function relate_nick() {
     nickBtnTxt: "取消",
     showIpt: false,
     userImageUrl: "",
+    fileList: []
   });
   // nick输入框值的按钮相关变化
   let nickIptEvent = (e) => {
@@ -398,24 +400,20 @@ function relate_nick() {
   };
 
   let handleImgChange = (info) => {
-    // if (info.file.status === 'error') {
-    //       editNickName(
-    //   {
-    //     username: stateData.nickName,
-    //   },
-    //   id
-    // ).then((res) => {
-    //   if (res.data.code === 200) {
-    //     message.success("操作成功");
-    //     stateData.showIpt = false;
-    //     store.commit("pageData/SET_ACCOUNT", res.data.data.username);
-    //     // 昵称回显
-    //     $emit("closeMstDialog");
-    //   } else {
-    //     message.error(`${res.data.msg}`);
-    //   }
-    // });
-    // }
+    if (info.file.status === "error") {
+      editAvatar(
+        {
+          img: info.file.originFileObj
+        }
+      ).then((res) => {
+        if (res.data.code === 200) {
+          message.success("头像上传成功");
+          store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
+        } else {
+          message.error(`${res.data.msg}`);
+        }
+      });
+    }
   };
   return {
     ...toRefs(stateData),

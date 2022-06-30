@@ -114,13 +114,12 @@
             cursor: pointer;
             display: inline-block;
             padding: 3px 26px;
-            border: 1px dashed #f7b234;
             border-radius: 3px;
             background-color: #fff;
             transition: all .3s linear;
             &:hover {
                 background: linear-gradient(90deg,#f7b234 50%,#f7b234 150%);
-                border-color: #f56c6c45;
+                // border-color: #f56c6c45;
                 color: #fff;
             }
         }
