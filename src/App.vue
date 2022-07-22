@@ -16,9 +16,7 @@ let locale = ref("cn");
 </script>
 
 <style>
-@import "./assets/font/index.css";
 #app {
-  /* font-family: yahei; */
   font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB,
     Microsoft YaHei, WenQuanYi Micro Hei, sans-serif;
   -webkit-font-smoothing: antialiased;

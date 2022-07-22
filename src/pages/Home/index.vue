@@ -52,66 +52,59 @@ function projectFun() {
       if (res.data.code === 200) {
         stateDate.projectList = [];
         let result = res.data.data;
-        result.forEach((item, idx) => {
-          switch (parseInt(item.category)) {
-            case 1:
-              item.categoryCn = "家用电器";
-              break;
-            case 2:
-              item.categoryCn = "手机数码";
-              break;
-            case 3:
-              item.categoryCn = "电脑办公";
-              break;
-            case 4:
-              item.categoryCn = "家居厨具";
-              break;
-            case 5:
-              item.categoryCn = "服饰鞋品";
-              break;
-            case 6:
-              item.categoryCn = "美妆";
-              break;
-            case 7:
-              item.categoryCn = "母婴用品";
-              break;
-            case 8:
-              item.categoryCn = "玩具乐器";
-              break;
-            case 9:
-              item.categoryCn = "食品饮料";
-              break;
-            case 10:
-              item.categoryCn = "医药保健";
-              break;
-            case 11:
-              item.categoryCn = "图书";
-              break;
-          }
-          switch (parseInt(item.delivery_platform)) {
-            case 1:
-              item.platCn = "京准通";
-              break;
-          }
-          item.create_time = dayjs(item.create_time).format(
-            "YYYY-MM-DD HH:mm:ss"
-          );
-          // 报名截止时间
-          item.time = dayjs(item.project_end_date).format("YYYY-MM-DD HH:mm");
-          // 目标
-          let target = "";
-          let delivery_target = JSON.parse(item.delivery_target);
-          delivery_target
-            .slice(0, delivery_target.length - 2)
-            .forEach((val, index) => {
-              target += `${val.label}：${val.value}`;
-            });
-          let obj = {
-            ...item,
-            target,
-          };
-          stateDate.projectList.push(obj);
-        });
+        if (result && result.length > 0) {
+          result.forEach((item, idx) => {
+            switch (parseInt(item.category)) {
+              case 1:
+                item.categoryCn = "家用电器";
+                break;
+              case 2:
+                item.categoryCn = "手机数码";
+                break;
+              case 3:
+                item.categoryCn = "电脑办公";
+                break;
+              case 4:
+                item.categoryCn = "家居厨具";
+                break;
+              case 5:
+                item.categoryCn = "服饰鞋品";
+                break;
+              case 6:
+                item.categoryCn = "美妆";
+                break;
+              case 7:
+                item.categoryCn = "母婴用品";
+                break;
+              case 8:
+                item.categoryCn = "玩具乐器";
+                break;
+              case 9:
+                item.categoryCn = "食品饮料";
+                break;
+              case 10:
+                item.categoryCn = "医药保健";
+                break;
+              case 11:
+                item.categoryCn = "图书";
+                break;
+            }
+            switch (parseInt(item.delivery_platform)) {
+              case 1:
+                item.platCn = "京准通";
+                break;
+            }
+            item.create_time = dayjs(item.create_time).format(
+              "YYYY-MM-DD HH:mm:ss"
+            );
+            // 报名截止时间
+            item.time = dayjs(item.project_end_date).format("YYYY-MM-DD HH:mm");
+            let obj = {
+              ...item,
+            };
+            stateDate.projectList.push(obj);
+          });
+        }
       } else {
         message.error(`${res.data.msg}`);
       }
@@ -126,7 +119,7 @@ function projectFun() {
         message.success("申请成功，等待审核");
         apiPort_list(1, 3);
       } else if (res.data.code === 4105) {
-        message.error("请先上传资质信息");
+        message.error("请先上传项目对应投放平台资质信息");
       } else {
         message.error(`${res.data.msg}`);
       }
@@ -155,12 +148,12 @@ function projectFun() {
   );
 
   onBeforeMount(() => {
-    if (!localStorage.getItem("token")) {
-      store.commit("pageData/SET_USERNAME", "");
-      store.commit("pageData/SET_ACCOUNT", "");
-      store.commit("pageData/SET_ACCOUNTID", null);
-      store.commit("pageData/SET_USERIMG", "");
-    }
+    // if (!localStorage.getItem("token")) {
+    //   store.commit("pageData/SET_USERNAME", "");
+    //   store.commit("pageData/SET_ACCOUNT", "");
+    //   store.commit("pageData/SET_ACCOUNTID", null);
+    //   store.commit("pageData/SET_USERIMG", "");
+    // }
     apiPort_list();
   });
   let toPage = () => {

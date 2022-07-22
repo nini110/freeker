@@ -1,10 +1,123 @@
 :deep .ant-modal {
-    width: 1200px!important;
+    width: 1000px !important;
+
     &-content {
-        width: 1200px;
+        width: 1000px;
     }
+
     &-body {
-        max-height: 600px;
+        height: 580px;
+        padding: 0 24px;
         overflow-y: auto;
+        display: flex;
+        justify-content: space-between;
+
+        .msgBox {
+            flex: 1;
+            padding: 24px 0;
+            display: flex;
+            align-content: flex-start;
+            flex-wrap: wrap;
+            overflow: hidden;
+            box-sizing: border-box;
+            position: relative;
+
+            &_info {
+                flex-basis: 100%;
+                overflow: auto;
+                height: 440px;
+                padding: 20px 30px;
+                background-color: #f8f8f899;
+            }
+
+            &_btn {
+                flex-basis: 100%;
+                position: absolute;
+                bottom: 20px;
+                right: 0;
+            }
+
+            &_right {
+                margin-bottom: 15px;
+                border-radius: 5px;
+
+                &_empty {
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    align-content: center;
+                }
+            }
+
+            .ct {
+                &_time {
+                    font-size: 12px;
+                    text-align: center;
+                    color: #999;
+                    margin-bottom: 2px;
+                }
+            }
+
+
+        }
     }
+}
+
+.badge {
+    padding-right: 6px;
+    font-size: 16px;
+    color: #606266;
+}
+
+:deep .ant-badge-count {
+    padding: 2px;
+    line-height: 12px;
+    height: 14px;
+}
+
+:deep .ant {
+    &-alert {
+        width: 100%;
+    }
+
+    &-tabs {
+        padding: 24px 0;
+        height: 100% !important;
+    }
+
+    &-collapse-item {
+        // border-bottom: 1px solid #ccc!important;
+        margin-bottom: 0 !important;
+    }
+
+    &-collapse-header {
+        font-weight: bold;
+        font-size: 16px;
+
+        .yidu {
+            color: #606266;
+        }
+
+        .weidu {
+            color: #ff5c5c;
+        }
+    }
+
+    &-collapse-content-box {
+        font-size: 16px;
+    }
+
+    &-tabs-tab {
+        .badge {
+            font-size: 16px;
+        }
+
+        &-active {
+            .badge {
+                color: #1890ff;
+            }
+        }
+    }
+
 }

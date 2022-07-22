@@ -24,10 +24,15 @@
               <a-tab-pane :key="1" tab="密码登录" force-render></a-tab-pane>
               <a-tab-pane :key="2" tab="免密登录"></a-tab-pane>
             </a-tabs>
-            <a-form :model="formState" name="normal_login">
+            <a-form
+              ref="refLogin"
+              :model="formState"
+              name="normal_login"
+              :rules="rulesLogin"
+            >
               <a-form-item label="" name="account" placeholder="账户">
                 <a-input
-                  v-model:value="formState.account"
+                  v-model:value.trim="formState.account"
                   placeholder="账户"
                   allow-clear
                 >
@@ -36,9 +41,9 @@
                   </template>
                 </a-input>
               </a-form-item>
-              <a-form-item v-if="activeTabKey === 1" label="" name="密码">
+              <a-form-item v-if="activeTabKey === 1" label="" name="password">
                 <a-input-password
-                  v-model:value="formState.password"
+                  v-model:value.trim="formState.password"
                   placeholder="密码"
                   allow-clear
                 >
@@ -49,10 +54,10 @@
               </a-form-item>
               <a-form-item v-else label="" name="phoneCode">
                 <a-input-search
-                  v-model:value="formState.phoneCode"
+                  v-model:value.trim="formState.phoneCode"
                   placeholder="6位短信验证码"
-                  @search="onSearch"
                   allow-clear
+                  size="middle"
                 >
                   <template #enterButton>
                     <a-button>发送验证码</a-button>
@@ -75,8 +80,13 @@
             </a-form>
           </div>
           <div class="login_right_box" v-else-if="tabTag === 3">
-            <a-form :model="formRegister" name="normal_login">
-              <a-form-item label="" name="account" placeholder="账号">
+            <a-form
+              ref="refRegist"
+              :model="formRegister"
+              name="normal_login"
+              :rules="rulesRegist"
+            >
+              <a-form-item label="" name="account">
                 <a-input
                   v-model:value="formRegister.account"
                   placeholder="账号"
@@ -87,18 +97,18 @@
                   </template>
                 </a-input>
               </a-form-item>
-              <a-form-item label="" name="username" placeholder="昵称">
+              <a-form-item label="" name="username">
                 <a-input
                   v-model:value="formRegister.username"
                   placeholder="昵称"
                   allow-clear
                 >
                   <template #prefix>
-                    <smile-outlined class="site-form-item-icon"/>
+                    <smile-outlined class="site-form-item-icon" />
                   </template>
                 </a-input>
               </a-form-item>
-              <a-form-item label="" name="密码">
+              <a-form-item label="" name="password">
                 <a-input-password
                   v-model:value="formRegister.password"
                   placeholder="密码"
@@ -109,14 +119,14 @@
                   </template>
                 </a-input-password>
               </a-form-item>
-              <a-form-item label="" name="手机号">
+              <a-form-item label="" name="mobile">
                 <a-input
                   v-model:value="formRegister.mobile"
                   placeholder="手机号"
                   allow-clear
                 >
                   <template #prefix>
-                    <phone-outlined class="site-form-item-icon"/>
+                    <phone-outlined class="site-form-item-icon" />
                   </template>
                 </a-input>
               </a-form-item>
@@ -132,29 +142,12 @@
               </a-form-item>
             </a-form>
           </div>
-          <div class="login_right_box" v-else>
-            <div class="login_right_txt">
-              <svg class="icon svg-icon titleicon" aria-hidden="true">
-                <use xlink:href="#icon-qiyeweixin1"></use>
-              </svg>
-              <span>企业微信扫码登陆</span>
-            </div>
-            <div class="login_right_wx">
-              <div id="weChat"></div>
-            </div>
-          </div>
           <div class="login_right_fs">
             <span
               @click="wayClick(1)"
               :class="{ active: tabTag === 1 }"
               class="iconfont icon-yonghu"
               >用户登录</span
-            >
-            <span
-              @click="wayClick(2)"
-              :class="{ active: tabTag === 2 }"
-              class="iconfont icon-qiyeweixin"
-              >企业微信登录</span
             >
           </div>
         </div>
@@ -169,13 +162,23 @@ import {
   CheckOutlined,
   LockOutlined,
   PhoneOutlined,
-  SmileOutlined
+  SmileOutlined,
 } from "@ant-design/icons-vue";
 import { ref, watch, toRefs, onMounted, reactive } from "vue";
 import { useStore } from "vuex";
 import { userLogin, registerUser } from "@/api/api";
 import { message } from "ant-design-vue";
+import {
+  checkLogAccount,
+  checkLogPwd,
+  checkLogPhone,
+  checkUsername,
+  checkPhone,
+} from "@/validator";
+
 const store = useStore();
+const refLogin = ref();
+const refRegist = ref();
 let $props = defineProps({
   showLogin: {
     type: Boolean,
@@ -190,6 +193,8 @@ let {
   activeTabKey,
   tabTag,
   diaVisible,
+  rulesLogin,
+  rulesRegist,
   handlecancel,
   loginEvent,
   registerEvent,
@@ -208,11 +213,30 @@ function relate_login() {
       account: "",
       username: "",
       account: "",
-      mobile: ''
+      mobile: "",
     },
     activeTabKey: 1,
     tabTag: 1,
     diaVisible: false,
+    rulesLogin: {
+      account: [
+        { required: true, validator: checkLogAccount, trigger: "change" },
+      ],
+      password: [{ required: true, validator: checkLogPwd, trigger: "change" }],
+      phoneCode: [
+        { required: true, validator: checkLogPhone, trigger: "change" },
+      ],
+    },
+    rulesRegist: {
+      account: [
+        { required: true, validator: checkLogAccount, trigger: "change" },
+      ],
+      username: [
+        { required: true, validator: checkUsername, trigger: "change" },
+      ],
+      password: [{ required: true, validator: checkLogPwd, trigger: "change" }],
+      mobile: [{ required: true, validator: checkPhone, trigger: "change" }],
+    },
   });
   let watchLogTag = watch(
     showLogin,
@@ -222,46 +246,55 @@ function relate_login() {
     { immediate: true }
   );
   let handlecancel = () => {
-    $emit("changeLogTag");
+    $emit("changeLogTag", false);
   };
   let tabClick = (val) => {
+    refLogin.value.clearValidate();
     stateData.activeTabKey = val;
   };
   let wayClick = (val) => {
-    stateData.tabTag = val;
-    if (val === 1) {
-      stateData.activeTabKey = 1;
-    } else if (val === 2) {
-      relate_wx();
+    if (stateData.tabTag === 3) {
+      // 注册
+      refRegist.value.resetFields();
+    } else {
+      refLogin.value.resetFields();
     }
+    stateData.tabTag = val;
+    stateData.activeTabKey = 1;
   };
   // 登录接口
   let apiPort_login = () => {
-    userLogin({ ...stateData.formState }).then((res) => {
-      if (res.data.code === 200) {
-        localStorage.setItem("token", res.data.data.token);
-        store.commit("pageData/SET_USERNAME", res.data.data.username);
-        store.commit("pageData/SET_ACCOUNT", res.data.data.account);
-        store.commit("pageData/SET_ACCOUNTID", res.data.data.user);
-        store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
-        message.success("登陆成功");
-        $emit("changeLogTag");
-      } else {
-        message.error(`${res.data.msg}`);
-      }
+    refLogin.value.validate().then((res) => {
+      userLogin({ ...stateData.formState }).then((res) => {
+        if (res.data.code === 200) {
+          refLogin.value.resetFields();
+          message.success("登陆成功");
+          store.commit("pageData/SET_SSO", res.data.data.token);
+          store.commit("pageData/SET_USERNAME", res.data.data.username);
+          store.commit("pageData/SET_ACCOUNT", res.data.data.account);
+          store.commit("pageData/SET_ACCOUNTID", res.data.data.user);
+          store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
+          $emit("changeLogTag", true);
+        } else {
+          message.error(`${res.data.msg}`);
+        }
+      });
     });
   };
   let apiPort_register = () => {
-    registerUser({
-      ...stateData.formRegister,
-    }).then((res) => {
-      if (res.data.code === 200) {
-        message.success("注册成功，请登录");
-        stateData.tabTag = 1;
-        stateData.activeTabKey = 1;
-      } else {
-        message.error(`${res.data.msg}`);
-      }
+    refRegist.value.validate().then((res) => {
+      registerUser({
+        ...stateData.formRegister,
+      }).then((res) => {
+        if (res.data.code === 200) {
+          refRegist.value.resetFields();
+          message.success("注册成功，请登录");
+          stateData.tabTag = 1;
+          stateData.activeTabKey = 1;
+        } else {
+          message.error(`${res.data.msg}`);
+        }
+      });
     });
   };
   let registerEvent = () => {
@@ -278,37 +311,6 @@ function relate_login() {
     registerEvent,
     tabClick,
     wayClick,
-  };
-}
-// 微信相关
-onMounted(() => {
-  relate_wx();
-});
-
-function relate_wx() {
-  // 动态引入企业微信js文件
-  const s = document.createElement("script");
-  s.type = "text/javascript";
-  s.src = "http://wwcdn.weixin.qq.com/node/wework/wwopen/js/wwLogin-1.2.5.js";
-  const wxElement = document.body.appendChild(s);
-  // 调用企业微信二维码方法
-  wxElement.onload = function () {
-    let a = new WwLogin({
-      id: "weChat",
-      appid: "wwa11b1586b6b9c8a8",
-      agentid: "1000041",
-      scope: "snsapi_login",
-      redirect_uri: encodeURIComponent(
-        `http://tool.afocus.com.cn/platform/authority`
-      ),
-      state: Math.ceil(Math.random() * 1000),
-      style: "black",
-      href: "data:text/css;base64,LmltcG93ZXJCb3ggewogICAgaGVpZ2h0OiAxMDAlOwp9Cmh0bWwgewogICAgaGVpZ2h0OiAxMDAlOwogICAgdXNlci1zZWxlY3Q6IG5vbmU7Cn0KYm9keSB7CiAgICBoZWlnaHQ6IDEwMCU7Cn0KLmNhcmQgewogICAgd2lkdGg6IDQwJTsKICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTsKICAgIHRvcDogNTAlOwogICAgbGVmdDogNTAlOwogICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7Cn0KLndycF9jb2RlIHsKICAgIHdpZHRoOiAxMDAlOwogICAgbWFyZ2luLXRvcDogMCFpbXBvcnRhbnQ7Cn0KLmZyYW1lX3dyYXAgewogICAgaGVpZ2h0OiAxMDAlOwp9Ci5pbXBvd2VyQm94IC5xcmNvZGUge3dpZHRoOiAxMDAlO2hlaWdodDogYXV0bzt9Ci5pbXBvd2VyQm94IC50aXRsZSB7ZGlzcGxheTogbm9uZTt9Ci5pbXBvd2VyQm94IC5pbmZvIHtkaXNwbGF5OiBub25lO30KLnN0YXR1c19pY29uIHtkaXNwbGF5OiBub25lICAhaW1wb3J0YW50fQouaW1wb3dlckJveCAuc3RhdHVzIHt0ZXh0LWFsaWduOiBjZW50ZXI7fQ==",
-    });
-    let target = document.getElementsByTagName("iframe");
-    target[0].style.width = "100%";
-    target[0].style.height = "100%";
-    target[0].style.padding = "20px 0";
   };
 }
 </script>

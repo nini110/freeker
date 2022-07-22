@@ -46,7 +46,7 @@
               >确认完成</span
             >
             <!-- 已完成 -->
-            <span v-if="item.project_status === 9" @click="payEvent(item)">申请结算</span>
+            <!-- <span v-if="item.project_status === 9" @click="payEvent(item)">申请结算</span> -->
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@ import { Modal } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import DetailPage from "../detailPage/index.vue";
-import { planProj, getProjDetail, okFinish, calcelApply, applyPay } from "@/api/api";
+import { planProj, getProjDetail, okFinish, calcelApply } from "@/api/api";
 import { message } from "ant-design-vue";
 import dayjs from "dayjs";
 
@@ -102,12 +102,24 @@ let $router = useRouter();
 const menuList = reactive([
   {
     label: "全部",
-    code: null,
+    code: "0,1,2,3,4,5,6,7,8,9",
   },
   {
     label: "待审核",
     code: "0, 1, 2",
   },
+  // {
+  //   label: "申请中",
+  //   code: "0",
+  // },
+  // {
+  //   label: "待审核",
+  //   code: "1",
+  // },
+  // {
+  //   label: "系统审核中",
+  //   code: "2",
+  // },
   {
     label: "已驳回",
     code: "3",
@@ -147,7 +159,7 @@ let { projList, activeKey, apiPort_list, tabEvent } = relate_plan();
 function relate_plan() {
   const stateDate = reactive({
     projList: [],
-    activeKey: null,
+    activeKey: "",
   });
   // 获取列表
   let apiPort_list = (status, page, page_size) => {
@@ -166,7 +178,13 @@ function relate_plan() {
           switch (val.project_status) {
             // 申请中-系统审核中-待审核
             case 0:
+              val.statusCn = "申请中";
+              val.statusClass = "sqz";
+              break;
             case 1:
+              val.statusCn = "系统审核中";
+              val.statusClass = "xtshz";
+              break;
             case 2:
               val.statusCn = "待审核";
               val.statusClass = "dsh";
@@ -199,18 +217,18 @@ function relate_plan() {
               val.statusCn = "已完成";
               val.statusClass = "ywc";
               break;
-            case 10:
-              val.statusCn = "待汇款";
-              val.statusClass = "dhk";
-              break;
-            case 11:
-              val.statusCn = "待打款";
-              val.statusClass = "ddk";
-              break;
-            case 12:
-              val.statusCn = "已结算";
-              val.statusClass = "yjs";
-              break;
+            // case 10:
+            //   val.statusCn = "待汇款";
+            //   val.statusClass = "dhk";
+            //   break;
+            // case 11:
+            //   val.statusCn = "待打款";
+            //   val.statusClass = "ddk";
+            //   break;
+            // case 12:
+            //   val.statusCn = "已结算";
+            //   val.statusClass = "yjs";
+            //   break;
           }
           switch (val.delivery_platform) {
             case 1:
@@ -238,7 +256,8 @@ function relate_plan() {
     apiPort_list(val, 1, pageNation.pageSize);
   };
   onBeforeMount(() => {
-    apiPort_list("", pageNation.currentPage, pageNation.pageSize);
+    tabEvent("0,1,2,3,4,5,6,7,8,9");
+    // apiPort_list('0,1,2,3,4,5,6,7,8,9', pageNation.currentPage, pageNation.pageSize);
   });
   return { ...toRefs(stateDate), apiPort_list, tabEvent };
 }
@@ -253,7 +272,7 @@ let {
   toDetail,
   detailClose,
   cancelEvent,
-  payEvent
+  payEvent,
 } = relate_detail();
 function relate_detail() {
   const stateDate2 = reactive({
@@ -264,9 +283,12 @@ function relate_detail() {
   });
   // 获取详情
   const apiPort_detail = (id) => {
-    getProjDetail({
-      haha: '',
-    }, id).then((res) => {
+    getProjDetail(
+      {
+        haha: "",
+      },
+      id
+    ).then((res) => {
       if (res.data.code === 200) {
         stateDate2.showList = false;
         stateDate2.resData = res.data.data;
@@ -319,28 +341,13 @@ function relate_detail() {
       onCancel() {},
     });
   };
-  // 申请结算
-  let payEvent = (item) => {
-    applyPay({
-      ad_project: item.ad_project
-    }).then(res => {
-      if (res.data.code === 200) {
-        message.success("申请结算成功");
-        pageNation.currentPage = 1;
-        pageNation.pageSize = 5;
-        apiPort_list(activeKey.value, 1, 5);
-      } else {
-        message.error(`${res.data.msg}`);
-      }
-    })
-  }
   return {
     ...toRefs(stateDate2),
     apiPort_detail,
     toDetail,
     detailClose,
     cancelEvent,
-    payEvent
+    payEvent,
   };
 }
 // 确认完成相关

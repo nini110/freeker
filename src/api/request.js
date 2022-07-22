@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Qs from 'qs'
+import store from '../store'
 import {
     message
 } from 'ant-design-vue';
@@ -54,17 +55,21 @@ service.interceptors.request.use(config => {
             config.data = formData
         }
     }
-    if (localStorage.getItem('token')) {
-        config.headers.AUTHORIZATION = localStorage.getItem('token')
+    if (store.getters.SSO) {
+        config.headers.AUTHORIZATION = store.getters.SSO
     }
     return config
 })
 service.interceptors.response.use(response => {
     if (response.data.code === 4101) {
         message.error('登录失效，请重新登录')
+        store.commit("pageData/SET_SSO", '');
+        store.commit("pageData/SET_USERNAME",'');
+        store.commit("pageData/SET_ACCOUNT", '');
+        store.commit("pageData/SET_ACCOUNTID", '');
+        store.commit("pageData/SET_USERIMG", '');
         setTimeout(() => {
-            localStorage.removeItem("token");
-            window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
+            // window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
         }, 1000);
         return
     }

@@ -32,15 +32,28 @@
         stusCode === 6 ||
         stusCode === 7 ||
         stusCode === 8 ||
-        stusCode === 9
+        stusCode === 9 ||
+        stusCode === 10 ||
+        stusCode === 11 ||
+        stusCode === 12
       "
       class="detailBox_div"
     >
       <h2>投放信息</h2>
       <div class="detailBox_info">
         <div class="detailBox_info_box">
-          <!-- 待通过 + 已完成 -->
-          <p v-if="stusCode === 7 || stusCode === 9">已过期</p>
+          <!-- 待通过 + 已完成 + 结算三个-->
+          <p
+            v-if="
+              stusCode === 7 ||
+              stusCode === 9 ||
+              stusCode === 10 ||
+              stusCode === 11 ||
+              stusCode === 12
+            "
+          >
+            已过期
+          </p>
           <p
             v-else
             v-for="(item, idx) in detailData.toufanglist"
@@ -55,10 +68,16 @@
         </div>
       </div>
     </div>
-    <!-- 待确认 待通过 未通过 已完成 -->
+    <!-- 待确认 待通过 未通过 已完成 结算3个-->
     <div
       v-if="
-        stusCode === 6 || stusCode === 7 || stusCode === 8|| stusCode === 9
+        stusCode === 6 ||
+        stusCode === 7 ||
+        stusCode === 8 ||
+        stusCode === 9 ||
+        stusCode === 10 ||
+        stusCode === 11 ||
+        stusCode === 12
       "
       class="detailBox_div"
     >
@@ -88,7 +107,16 @@
     </div>
     <!-- 待通过： 可以看到自己的评价 -->
     <!-- 待通过 已完成 -->
-    <div v-if="stusCode === 7 || stusCode === 9" class="detailBox_div">
+    <div
+      v-if="
+        stusCode === 7 ||
+        stusCode === 9 ||
+        stusCode === 10 ||
+        stusCode === 11 ||
+        stusCode === 12
+      "
+      class="detailBox_div"
+    >
       <h2>评价</h2>
       <div class="detailBox_desc">
         <span class="label">项目评价</span>
@@ -96,8 +124,15 @@
         <div class="rateInfo">
           {{ resData.user_evaluate_content }}
         </div>
-        <div v-if="stusCode === 9">
-          <span class="label">投手评价</span>
+        <div
+          v-if="
+            stusCode === 9 ||
+            stusCode === 10 ||
+            stusCode === 11 ||
+            stusCode === 12
+          "
+        >
+          <span class="label">商家评价</span>
           <a-rate :value="resData.merchant_evaluate_score" disabled />
           <div class="rateInfo">
             {{ resData.merchant_evaluate_content }}
@@ -138,14 +173,9 @@
         >上传数据</a-button
       >
       <!-- 未通过 -->
-      <a-button
-        v-if="stusCode === 8"
-        type="primary"
-        block
-        @click="upAgainEvent"
+      <a-button v-if="stusCode === 8" type="primary" block @click="upAgainEvent"
         >重新确认完成</a-button
       >
-      <a-button v-if="stusCode === 9" type="primary" block>前往结算</a-button>
     </div>
     <!-- 数据信息上传 -->
     <a-modal
@@ -347,6 +377,18 @@ function relate_detail() {
           target.categoryCn = "图书";
           break;
       }
+      // 难度
+      switch(newval.project_level) {
+        case 1:
+          target.project_levelCn = '简单'
+          break;
+        case 2:
+          target.project_levelCn = '一般'
+          break;
+        case 3:
+          target.project_levelCn = '困难'
+          break;                    
+      }
       // 投放平台
       switch (parseInt(newval.delivery_platform)) {
         case 1:
@@ -403,6 +445,14 @@ function relate_detail() {
           label: "任务领取截止时间",
           value: target.project_end_date,
         },
+        {
+          label: "项目难度",
+          value: target.project_levelCn,
+        },
+        {
+          label: "备注",
+          value: newval.comment,
+        },                
       ];
       // 投放信息:待启动 进行中 待确认
       if (newval.delivery_info) {
@@ -503,7 +553,7 @@ function relate_detail() {
           break;
         case 12:
           iconClass = "yjs";
-          break;                    
+          break;
       }
     },
     { immediate: true }
@@ -551,7 +601,7 @@ function relate_shuju() {
         message.success("申请成功，等待审核");
         $emit("back");
       } else if (res.data.code === 4105) {
-        message.error("请先上传资质信息");
+        message.error("请先上传项目对应投放平台资质信息");
       } else {
         message.error(`${res.data.msg}`);
       }

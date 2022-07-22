@@ -48,7 +48,7 @@
       <a-pagination
         v-model:current="pageNation.currentPage"
         v-model:pageSize="pageNation.pageSize"
-        :pageSizeOptions="['6', '12', '18']"
+        :pageSizeOptions="['6', '12']"
         show-size-changer
         :total="pageNation.totalNum"
         @change="sizeChange"
@@ -141,17 +141,8 @@ function relate_proj() {
           );
           // 报名截止时间
           item.time = dayjs(item.project_end_date).format("YYYY-MM-DD HH:mm");
-          // 目标
-          let target = "";
-          let delivery_target = JSON.parse(item.delivery_target);
-          delivery_target
-            .slice(0, delivery_target.length - 2)
-            .forEach((val, index) => {
-              target += `${val.label}：${val.value}`;
-            });
           let obj = {
             ...item,
-            target,
           };
           stateDate.projectList.push(obj);
         });
@@ -169,7 +160,7 @@ function relate_proj() {
         message.success("申请成功，等待审核");
         apiPort_list(1, 6);
       } else if (res.data.code === 4105) {
-        message.error("请先上传资质信息");
+        message.error("请先上传项目对应投放平台资质信息");
       } else {
         message.error(`${res.data.msg}`);
       }

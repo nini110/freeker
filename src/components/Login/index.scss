@@ -4,6 +4,7 @@
     user-select: none;
     &_left {
         width: 40%;
+        height: 360px;
         padding: 60px 0;
         background: url('../../assets/images/login_left.png') no-repeat 0 0;
         background-size: cover;
@@ -93,6 +94,7 @@
                     position: absolute;
                     bottom: -30px;
                     right: 0;
+                    cursor: pointer;
                 }
             }
         }
@@ -123,9 +125,10 @@
         &-affix-wrapper {
             border: none;
             border-bottom: 1px solid #ccc;
-            &-focused {
-                box-shadow: none;
-            }
+            box-shadow: none!important;
+            // &-focused {
+            //     box-shadow: none!important;
+            // }
             &:hover {
                 border-left-color: transparent;
                 border-right-color: transparent;
@@ -143,33 +146,3 @@
         height: 100%;
     }
 } 
-
-// .impowerBox {
-//     height: 100%;
-// }
-// html {
-//     height: 100%;
-//     user-select: none;
-// }
-// body {
-//     height: 100%;
-// }
-// .card {
-//     width: 40%;
-//     position: absolute;
-//     top: 50%;
-//     left: 50%;
-//     transform: translate(-50%, -50%);
-// }
-// .wrp_code {
-//     width: 100%;
-//     margin-top: 0!important;
-// }
-// .frame_wrap {
-//     height: 100%;
-// }
-// .impowerBox .qrcode {width: 100%;height: auto;}
-// .impowerBox .title {display: none;}
-// .impowerBox .info {display: none;}
-// .status_icon {display: none  !important}
-// .impowerBox .status {text-align: center;}

@@ -2,7 +2,8 @@ const state = {
     username: '',
     account: '',
     accountId: null,
-    userImg: ''
+    userImg: '',
+    SSO: ''
 }
 const mutations = {
     SET_USERNAME: (state, view) => {
@@ -16,7 +17,10 @@ const mutations = {
     },    
     SET_USERIMG: (state, view) => {
         state.userImg = view
-    }
+    },
+    SET_SSO: (state, view) => {
+        state.SSO = view
+    },
 }
 export default {
     state,

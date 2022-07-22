@@ -9,7 +9,7 @@
       :keyboard="false"
       :maskClosable="false"
       centered
-      :width="560"
+      :width="600"
       :getContainer="$refs.aff2"
     >
       <template #footer>
@@ -42,7 +42,9 @@
         </div>
         <div class="user_box" ref="boxref">
           <div class="user_box_item">
-            <span class="label iconfont icon-xiaolian2">昵称</span>
+            <span class="label"
+              ><heart-two-tone two-tone-color="#eb2f96" />昵称</span
+            >
             <a-input-group compact v-if="showIpt" size="small" class="cnt">
               <a-input
                 v-model:value="nickName"
@@ -59,17 +61,21 @@
             ></span>
           </div>
           <div class="user_box_item">
-            <span class="label iconfont icon-zhanghaozhongxinzhanghaoguanli"
-              >账号</span
-            >
+            <span class="label"><idcard-two-tone />账号</span>
             <span class="cnt">{{ userInfo.account }}</span>
           </div>
           <div class="user_box_item">
-            <span class="label iconfont icon-dengji">等级</span>
+            <span class="label"
+              ><star-two-tone two-tone-color="#f7b234" />等级</span
+            >
             <span class="cnt">{{ userInfo.levelCn }}</span>
           </div>
           <div class="user_box_item">
-            <span class="label iconfont icon-zizhi">资质</span>
+            <span class="label"
+              ><safety-certificate-two-tone
+                two-tone-color="#52c41a"
+              />资质</span
+            >
             <div class="cnt">
               <a-collapse
                 v-model:activeKey="activeKey"
@@ -179,13 +185,15 @@
         <div class="zizhi">
           <h2><edit-outlined />投手资质上传</h2>
           <a-form
+            ref="refZizhi"
             :model="zizhiForm"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 18 }"
+            :rules="rulesZizhi"
           >
             <a-row>
               <a-col :span="12">
-                <a-form-item label="平台">
+                <a-form-item label="平台" name="platform">
                   <a-select v-model:value="zizhiForm.platform" allow-clear>
                     <a-select-option
                       v-for="(item, idx) in platOptions"
@@ -195,11 +203,8 @@
                     ></a-select
                   >
                 </a-form-item>
-                <a-form-item label="等级">
-                  <a-select
-                    v-model:value="zizhiForm.cert_level"
-                    :options="options"
-                    allow-clear
+                <a-form-item label="等级" name="cert_level">
+                  <a-select v-model:value="zizhiForm.cert_level" allow-clear
                     ><a-select-option
                       v-for="(item, idx) in certOptions"
                       :key="idx"
@@ -208,14 +213,14 @@
                     ></a-select
                   >
                 </a-form-item>
-                <a-form-item label="编号">
+                <a-form-item label="编号" name="cert_number">
                   <a-input v-model:value="zizhiForm.cert_number" allow-clear />
                 </a-form-item>
               </a-col>
               <a-col :span="12"
-                ><a-form-item label="上传">
+                ><a-form-item label="上传" name="fileArr">
                   <a-upload-dragger
-                    :fileList="fileArr"
+                    :fileList="zizhiForm.fileArr"
                     name="file"
                     :showUploadList="false"
                     :maxCount="1"
@@ -223,7 +228,7 @@
                     action=""
                     :before-upload="beforeUpload"
                   >
-                    <div v-if="fileArr.length > 0">
+                    <div v-if="zizhiForm.fileArr.length > 0">
                       <p class="ant-upload-drag-icon">
                         <verified-outlined />
                       </p>
@@ -251,20 +256,24 @@
 </template>
 <script setup>
 import { reactive, ref, toRefs, watch, createVNode } from "vue";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { useStore } from "vuex";
-import { uploadZizhi, bindMst, editNickName, editAvatar } from "@/api/api";
-import { message, Modal } from "ant-design-vue";
-
-const store = useStore();
-
 import {
+  HeartTwoTone,
+  IdcardTwoTone,
+  SafetyCertificateTwoTone,
   InboxOutlined,
+  StarTwoTone,
+  ExclamationCircleOutlined,
   EditOutlined,
-  UploadOutlined,
   LinkOutlined,
   VerifiedOutlined,
 } from "@ant-design/icons-vue";
+import { useStore } from "vuex";
+import { uploadZizhi, bindMst, editNickName, editAvatar } from "@/api/api";
+import { message, Modal } from "ant-design-vue";
+import { checkPlat, checkLevel, checkNumber, checkFile } from "@/validator";
+
+const refZizhi = ref();
+const store = useStore();
 let $props = defineProps({
   showDialog: Boolean,
   userInfo: Object,
@@ -290,8 +299,8 @@ function realte_dialog() {
     activeKey2: 0,
     collapseHeader: "",
     collapseHeader2: "",
-    collapsibleZizhi: false,
-    collapsibleMst: false,
+    collapsibleZizhi: 'disabled',
+    collapsibleMst: 'disabled',
   });
   let watchTag = watch(
     showDialog,
@@ -322,8 +331,8 @@ function realte_dialog() {
         mstList.value.length > 0 ? mstList.value[0] : "暂未绑定";
 
       stateData.collapsibleZizhi =
-        zizhiList.value.length > 0 ? true : "disabled";
-      stateData.collapsibleMst = mstList.value.length > 0 ? true : "disabled";
+        zizhiList.value.length > 0 ? '' : "disabled";
+      stateData.collapsibleMst = mstList.value.length > 0 ? '' : "disabled";
     },
     {
       deep: true,
@@ -350,7 +359,6 @@ let {
   nickName,
   nickBtnTxt,
   showIpt,
-  userImageUrl,
   fileList,
   nickIptEvent,
   editEvent,
@@ -362,8 +370,7 @@ function relate_nick() {
     nickName: "",
     nickBtnTxt: "取消",
     showIpt: false,
-    userImageUrl: "",
-    fileList: []
+    fileList: [],
   });
   // nick输入框值的按钮相关变化
   let nickIptEvent = (e) => {
@@ -401,11 +408,9 @@ function relate_nick() {
 
   let handleImgChange = (info) => {
     if (info.file.status === "error") {
-      editAvatar(
-        {
-          img: info.file.originFileObj
-        }
-      ).then((res) => {
+      editAvatar({
+        img: info.file.originFileObj,
+      }).then((res) => {
         if (res.data.code === 200) {
           message.success("头像上传成功");
           store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
@@ -427,11 +432,11 @@ function relate_nick() {
 let {
   showUpload,
   showErweima,
-  fileArr,
   zizhiForm,
   erweimaForm,
   platOptions,
   certOptions,
+  rulesZizhi,
   uploadEvent,
   submitEvent,
   bindEvent,
@@ -442,12 +447,11 @@ function relate_upload() {
   let stateData = reactive({
     showUpload: false,
     showErweima: false,
-    fileArr: [],
     zizhiForm: {
       platform: "",
       cert_level: "",
       cert_number: "",
-      file: [],
+      fileArr: [],
     },
     erweimaForm: {
       account: "",
@@ -478,14 +482,26 @@ function relate_upload() {
         code: 3,
       },
     ],
+    rulesZizhi: {
+      platform: [{ required: true, validator: checkPlat, trigger: "change" }],
+      cert_level: [
+        { required: true, validator: checkLevel, trigger: "change" },
+      ],
+      cert_number: [
+        { required: true, validator: checkNumber, trigger: "change" },
+      ],
+      cert_number: [
+        { required: true, validator: checkNumber, trigger: "change" },
+      ],
+      fileArr: [{ required: true, validator: checkFile, trigger: "change" }],
+    },
   });
   let reset = () => {
-    stateData.fileArr = [];
     stateData.zizhiForm = {
       platform: "",
       cert_level: "",
       cert_number: "",
-      file: [],
+      fileArr: [],
     };
     stateData.erweimaForm = {
       account: "",
@@ -525,11 +541,13 @@ function relate_upload() {
   // 确认 取消
   let submitEvent = (val) => {
     if (val) {
-      apiPort_upload({ ...stateData.zizhiForm });
+      refZizhi.value.validate().then((res) => {
+        apiPort_upload({ ...stateData.zizhiForm });
+      });
     } else {
       stateData.showUpload = false;
+      reset();
     }
-    reset();
   };
   // 打开绑定美事通弹层
   let bindEvent = (e) => {
@@ -546,8 +564,9 @@ function relate_upload() {
     reset();
   };
   let beforeUpload = (file) => {
-    stateData.fileArr = [file];
-    stateData.zizhiForm.file = [file];
+    stateData.zizhiForm.fileArr = [file];
+    refZizhi.value.clearValidate("fileArr");
+
     return false;
   };
 

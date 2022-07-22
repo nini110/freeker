@@ -71,6 +71,18 @@ $baseFontsize: 14px;
             }
         }
 
+        &.sqz {
+            &:before {
+                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+            }
+        }
+
+        &.xtshz {
+            &:before {
+                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+            }
+        }
+
         &.dsh {
             &:before {
                 background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
@@ -91,25 +103,28 @@ $baseFontsize: 14px;
 
         &.dqr {
             &:before {
-                background: linear-gradient(150deg, #2bbccd  50%, #fff 150%);
+                background: linear-gradient(150deg, #2bbccd 50%, #fff 150%);
             }
         }
+
         &.dtg {
             &:before {
-                background: linear-gradient(150deg, #aa6cf5  50%, #fff 150%);
+                background: linear-gradient(150deg, #aa6cf5 50%, #fff 150%);
             }
-        } 
+        }
+
         &.wtg {
             &:before {
-                background: linear-gradient(150deg, #f56c6c  50%, #fff 150%);
+                background: linear-gradient(150deg, #f56c6c 50%, #fff 150%);
             }
-        }                
+        }
 
         &.ywc {
             &:before {
                 background: linear-gradient(150deg, #40a0ff 50%, #fff 150%);
             }
         }
+
         &.ybh {
             &:before {
                 background: linear-gradient(150deg, #ff4d4f 50%, #fff 150%);
@@ -124,6 +139,7 @@ $baseFontsize: 14px;
             flex-wrap: wrap;
             justify-content: center;
             align-content: center;
+
             span {
                 text-align: center;
                 flex-basis: 100%;
@@ -144,9 +160,18 @@ $baseFontsize: 14px;
                     color: #fff;
                 }
 
-                &.dsh {
-                    background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+                &.sqz {
+                    background: linear-gradient(150deg, #8e9cc0 50%, #64d628b3 150%);
                 }
+
+                &.xtshz {
+                    background: linear-gradient(150deg, #8e9cc0 50%, #fff 150%);
+                }
+
+                &.dsh {
+                    background: linear-gradient(150deg, #8896b3 50%, #fd351c61 150%);
+                }
+
                 &.dqd {
                     background: linear-gradient(150deg, #e6a23c 50%, #fff 150%);
                 }
@@ -158,12 +183,15 @@ $baseFontsize: 14px;
                 &.dqr {
                     background: linear-gradient(150deg, #2bbccd 50%, #fff 150%);
                 }
+
                 &.dtg {
                     background: linear-gradient(150deg, #aa6cf5 50%, #fff 150%);
                 }
+
                 &.wtg {
                     background: linear-gradient(150deg, #f56c6c 50%, #fff 150%);
                 }
+
                 &.ywc {
                     background: linear-gradient(150deg, #40a0ff 50%, #fff 150%);
                 }
@@ -171,9 +199,11 @@ $baseFontsize: 14px;
                 &.yqx {
                     background: linear-gradient(150deg, #c0c4cc 50%, #fff 150%);
                 }
+
                 &.ybh {
                     background: linear-gradient(150deg, #ff4d4f 50%, #fff 150%);
                 }
+
                 // color: #ff4d4f;
                 // background: #f6dede;
                 // border-color: #ee8385;

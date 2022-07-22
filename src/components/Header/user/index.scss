@@ -11,7 +11,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-
+        margin-right: 20px;
         img {
             width: 95%;
             height: 95%;
@@ -20,26 +20,26 @@
 
     &_box {
         flex-basis: 70%;
-
         &_item {
             width: 100%;
             font-size: 16px;
             line-height: 26px;
-            padding: 3px 0;
+            padding: 3px 10px 3px 0;
             display: flex;
             flex-wrap: nowrap;
             align-items: flex-start;
             justify-content: flex-start;
             margin-bottom: 0px;
-
+            background-color: #f9f9f9ab;
+            border-radius: 4px;
+            margin-bottom: 5px;
             .label {
                 width: 80px;
                 text-align: right;
-                color: #908e8e;
+                color: #909399;
                 margin-right: 12px;
                 line-height: 32px;
-
-                &:before {
+                .anticon {
                     margin-right: 3px;
                 }
 
@@ -199,17 +199,20 @@
     }
 
     &-form {
-        // padding: 0 20px;
-
         &-div {
             flex-basis: 48%;
         }
 
         &-item {
-            margin-bottom: 10px;
+            margin-bottom: 22px;
 
             &-label label {
                 font-size: 16px;
+            }
+            &-explain-connected {
+                position: absolute!important;
+                bottom: -24px;
+                font-size: 12px;
             }
         }
     }

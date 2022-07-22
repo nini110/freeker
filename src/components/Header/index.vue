@@ -26,14 +26,21 @@
         </a-menu>
       </div>
       <div class="headerBox_user">
-        <div class="headerBox_search_txt" @click="openMsgDialog">
-          <a-badge count="new">
+        <div
+          v-if="store.getters.account"
+          class="headerBox_search_txt"
+          @click="openMsgDialog"
+        >
+          <a-badge color="#f50" :count="countNum">
             <sound-outlined />
           </a-badge>
-          <p>消息</p>
         </div>
         <div v-if="store.getters.account">
-          <a-popover placement="rightBottom" overlayClassName="userPopver" arrow-point-at-center>
+          <a-popover
+            placement="rightBottom"
+            overlayClassName="userPopver"
+            arrow-point-at-center
+          >
             <template #content>
               <p class="t3" @click="openDialog"><user-outlined />个人信息</p>
               <p class="t4" @click="logoutEvent">
@@ -41,13 +48,17 @@
               </p>
             </template>
             <template #title>
-              <p class="t1"><smile-outlined />{{ store.getters.username }}</p>
+              <p class="t1">
+                <heart-two-tone two-tone-color="#eb2f96" />{{
+                  store.getters.username
+                }}
+              </p>
               <p class="t2"><span>账号</span>{{ store.getters.account }}</p>
             </template>
-            <img :src="store.getters.userImg" alt=""/>
+            <img :src="store.getters.userImg" alt="" />
           </a-popover>
         </div>
-        <div v-else @click="openLoginDialog">登录</div>
+        <div v-else class="loin" @click="openLoginDialog">登录</div>
       </div>
     </div>
   </div>
@@ -67,14 +78,22 @@
 </template>
 <script setup>
 import {
-  UserOutlined,
-  FrownOutlined,
-  SoundOutlined,
   PoweroffOutlined,
-  SmileOutlined,
+  UserOutlined,
+  HeartTwoTone,
+  SoundOutlined,
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
-import { ref, reactive, watch, toRefs, computed, onBeforeMount } from "vue";
+import {
+  ref,
+  reactive,
+  watch,
+  toRefs,
+  computed,
+  onBeforeMount,
+  onBeforeUnmount,
+  onMounted,
+} from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import UserDialog from "./user/index.vue";
@@ -126,27 +145,41 @@ function relate_menu() {
   return { ...toRefs(stateData), menuClick };
 }
 // 消息弹层
-let { showMsg, mailList, openMsgDialog, changeMsgTag } = relate_msg();
+let {
+  showMsg,
+  mailList,
+  countNum,
+  apiPort_mail_no,
+  openMsgDialog,
+  changeMsgTag,
+} = relate_msg();
 function relate_msg() {
   let stateData = reactive({
     showMsg: false,
     mailList: [],
+    countNum: 0,
   });
-  let apiPort_list = () => {
+  // 获取未读条数
+  let apiPort_mail_no = () => {
     stationMailList({
-      no: "",
-    }).then((res) => {});
+      ordering: "",
+      mail_status: 0,
+      page: 1,
+      page_size: 100,
+    }).then((res) => {
+      if (res.data.code === 200) {
+        stateData.countNum = res.data.data.length;
+      }
+    });
   };
   let openMsgDialog = () => {
     stateData.showMsg = true;
   };
   let changeMsgTag = () => {
     stateData.showMsg = false;
+    apiPort_mail_no();
   };
-  onBeforeMount(() => {
-    apiPort_list();
-  });
-  return { ...toRefs(stateData), openMsgDialog, changeMsgTag };
+  return { ...toRefs(stateData), apiPort_mail_no, openMsgDialog, changeMsgTag };
 }
 // 用户弹层相关
 let {
@@ -233,13 +266,13 @@ function relate_user() {
     stateData.showDialog = false;
   };
   let watch_acountId = watch(
-    store,
+    store.state.pageData,
     (newval, oldval) => {
-      if (store.getters.accountId) {
+      if (newval.accountId) {
         apiPort_user();
       }
     },
-    { immediate: true, deep: true }
+    { immediate: true }
   );
   let closeMstDialog = () => {
     apiPort_user();
@@ -247,12 +280,22 @@ function relate_user() {
   return { ...toRefs(stateData), openDialog, changeDialogTag, closeMstDialog };
 }
 // 登录
-let { showLogin, logoutEvent, openLoginDialog, changeLogTag } = relate_login();
+let { showLogin, interval, logoutEvent, openLoginDialog, changeLogTag } =
+  relate_login();
 function relate_login() {
   let stateData = reactive({
     showLogin: false,
+    interval: null,
   });
-
+  let intervalSet = () => {
+    stateData.interval = setInterval(() => {
+      apiPort_mail_no();
+    }, 30000);
+  };
+  let intervalMove = () => {
+    clearInterval(stateData.interval);
+    stateData.interval = null;
+  };
   let openLoginDialog = () => {
     stateData.showLogin = true;
   };
@@ -264,11 +307,13 @@ function relate_login() {
       okText: "退出",
       cancelText: "取消",
       onOk() {
-        localStorage.removeItem("token");
-        store.commit("pageData/SET_USERNAME", '');
+        store.commit("pageData/SET_SSO", "");
+        store.commit("pageData/SET_USERNAME", "");
         store.commit("pageData/SET_ACCOUNT", "");
         store.commit("pageData/SET_ACCOUNTID", null);
         store.commit("pageData/SET_USERIMG", "");
+        clearInterval(stateData.interval);
+        stateData.interval = null;
         $router.replace({
           path: "/home",
         });
@@ -278,9 +323,24 @@ function relate_login() {
       },
     });
   };
-  let changeLogTag = () => {
+  // 登录
+  let changeLogTag = (val) => {
     stateData.showLogin = false;
+    if (val) {
+      intervalSet();
+      apiPort_mail_no();
+    }
   };
+
+  onMounted(() => {
+    if (store.getters.account) {
+      intervalSet();
+      apiPort_mail_no();
+    }
+  });
+  onBeforeUnmount(() => {
+    intervalMove();
+  });
   return { ...toRefs(stateData), logoutEvent, openLoginDialog, changeLogTag };
 }
 </script>

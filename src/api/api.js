@@ -55,6 +55,16 @@ export const stationMailList = request({
     url:`${BASE_PATH2}/index_api/station_mail`,
     method:'get',
 })
+// 站内信-单个查看
+export const mailSee = request({
+    url:`${BASE_PATH2}/index_api/station_mail`,
+    method:'get',
+})
+// 站内信-一键已读
+export const mailSeeAll = request({
+    url:`${BASE_PATH2}/index_api/station_mail/have_read`,
+    method:'post',
+})
 
 // 项目中心列表
 export const getProjList = request({
@@ -105,4 +115,9 @@ export const applyPay = request({
 export const payCenterList = request({
     url:`${BASE_PATH2}/index_api/ad_project_user/settlement_center`,
     method:'get',
+})
+// 结算中心 -- 项目绑定美事通
+export const projBindMst = request({
+    url:`${BASE_PATH2}/index_api/ad_project_user`,
+    method:'patch',
 })
