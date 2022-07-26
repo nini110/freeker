@@ -25,7 +25,7 @@
           <div class="banlanceBox_item_info" @click="openPage(item)">
             <p>
               <account-book-outlined /><span>佣金</span
-              ><span>{{ item.brokerage }}</span>
+              ><span>￥{{ item.brokerage }}</span>
             </p>
             <p>
               <user-outlined /><span>提现账号</span

@@ -13,15 +13,16 @@ router.beforeEach((to, from, next) => {
         getRouter = handleRoutes(routes)
         routerGo(to, next)
         NProgress.done()
-    } else if (getRouter && tag && !localStorage.getItem('token')) {
-        tag = false
-        next({
-            path: "/home",
-        });
     } else {
         next()
         NProgress.done()
     }
+    // else if (getRouter && tag && !localStorage.getItem('token')) {
+    //     tag = false
+    //     next({
+    //         path: "/home",
+    //     });
+    // } 
 })
 router.afterEach(() => {
     NProgress.done()

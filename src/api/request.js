@@ -64,27 +64,33 @@ service.interceptors.response.use(response => {
     if (response.data.code === 4101) {
         message.error('登录失效，请重新登录')
         store.commit("pageData/SET_SSO", '');
-        store.commit("pageData/SET_USERNAME",'');
+        store.commit("pageData/SET_USERNAME", '');
         store.commit("pageData/SET_ACCOUNT", '');
         store.commit("pageData/SET_ACCOUNTID", '');
         store.commit("pageData/SET_USERIMG", '');
+        store.commit("interval/SET_INTERVALTAG", false);
         setTimeout(() => {
-            // window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
+            window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
         }, 1000);
         return
     }
     return response
 }, error => {
-    console.log(error)
-
     if (error && error.response) {
         switch (error.response.status) {
             case 404:
                 error.message = '网络请求不存在'
-        }
+                break
+            case 405:
+                error.message = '网络请求不允许'
+                break
+            default:
+                error.message = '请检查网络连接'
+                break
 
+        }
     }
-    message.info(error);
+    message.info(error.message);
 })
 
 async function axiosHttp(body, params, config) {

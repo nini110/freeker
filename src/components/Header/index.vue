@@ -93,6 +93,7 @@ import {
   onBeforeMount,
   onBeforeUnmount,
   onMounted,
+  onUnmounted,
 } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
@@ -100,7 +101,6 @@ import UserDialog from "./user/index.vue";
 import LoginDialog from "../Login/index.vue";
 import MsgDialog from "../MsgDialog/index.vue";
 import { userDetail, getZizhi, stationMailList } from "@/api/api";
-
 const store = useStore();
 let $route = useRoute();
 let $router = useRouter();
@@ -287,7 +287,12 @@ function relate_login() {
     showLogin: false,
     interval: null,
   });
+  let openLoginDialog = () => {
+    stateData.showLogin = true;
+  };
+  // 定时器
   let intervalSet = () => {
+    apiPort_mail_no();
     stateData.interval = setInterval(() => {
       apiPort_mail_no();
     }, 30000);
@@ -296,9 +301,18 @@ function relate_login() {
     clearInterval(stateData.interval);
     stateData.interval = null;
   };
-  let openLoginDialog = () => {
-    stateData.showLogin = true;
-  };
+  let watchStore = watch(
+    store.state.interval,
+    (newval, oldval) => {
+      intervalMove();
+      if (newval.intervalTag) {
+        intervalSet();
+      } else {
+        intervalMove();
+      }
+    },
+    { immediate: true }
+  );
   // 退出登录
   let logoutEvent = () => {
     Modal.confirm({
@@ -312,8 +326,7 @@ function relate_login() {
         store.commit("pageData/SET_ACCOUNT", "");
         store.commit("pageData/SET_ACCOUNTID", null);
         store.commit("pageData/SET_USERIMG", "");
-        clearInterval(stateData.interval);
-        stateData.interval = null;
+        store.commit("interval/SET_INTERVALTAG", false);
         $router.replace({
           path: "/home",
         });
@@ -326,20 +339,16 @@ function relate_login() {
   // 登录
   let changeLogTag = (val) => {
     stateData.showLogin = false;
-    if (val) {
-      intervalSet();
-      apiPort_mail_no();
-    }
+    store.commit("interval/SET_INTERVALTAG", val);
   };
-
   onMounted(() => {
-    if (store.getters.account) {
-      intervalSet();
-      apiPort_mail_no();
-    }
+    store.commit(
+      "interval/SET_INTERVALTAG",
+      store.getters.account ? true : false
+    );
   });
-  onBeforeUnmount(() => {
-    intervalMove();
+  onUnmounted(() => {
+    store.commit("interval/SET_INTERVALTAG", false);
   });
   return { ...toRefs(stateData), logoutEvent, openLoginDialog, changeLogTag };
 }

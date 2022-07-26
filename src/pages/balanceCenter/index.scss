@@ -52,11 +52,11 @@ $baseFontsize: 14px;
 
                 &:nth-child(1),
                 &:nth-child(2) {
-                    color: #908e8e;
+                    color: #909399;
                 }
 
                 &:nth-child(3) {
-                    color: #6d6c6c;
+                    color: #606266;
                 }
 
                 &.cur {
@@ -69,16 +69,25 @@ $baseFontsize: 14px;
             display: flex;
             justify-content: center;
             align-content: center;
-            padding: 8px 0;
             transition: all .5s linear;
             background-color: #dbd6d62e;
 
             span {
                 font-weight: bold;
-                color: #888 !important;
+                flex-basis: 100%;
+                padding: 8px 0;
+                text-align: center;
+                color: #909399;
 
                 &.pointer {
                     cursor: pointer;
+                    transition: all .3s linear;
+
+                    &:hover {
+                        background-color: #2b2b2b40;
+                        color: #fff;
+                    }
+
                 }
             }
         }
@@ -92,6 +101,7 @@ $baseFontsize: 14px;
         &-group {
             width: 100%;
         }
+
         &-wrapper {
             font-size: 16px;
             width: 100%;
@@ -110,7 +120,7 @@ $baseFontsize: 14px;
         &-tab {
             border-radius: 6px 6px 0 0 !important;
             padding: 10px 20px !important;
-            margin: 0 !important;
+            margin: 0 6px 0 0 !important;
             width: 150px !important;
             box-sizing: border-box;
             text-align: center;
@@ -136,6 +146,7 @@ $baseFontsize: 14px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+
         .bind {
             &_info {
                 position: relative;
@@ -184,6 +195,7 @@ $baseFontsize: 14px;
                 flex-wrap: wrap;
                 justify-content: center;
                 align-content: space-between;
+
                 &_bind {
                     div {
                         flex-basis: 100%;

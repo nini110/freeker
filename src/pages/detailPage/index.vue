@@ -1,7 +1,10 @@
 <template>
   <div class="detailBox" ref="deta">
-    <div class="detailBox_topbtn" :class="iconClass">
+    <div class="detailBox_topbtn">
       <a-page-header title="返回" @back="backEvent"> </a-page-header>
+      <div class="rttopStus" :class="iconClass">
+        <span>{{ iconTxt }}</span>
+      </div>
     </div>
     <div class="detailBox_div">
       <h2>项目描述</h2>
@@ -182,75 +185,54 @@
       v-model:visible="dataDialog"
       title="数据信息上传"
       @ok="handleOk"
+      @cancel="handlecancel"
       centered
       :getContainer="$refs.deta"
       :maskClosable="false"
       class="dataDialog"
+      :width="600"
     >
-      <a-form :model="formData" v-bind="formItemLayout"
+      <a-form ref="refshujuData" :model="formData" :rules="rules"
         ><a-row>
           <a-col :span="12">
-            <a-form-item label="花费">
-              <a-input
-                v-model:value="formData.cost"
-                placeholder="请输入花费"
-              /> </a-form-item
+            <a-form-item label="花费" name="cost">
+              <a-input v-model:value="formData.cost" /> </a-form-item
           ></a-col>
           <a-col :span="12">
-            <a-form-item label="展示数">
-              <a-input
-                v-model:value="formData.display"
-                placeholder="请输入展示数"
-              />
+            <a-form-item label="展示数" name="display">
+              <a-input v-model:value="formData.display" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="点击数">
-              <a-input
-                v-model:value="formData.click"
-                placeholder="请输入点击数"
-              />
+            <a-form-item label="点击数" name="click">
+              <a-input v-model:value="formData.click" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="点击率">
-              <a-input
-                v-model:value="formData.clickPer"
-                placeholder="请输入点击率"
+            <a-form-item label="点击率" name="clickPer">
+              <a-input v-model:value="formData.clickPer"
                 ><template #addonAfter>%</template></a-input
               >
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item label="平均千次展示成本">
-              <a-input
-                v-model:value="formData.thDisCost"
-                placeholder="请输入平均千次展示成本"
-              />
+            <a-form-item label="平均千次展示成本" name="thDisCost">
+              <a-input v-model:value="formData.thDisCost" />
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item label="平均点击成本">
-              <a-input
-                v-model:value="formData.disCost"
-                placeholder="请输入平均点击成本"
-              />
+            <a-form-item label="平均点击成本" name="disCost">
+              <a-input v-model:value="formData.disCost" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="总订单行数">
-              <a-input
-                v-model:value="formData.total"
-                placeholder="请输入总订单行数"
-              />
+            <a-form-item label="总订单行数" name="total">
+              <a-input v-model:value="formData.total" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="总订单金额">
-              <a-input
-                v-model:value="formData.totalMoney"
-                placeholder="请输入总订单金额"
-              />
+            <a-form-item label="总订单金额" name="totalMoney">
+              <a-input v-model:value="formData.totalMoney" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -267,23 +249,51 @@
       :keyboard="false"
       :getContainer="$refs.deta"
       @ok="evalueEvent"
+      @cancel="evalueCancel"
     >
-      <a-rate v-model:value="rateValue" />
+      <a-form ref="refRate" :model="rateData" :rules="rules">
+        <a-row>
+          <a-col :span="24">
+            <a-form-item label="" name="rateValue">
+              <a-rate
+                v-model:value="rateData.rateValue"
+                :allowClear="false" /></a-form-item
+          ></a-col>
+          <a-col :span="24">
+            <a-form-item label="" name="areaValue">
+              <a-textarea
+                v-model:value="rateData.areaValue"
+                placeholder="请输入评价内容"
+                :auto-size="{ minRows: 2, maxRows: 5 }"
+                allow-clear /></a-form-item
+          ></a-col>
+        </a-row>
+      </a-form>
+      <!-- <a-rate v-model:value="rateValue" />
       <a-textarea
         v-model:value="areaValue"
         placeholder="请输入评价内容"
         :auto-size="{ minRows: 2, maxRows: 5 }"
         allow-clear
-      />
+      /> -->
     </a-modal>
   </div>
 </template>
 <script setup>
-import { ref, toRefs, toRef, reactive, watch, createVNode } from "vue";
+import {
+  ref,
+  toRefs,
+  toRef,
+  reactive,
+  watch,
+  createVNode,
+  onBeforeMount,
+} from "vue";
 import { LeftOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import dayjs from "dayjs";
 import { applyProj, uploadData, okFinish, upAagain } from "@/api/api";
+import optionJs from "@/utils/option.js";
 
 const $props = defineProps({
   stusCode: Number,
@@ -293,17 +303,21 @@ const $props = defineProps({
 let { stusCode, resData, userID } = toRefs($props);
 let noDatainfo = ref(true);
 let showEdit = ref(false);
+let refshujuData = ref();
+let refRate = ref();
 // 项目详情页相关
 let $emit = defineEmits(["back", "finish"]);
-let { iconClass, detailData, backEvent } = relate_detail();
+let { iconClass, iconTxt, detailData, backEvent } = relate_detail();
 function relate_detail() {
   let stateDate = reactive({
     iconClass: "",
+    iconTxt: "",
     detailData: {
       detailList: [], // 项目信息
       toufanglist: [], // 投放信息
       shujuList: [], //数据信息
     },
+    platOption: null,
   });
   let backEvent = () => {
     $emit("back");
@@ -311,6 +325,7 @@ function relate_detail() {
   let watch_resData = watch(
     resData,
     (newval, oldval) => {
+      stateDate.platOption = optionJs.categoryOpt;
       let target = stateDate.detailData;
       // 投放比例
       let proportion = JSON.parse(newval.delivery_proportion);
@@ -326,68 +341,43 @@ function relate_detail() {
         "YYYY-MM-DD HH:mm"
       );
       let enddate = dayjs(newval.delivery_end_date).format("YYYY-MM-DD HH:mm");
-      (target.delivery_date = startdate + " 至 " + enddate),
-        // 截止时间
-        (target.project_end_date = dayjs(newval.project_end_date).format(
-          "YYYY-MM-DD HH:mm"
-        ));
+      target.delivery_date = startdate + " 至 " + enddate;
+      // 截止时间
+      target.project_end_date = dayjs(newval.project_end_date).format(
+        "YYYY-MM-DD HH:mm"
+      );
       // 上传时间
       target.create_time = dayjs(newval.create_time).format("YYYY-MM-DD HH:mm");
       // 目标
       target.delivery_target = "";
       let delivery_target = JSON.parse(newval.delivery_target);
-      delivery_target
-        .slice(0, delivery_target.length - 2)
-        .forEach((val, index) => {
-          target.delivery_target += `${val.label}：${val.value}`;
-        });
+      if (delivery_target.length === 3 && !delivery_target[0].label) {
+        target.delivery_target = "--";
+      } else {
+        delivery_target
+          .slice(0, delivery_target.length - 2)
+          .forEach((val, index) => {
+            target.delivery_target += `${val.label}：${val.value}`;
+          });
+      }
       // 产品类型
-      switch (parseInt(newval.category)) {
-        case 1:
-          target.categoryCn = "家用电器";
+      for (let i of stateDate.platOption) {
+        if (i.value === parseInt(newval.category)) {
+          target.categoryCn = i.label;
           break;
-        case 2:
-          target.categoryCn = "手机数码";
-          break;
-        case 3:
-          target.categoryCn = "电脑办公";
-          break;
-        case 4:
-          target.categoryCn = "家居厨具";
-          break;
-        case 5:
-          target.categoryCn = "服饰鞋品";
-          break;
-        case 6:
-          target.categoryCn = "美妆";
-          break;
-        case 7:
-          target.categoryCn = "母婴用品";
-          break;
-        case 8:
-          target.categoryCn = "玩具乐器";
-          break;
-        case 9:
-          target.categoryCn = "食品饮料";
-          break;
-        case 10:
-          target.categoryCn = "医药保健";
-          break;
-        case 11:
-          target.categoryCn = "图书";
-          break;
+        }
       }
       // 难度
-      switch(newval.project_level) {
+      switch (newval.project_level) {
         case 1:
-          target.project_levelCn = '简单'
+          target.project_levelCn = "简单";
           break;
         case 2:
-          target.project_levelCn = '一般'
+          target.project_levelCn = "一般";
           break;
         case 3:
-          target.project_levelCn = '困难'
-          break;                    
+          target.project_levelCn = "困难";
+          break;
       }
       // 投放平台
       switch (parseInt(newval.delivery_platform)) {
@@ -398,11 +388,11 @@ function relate_detail() {
       target.detailList = [
         {
           label: "服务费",
-          value: newval.brokerage + "元",
+          value: "￥" + newval.brokerage,
         },
         {
           label: "预算金额",
-          value: newval.budget + "元",
+          value: "￥" + newval.budget,
         },
         {
           label: "产品类型",
@@ -431,7 +421,7 @@ function relate_detail() {
         },
         {
           label: "活动投放节奏",
-          value: target.delivery_jiezou,
+          value: target.delivery_jiezou || "--",
         },
         {
           label: "参与品牌",
@@ -439,7 +429,7 @@ function relate_detail() {
         },
         {
           label: "投放数量",
-          value: target.delivery_num,
+          value: target.delivery_num || "--",
         },
         {
           label: "任务领取截止时间",
@@ -451,8 +441,8 @@ function relate_detail() {
         },
         {
           label: "备注",
-          value: newval.comment,
-        },                
+          value: newval.comment || "--",
+        },
       ];
       // 投放信息:待启动 进行中 待确认
       if (newval.delivery_info) {
@@ -480,34 +470,42 @@ function relate_detail() {
         target.shujuList = [
           {
             label: "花费",
+            code: "cost",
             value: delRes.cost,
           },
           {
             label: "展示数",
+            code: "display",
             value: delRes.display,
           },
           {
             label: "点击数",
+            code: "click",
             value: delRes.click,
           },
           {
             label: "点击率",
+            code: "clickPer",
             value: delRes.clickPer,
           },
           {
             label: "平均千次展示成本",
+            code: "thDisCost",
             value: delRes.thDisCost,
           },
           {
             label: "平均点击成本",
+            code: "disCost",
             value: delRes.disCost,
           },
           {
             label: "总订单行数",
+            code: "total",
             value: delRes.total,
           },
           {
             label: "总订单金额",
+            code: "totalMoney",
             value: delRes.totalMoney,
           },
         ];
@@ -519,77 +517,130 @@ function relate_detail() {
     stusCode,
     (newval, oldval) => {
       switch (newval) {
+        case 99:
+          iconTxt = "待申请";
+          iconClass = "dsq";
+          break;
         case 0:
+          iconTxt = "申请中";
+          iconClass = "sqz";
+          break;
         case 1:
+          iconTxt = "系统审核中";
+          iconClass = "xtshz";
+          break;
         case 2:
+          iconTxt = "待审核";
           iconClass = "dsh";
           break;
         case 3:
+          iconTxt = "已驳回";
           iconClass = "ybh";
           break;
         case 4:
+          iconTxt = "待启动";
           iconClass = "dqd";
           break;
         case 5:
+          iconTxt = "进行中";
           iconClass = "jxz";
           break;
         case 6:
+          iconTxt = "待确认";
           iconClass = "dqr";
           break;
         case 7:
+          iconTxt = "待通过";
           iconClass = "dtg";
           break;
         case 8:
+          iconTxt = "未通过";
           iconClass = "wtg";
           break;
         case 9:
+          iconTxt = "已完成";
           iconClass = "ywc";
           break;
         case 10:
+          iconTxt = "待汇款";
           iconClass = "dhk";
           break;
         case 11:
+          iconTxt = "待打款";
           iconClass = "ddk";
           break;
         case 12:
-          iconClass = "yjs";
+          iconTxt = "已结算";
+          iconClass = "ywc";
           break;
       }
     },
     { immediate: true }
   );
-  return { ...toRefs(stateDate), backEvent, iconClass };
+  return { ...toRefs(stateDate), backEvent, iconClass, iconTxt };
 }
 // 数据信息
 let {
   dataDialog,
   evalueVisible,
-  rateValue,
-  areaValue,
   formData,
+  rateData,
+  rules,
   uploadDataEvent,
   editDataEvent,
   handleOk,
+  handlecancel,
   applyEvent,
   finishEvent,
   evalueEvent,
+  evalueCancel,
   upAgainEvent,
 } = relate_shuju();
 function relate_shuju() {
   let stateData = reactive({
     dataDialog: false,
     evalueVisible: false,
-    rateValue: 0,
-    areaValue: "",
     formData: {
-      cost: 0, // 花费
-      display: 0, // 展示数
-      click: 0, // 点击数
-      clickPer: 0, //点击率
-      thDisCost: 0, // 平均千次展示成本
-      disCost: 0, // 平均点击成本
-      total: 0, // 总订单行数
-      totalMoney: 0, // 总订单金额
+      cost: "", // 花费
+      display: "", // 展示数
+      click: "", // 点击数
+      clickPer: "", //点击率
+      thDisCost: "", // 平均千次展示成本
+      disCost: "", // 平均点击成本
+      total: "", // 总订单行数
+      totalMoney: "", // 总订单金额
+    },
+    rateData: {
+      rateValue: 1,
+      areaValue: "",
+    },
+    rules: {
+      cost: [{ required: true, message: "请输入花费", trigger: "change" }],
+      display: [{ required: true, message: "请输入展示数", trigger: "change" }],
+      click: [{ required: true, message: "请输入点击数", trigger: "change" }],
+      clickPer: [
+        { required: true, message: "请输入点击率", trigger: "change" },
+      ],
+      thDisCost: [
+        {
+          required: true,
+          message: "请输入平均千次展示成本",
+          trigger: "change",
+        },
+      ],
+      disCost: [
+        { required: true, message: "请输入平均点击成本", trigger: "change" },
+      ],
+      total: [
+        { required: true, message: "请输入总订单行数", trigger: "change" },
+      ],
+      totalMoney: [
+        { required: true, message: "请输入总订单金额", trigger: "change" },
+      ],
+      rateValue: [{ required: true, message: "请进行评分", trigger: "change" }],
+      areaValue: [
+        { required: true, message: "请输入评价内容", trigger: "change" },
+      ],
     },
   });
   // 申请事件
@@ -625,70 +676,79 @@ function relate_shuju() {
   let uploadDataEvent = () => {
     stateData.dataDialog = true;
   };
+  // 修改数据
   let editDataEvent = () => {
     stateData.dataDialog = true;
-    let delRes = JSON.parse(resData.value.delivery_result);
-    stateData.formData.cost = delRes.cost;
-    stateData.formData.display = delRes.display;
-    stateData.formData.click = delRes.click;
-    stateData.formData.clickPer = delRes.clickPer;
-    stateData.formData.thDisCost = delRes.thDisCost;
-    stateData.formData.disCost = delRes.disCost;
-    stateData.formData.total = delRes.total;
-    stateData.formData.totalMoney = delRes.totalMoney;
+    detailData.value.shujuList.forEach((val, idx) => {
+      stateData.formData[val.code] = val.value;
+    });
   };
   // 上传数据--确认操作
   let handleOk = () => {
-    uploadData(
-      {
-        delivery_result: JSON.stringify(stateData.formData),
-      },
-      userID.value
-    ).then((res) => {
-      if (res.data.code === 200) {
-        message.success("数据信息上传成功");
-        noDatainfo.value = false;
-        showEdit.value = true;
-        stateData.dataDialog = false;
-        let delRes = JSON.parse(res.data.data.delivery_result);
-        detailData.value.shujuList = [
-          {
-            label: "花费",
-            value: delRes.cost,
-          },
-          {
-            label: "展示数",
-            value: delRes.display,
-          },
-          {
-            label: "点击数",
-            value: delRes.click,
-          },
-          {
-            label: "点击率",
-            value: delRes.clickPer,
-          },
-          {
-            label: "平均千次展示成本",
-            value: delRes.thDisCost,
-          },
-          {
-            label: "平均点击成本",
-            value: delRes.disCost,
-          },
-          {
-            label: "总订单行数",
-            value: delRes.total,
-          },
-          {
-            label: "总订单金额",
-            value: delRes.totalMoney,
-          },
-        ];
-      } else {
-        message.error(res.data.msg);
-      }
+    refshujuData.value.validate().then((res) => {
+      uploadData(
+        {
+          delivery_result: JSON.stringify(stateData.formData),
+        },
+        userID.value
+      ).then((res) => {
+        if (res.data.code === 200) {
+          message.success("数据信息上传成功");
+          noDatainfo.value = false;
+          showEdit.value = true;
+          stateData.dataDialog = false;
+          let delRes = JSON.parse(res.data.data.delivery_result);
+          detailData.value.shujuList = [
+            {
+              label: "花费",
+              code: "cost",
+              value: delRes.cost,
+            },
+            {
+              label: "展示数",
+              code: "display",
+              value: delRes.display,
+            },
+            {
+              label: "点击数",
+              code: "click",
+              value: delRes.click,
+            },
+            {
+              label: "点击率",
+              code: "clickPer",
+              value: delRes.clickPer,
+            },
+            {
+              label: "平均千次展示成本",
+              code: "thDisCost",
+              value: delRes.thDisCost,
+            },
+            {
+              label: "平均点击成本",
+              code: "disCost",
+              value: delRes.disCost,
+            },
+            {
+              label: "总订单行数",
+              code: "total",
+              value: delRes.total,
+            },
+            {
+              label: "总订单金额",
+              code: "totalMoney",
+              value: delRes.totalMoney,
+            },
+          ];
+        } else {
+          message.error(res.data.msg);
+        }
+      });
     });
+  };
+  // 上传数据--取消
+  let handlecancel = () => {
+    refshujuData.value.resetFields();
   };
   // 确认完成--打开弹层----------------------
   let finishEvent = () => {
@@ -696,19 +756,25 @@ function relate_shuju() {
   };
   // 确认完成--评价操作
   let evalueEvent = () => {
-    okFinish({
-      ad_project: resData.value.id,
-      user_evaluate_score: stateData.rateValue,
-      user_evaluate_content: stateData.areaValue,
-    }).then((res) => {
-      if (res.data.code === 200) {
-        message.success("已确认完成");
-        stateData.evalueVisible = false;
-        $emit("back");
-      } else {
-        message.error(res.data.msg);
-      }
+    refRate.value.validate().then((res) => {
+      okFinish({
+        ad_project: resData.value.id,
+        user_evaluate_score: stateData.rateData.rateValue,
+        user_evaluate_content: stateData.rateData.areaValue,
+      }).then((res) => {
+        if (res.data.code === 200) {
+          message.success("已确认完成");
+          stateData.evalueVisible = false;
+          $emit("back");
+        } else {
+          message.error(res.data.msg);
+        }
+      });
     });
+  };
+  // 评价取消
+  let evalueCancel = () => {
+    refRate.value.resetFields();
   };
   let upAgainEvent = () => {
     upAagain({
@@ -728,9 +794,11 @@ function relate_shuju() {
     uploadDataEvent,
     editDataEvent,
     handleOk,
+    handlecancel,
     applyEvent,
     finishEvent,
     evalueEvent,
+    evalueCancel,
     upAgainEvent,
   };
 }

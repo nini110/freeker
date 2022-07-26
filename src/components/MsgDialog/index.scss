@@ -92,9 +92,31 @@
     }
 
     &-collapse-header {
-        font-weight: bold;
         font-size: 16px;
-
+        align-items: center!important;
+        .header {
+            display: flex;
+            align-items: center;
+            &_img {
+                width: 30px;
+                height: 30px;
+                margin-right: 20px;
+                border-radius: 50%;
+            }
+            p {
+                display: flex;
+                flex-wrap: wrap;
+                
+            }
+            &_content {
+                width: 100%;
+                font-size: 12px;
+            }
+            &_txt {
+                width: 100%;
+        font-weight: bold;
+            }
+        }
         .yidu {
             color: #606266;
         }
@@ -109,14 +131,23 @@
     }
 
     &-tabs-tab {
+        transition: all .2s linear;
         .badge {
             font-size: 16px;
         }
+        .anticon {
+            color: #ff5c5c;
+            font-size: 18px;
+        }
 
         &-active {
+            background-color: #f0f0f0;
             .badge {
-                color: #1890ff;
+                color: #333;
             }
+        }
+        &:hover {
+            background-color: #f0f0f0;
         }
     }
 

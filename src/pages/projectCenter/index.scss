@@ -7,20 +7,25 @@
 
 .searchIpt {
 
-   padding: 20px 70px 0 0;
+   padding: 20px 20px 0 0;
    box-sizing: border-box;
 
-   :deep .ant-form {
-      width: 100%;
-      display: flex;
-      &-item {
-         flex-basis: 45%!important;
-         margin: 0;
-
-         &:last-child {
-            flex-basis: 10%!important;
-            text-align: right;
+   :deep .ant {
+      &-form {
+         width: 100%;
+         display: flex;
+         &-item {
+            flex-basis: 40%!important;
+            margin: 0;
+   
+            &:last-child {
+               flex-basis: 20%!important;
+               text-align: right;
+            }
          }
+      }
+      &-btn {
+         margin-left: 5px;
       }
    }
 }

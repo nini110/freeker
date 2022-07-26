@@ -1,5 +1,6 @@
 $baseFontsize: 14px;
 $baseHsize: 18px;
+
 .detailBox {
     padding: 25px 40px;
 
@@ -20,6 +21,7 @@ $baseHsize: 18px;
             left: 0;
             bottom: -6px;
         }
+
         .editspan {
             color: red;
             font-size: 16px;
@@ -36,10 +38,12 @@ $baseHsize: 18px;
         font-size: $baseFontsize;
         line-height: 26px;
         margin-bottom: 10px;
+
         .rateInfo {
             margin: 5px 0 15px 0;
             text-indent: 2em;
         }
+
         .label {
             margin-right: 15px;
         }
@@ -50,6 +54,7 @@ $baseHsize: 18px;
         border: 1px solid #e7e7e72e;
         border-radius: 5px;
         background-color: #e7e7e726;
+
         h3 {
             font-size: 16px;
             line-height: 30px;
@@ -82,7 +87,7 @@ $baseHsize: 18px;
 
                 span {
                     &:first-child {
-                        color: #606266;
+                        color: #909399;
                         margin-right: 15px;
                     }
                 }
@@ -102,6 +107,7 @@ $baseHsize: 18px;
                 }
             }
         }
+
         &_subbox {
             display: flex;
             flex-wrap: wrap;
@@ -116,60 +122,101 @@ $baseHsize: 18px;
     &_topbtn {
         position: relative;
         border-bottom: 1px solid #f3f1f1;
-        &:after {
-            content: '';
-            width: 100px;
-            height: 100px;
-            background-size: contain;
-            background-position: top right;
-            background-repeat: no-repeat;
+
+        .rttopStus {
             position: absolute;
+            box-sizing: border-box;
             right: 0;
-            top: 0;
-            z-index: 10;
+            bottom: -87;
+            padding: 15px 10px 40px 10px;
+            color: #fff;
+            text-align: center;
+            background: red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            span {
+                writing-mode: vertical-lr;
+            }
+
+            &:after {
+                content: '';
+                border: 26px gold solid;
+                border-left: 21px transparent solid;
+                border-right: 21px transparent solid;
+                border-top: 26px transparent solid;
+                border-bottom: 20px #fff solid;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+            }
+            &.dsq {
+                background: linear-gradient(150deg, #2d2a2a 50%, #fff 150%);
+            }
+            &.sqz {
+                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+            }
+
+            &.xtshz {
+                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+            }
+
+            &.dsh {
+                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
+            }
+
+            &.dqd {
+                background: linear-gradient(150deg, #e6a23c 50%, #fff 150%);
+            }
+
+            &.jxz {
+                background: linear-gradient(150deg, #5cbb7a 50%, #fff 150%);
+            }
+
+            &.dqr {
+                background: linear-gradient(150deg, #2bbccd 50%, #fff 150%);
+            }
+
+            &.dtg {
+                background: linear-gradient(150deg, #aa6cf5 50%, #fff 150%);
+            }
+
+            &.wtg {
+                background: linear-gradient(150deg, #f56c6c 50%, #fff 150%);
+            }
+
+            &.ywc {
+                background: linear-gradient(150deg, #40a0ff 50%, #fff 150%);
+            }
+
+            &.ybh {
+                background: linear-gradient(150deg, #ff4d4f 50%, #fff 150%);
+            }
+            // ’‘
+            &.dhk {
+                background: linear-gradient(150deg, #13c2c2 50%, #fff 150%);
+            }
+
+            &.ddk {
+                background: linear-gradient(150deg, #52c41a 50%, #fff 150%);
+            }
         }
 
-        &.dsh:after {
-            background-image: url(../../assets/images/dsh.png);
-        }
 
-        &.dqd:after {
-            background-image: url(../../assets/images/dqd.png);
-        }
-
-        &.jxz:after {
-            background-image: url(../../assets/images/jxz.png);
-        }
-
-        &.dqr:after {
-            background-image: url(../../assets/images/dqr.png);
-        }
-
-        &.ywc:after {
-            background-image: url(../../assets/images/ywc.png);
-        }
-
-        &.yqx:after {
-            background-image: url(../../assets/images/yqx.png);
-        }
-        &.wjs:after {
-            background-image: url(../../assets/images/wjs.png);
-        }
-        &.yjs:after {
-            background-image: url(../../assets/images/yjs.png);
-        }
     }
 }
 
 .dataDialog {
     :deep .ant {
         &-modal {
-
         }
+
         &-form {
             &-item {
                 &-label {
                     width: 120px;
+
                     label {
                         width: 120px;
                     }
@@ -178,4 +225,3 @@ $baseHsize: 18px;
         }
     }
 }
-

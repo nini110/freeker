@@ -13,7 +13,13 @@
     <div v-else>
       <div v-for="(item, idx) in projList" :key="idx" class="planBox iconfont">
         <div v-if="item.project_status !== 0" class="planBox_title">
-          <p v-if="item.project_status === 1 || item.project_status === 2">
+          <p
+            v-if="
+              item.project_status === 1 ||
+              item.project_status === 2 ||
+              item.project_status === 3
+            "
+          >
             <span>申请时间：</span><span>{{ item.sqTime }}</span>
           </p>
           <p v-else>
@@ -21,30 +27,30 @@
           </p>
         </div>
         <div class="planBox_info" :class="item.statusClass">
-          <div>{{ item.project_name }}</div>
-          <div>
+          <div class="planBox_info_div">{{ item.project_name }}</div>
+          <div class="planBox_info_div">
             <span :class="item.statusClass" class="sts">{{
               item.statusCn
             }}</span>
           </div>
-          <div>
+          <div class="planBox_info_div">
             <span class="label">投放平台</span>
             <span>{{ item.platCn }}</span>
           </div>
-          <div>
+          <div class="planBox_info_div">
             <span class="label">服务费</span>
-            <span class="mny">{{ item.brokerage }}</span>
+            <span class="mny">￥ {{ item.brokerage }}</span>
           </div>
           <div class="planBox_info_btn">
-            <span @click="toDetail(item)">查看详情</span>
+            <div><span @click="toDetail(item)">查看详情</span></div>
             <!-- 待审核 -->
-            <span v-if="item.project_status === 0" @click="cancelEvent(item)"
-              >取消申请</span
-            >
+            <div v-if="item.project_status === 0">
+              <span @click="cancelEvent(item)">取消申请</span>
+            </div>
             <!-- 待确认 -->
-            <span v-if="item.project_status === 6" @click="confirmEvent(item)"
-              >确认完成</span
-            >
+            <div v-if="item.project_status === 6">
+              <span @click="confirmEvent(item)">确认完成</span>
+            </div>
             <!-- 已完成 -->
             <!-- <span v-if="item.project_status === 9" @click="payEvent(item)">申请结算</span> -->
           </div>
@@ -70,14 +76,31 @@
       :maskClosable="false"
       :keyboard="false"
       @ok="evalueEvent"
+      @cancel="evalueCancel"
     >
-      <a-rate v-model:value="rateValue" />
+      <a-form ref="refRate" :model="rateData" :rules="rateRules">
+        <a-row>
+          <a-col :span="24">
+            <a-form-item label="" name="rateValue">
+              <a-rate v-model:value="rateData.rateValue" :allowClear="false"/></a-form-item
+          ></a-col>
+          <a-col :span="24">
+            <a-form-item label="" name="areaValue">
+              <a-textarea
+                v-model:value="rateData.areaValue"
+                placeholder="请输入评价内容"
+                :auto-size="{ minRows: 2, maxRows: 5 }"
+                allow-clear /></a-form-item
+          ></a-col>
+        </a-row>
+      </a-form>
+      <!-- <a-rate v-model:value="rateValue" />
       <a-textarea
         v-model:value="areaValue"
         placeholder="请输入评价内容"
         :auto-size="{ minRows: 2, maxRows: 5 }"
         allow-clear
-      />
+      /> -->
     </a-modal>
   </div>
   <DetailPage
@@ -154,6 +177,7 @@ let pageNation = reactive({
   pageSize: 5,
   totalNum: null,
 });
+let refRate = ref();
 // 公共的东西
 let { projList, activeKey, apiPort_list, tabEvent } = relate_plan();
 function relate_plan() {
@@ -306,7 +330,7 @@ function relate_detail() {
   // 关闭详情
   let detailClose = () => {
     stateDate2.showList = true;
-    apiPort_list(activeKey.value, 1, 10);
+    apiPort_list(activeKey.value, 1, 5);
   };
   // 取消申请
   let apiPort_calcel = (id) => {
@@ -351,14 +375,29 @@ function relate_detail() {
   };
 }
 // 确认完成相关
-let { evalueVisible, rateValue, areaValue, rowID, evalueEvent, confirmEvent } =
-  realte_confirm();
+let {
+  rateData,
+  evalueVisible,
+  rowID,
+  rateRules,
+  evalueEvent,
+  confirmEvent,
+  evalueCancel,
+} = realte_confirm();
 function realte_confirm() {
   let stateData = reactive({
+    rateData: {
+      rateValue: 1,
+      areaValue: "",
+    },
     evalueVisible: false,
-    rateValue: 0,
-    areaValue: "",
     rowID: "",
+    rateRules: {
+      rateValue: [{ required: true, message: "请进行评分", trigger: "change" }],
+      areaValue: [
+        { required: true, message: "请输入评价内容", trigger: "change" },
+      ],
+    },
   });
   let confirmEvent = (item) => {
     if (item.delivery_result) {
@@ -383,21 +422,27 @@ function realte_confirm() {
   };
   // 确认完成--评价
   let evalueEvent = () => {
-    okFinish({
-      ad_project: stateData.rowID,
-      user_evaluate_score: stateData.rateValue,
-      user_evaluate_content: stateData.areaValue,
-    }).then((res) => {
-      if (res.data.code === 200) {
-        message.success("已确认完成");
-        stateData.evalueVisible = false;
-        apiPort_list(activeKey.value, 1, 5);
-      } else {
-        message.error(res.data.msg);
-      }
+    refRate.value.validate().then((res) => {
+      okFinish({
+        ad_project: stateData.rowID,
+        user_evaluate_score: stateData.rateData.rateValue,
+        user_evaluate_content: stateData.rateData.areaValue,
+      }).then((res) => {
+        if (res.data.code === 200) {
+          message.success("已确认完成");
+          stateData.evalueVisible = false;
+          apiPort_list(activeKey.value, 1, 5);
+        } else {
+          message.error(res.data.msg);
+        }
+      });
     });
   };
-  return { ...toRefs(stateData), evalueEvent, confirmEvent };
+  // 取消
+  let evalueCancel = () => {
+    refRate.value.resetFields();
+  };
+  return { ...toRefs(stateData), evalueEvent, confirmEvent, evalueCancel };
 }
 // 页码相关
 let { sizeChange } = relate_page();

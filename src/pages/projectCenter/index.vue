@@ -1,24 +1,33 @@
 <template>
   <div v-if="showList">
     <div class="searchIpt">
-      <a-form :model="formData" layout="inline">
+      <a-form ref="refForm" :model="formData" layout="inline">
         <a-form-item label="项目">
           <a-input
-            v-model:value="formData.projName"
+            v-model:value="formData.project_name"
+            size="large"
             placeholder="请输入项目名称"
+            allow-clear
           />
         </a-form-item>
         <a-form-item label="类目">
           <a-select
-            v-model:value="formData.catgory"
+            v-model:value="formData.category"
             size="large"
             placeholder="请选择类目"
+            allow-clear
           >
-            <a-select-option value="lucy">家用电器</a-select-option>
+            <a-select-option
+              v-for="(item, idx) in platOption"
+              :key="idx"
+              :value="item.value"
+              >{{ item.label }}</a-select-option
+            >
           </a-select>
         </a-form-item>
         <a-form-item label="">
-          <a-button type="primary">搜索</a-button>
+          <a-button @click="resetEvent">重置</a-button>
+          <a-button type="primary" @click="searchEvent">搜索</a-button>
         </a-form-item>
       </a-form>
     </div>
@@ -70,6 +79,7 @@ import { useRoute } from "vue-router";
 import { getProjList, applyProj, getProjDetail } from "@/api/api";
 import dayjs from "dayjs";
 import { message, Modal, Empty } from "ant-design-vue";
+import optionJs from "@/utils/option.js";
 
 let $route = useRoute();
 let pageNation = reactive({
@@ -77,15 +87,30 @@ let pageNation = reactive({
   pageSize: 6,
   totalNum: null,
 });
+const refForm = ref();
 // 项目中心
-let { projectList, apiPort_list, applyEvent } = relate_proj();
+let {
+  projectList,
+  platOption,
+  formData,
+  apiPort_list,
+  applyEvent,
+  searchEvent,
+  resetEvent,
+} = relate_proj();
 function relate_proj() {
   const stateDate = reactive({
     projectList: [],
+    platOption: null,
+    formData: {
+      project_name: "",
+      category: null,
+    },
   });
   // 获取列表
   let apiPort_list = (page, page_size) => {
     getProjList({
+      ...stateDate.formData,
       no: "",
       ordering: "-create_time",
       page,
@@ -161,6 +186,8 @@ function relate_proj() {
         apiPort_list(1, 6);
       } else if (res.data.code === 4105) {
         message.error("请先上传项目对应投放平台资质信息");
+      } else if (res.data.code === 4006) {
+        message.error("申请失败，该项目已超出申请截止时间");
       } else {
         message.error(`${res.data.msg}`);
       }
@@ -180,6 +207,18 @@ function relate_proj() {
       class: "test",
     });
   };
+  let searchEvent = () => {
+    if (stateDate.formData.project_name || stateDate.formData.category) {
+      apiPort_list(1, 6);
+    }
+  };
+  let resetEvent = () => {
+    stateDate.formData = {
+      project_name: "",
+      category: null,
+    };
+    apiPort_list(1, 6);
+  };
   let watchRoute = watch(
     () => $route.name,
     (newval, oldval) => {
@@ -189,9 +228,16 @@ function relate_proj() {
     { immediate: true }
   );
   onBeforeMount(() => {
+    stateDate.platOption = optionJs.categoryOpt;
     apiPort_list(pageNation.currentPage, pageNation.pageSize);
   });
-  return { ...toRefs(stateDate), apiPort_list, applyEvent };
+  return {
+    ...toRefs(stateDate),
+    apiPort_list,
+    applyEvent,
+    searchEvent,
+    resetEvent,
+  };
 }
 // 详情相关
 let { showList, resData, cardClick, detailClose } = relate_detail();
@@ -224,15 +270,6 @@ function relate_detail() {
     apiPort_list(1, 5);
   };
   return { ...toRefs(stateDate2), cardClick, detailClose };
-}
-// 搜索相关
-let { formData } = relate_search();
-function relate_search() {
-  let formData = ref({
-    projName: "",
-    catgory: null,
-  });
-  return { formData };
 }
 // 页码相关
 let { sizeChange } = relate_page();

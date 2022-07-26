@@ -4,6 +4,7 @@
       v-model:visible="diaVisible"
       :destroyOnClose="true"
       title="消息中心"
+      @cancel="handlecancel"
       centered
       :maskClosable="false"
       :keyboard="false"
@@ -14,14 +15,12 @@
         v-model:activeKey="activeKey"
         tab-position="left"
         :style="{ height: '200px' }"
-        @tabClick="tabClick"
       >
         <a-tab-pane :key="1">
           <template #tab>
             <span>
-              <!-- <book-two-tone /> -->
-              <file-text-two-tone :two-tone-color="iconColor.proj" />
               <!-- 项目消息 -->
+              <folder-open-outlined />
               <a-badge color="#ff5c5c" :count="conuntProj"
                 ><span class="badge">项目消息</span></a-badge
               >
@@ -31,7 +30,7 @@
         <a-tab-pane :key="2">
           <template #tab>
             <span>
-              <mail-two-tone :two-tone-color="iconColor.account" />
+              <robot-outlined />
               <a-badge color="#ff5c5c" :count="conuntUser"
                 ><span class="badge">账户消息</span></a-badge
               >
@@ -41,7 +40,7 @@
         <a-tab-pane :key="3">
           <template #tab>
             <span>
-              <flag-two-tone :two-tone-color="iconColor.other" />
+              <ellipsis-outlined />
               <a-badge color="#ff5c5c" :count="countOther"
                 ><span class="badge">其他消息</span></a-badge
               >
@@ -91,11 +90,25 @@
                   overflow: hidden;
                 "
               >
-                <template #header
-                  ><span :class="item.currentStatus ? 'yidu' : 'weidu'">{{
-                    item.title
-                  }}</span></template
-                >
+                <template #header>
+                  <div class="header">
+                    <img
+                      class="header_img"
+                      src="../../assets/user.png"
+                      alt=""
+                    />
+                    <p>
+                      <span
+                        class="header_txt"
+                        :class="item.currentStatus ? 'yidu' : 'weidu'"
+                        >{{ item.title }}</span
+                      >
+                      <span class="header_content">{{
+                        item.mail_content
+                      }}</span>
+                    </p>
+                  </div>
+                </template>
                 <p>{{ item.mail_content }}</p>
               </a-collapse-panel>
             </a-collapse>
@@ -110,9 +123,9 @@
 </template>
 <script setup>
 import {
-  FileTextTwoTone,
-  MailTwoTone,
-  FlagTwoTone,
+  FolderOpenOutlined,
+  EllipsisOutlined,
+  RobotOutlined,
   MailFilled,
 } from "@ant-design/icons-vue";
 import { ref, watch, toRefs, onMounted, reactive, onBeforeMount } from "vue";
@@ -139,7 +152,6 @@ let {
   handlecancel,
   cancelEvent,
   collapseChangeEvent,
-  tabClick,
 } = relate_msg();
 function relate_msg() {
   let stateData = reactive({
@@ -152,60 +164,19 @@ function relate_msg() {
     countOther: 0,
     activeKey: 1,
     alertMsg: "",
+  });
+  let curData = reactive({
     currentInfo: {
       menu: "",
       count: 0,
       mailList: [],
     },
     iconColor: {
-      proj: "",
+      proj: "#909399",
       account: "#909399",
       other: "#909399",
     },
   });
-  let tabClick = (val) => {
-    switch (val) {
-      case 1:
-        stateData.currentInfo = {
-          menu: "项目信息",
-          type: val,
-          count: stateData.conuntProj,
-          mailList: stateData.mailList_proj,
-        };
-        stateData.iconColor = {
-          proj: "",
-          account: "#909399",
-          other: "#909399",
-        };
-        break;
-      case 2:
-        stateData.currentInfo = {
-          menu: "项目信息",
-          type: val,
-          count: stateData.conuntUser,
-          mailList: stateData.mailList_user,
-        };
-        stateData.iconColor = {
-          proj: "#909399",
-          account: "",
-          other: "#909399",
-        };        
-        break;
-      case 3:
-        stateData.currentInfo = {
-          menu: "项目信息",
-          type: val,
-          count: stateData.countOther,
-          mailList: stateData.mailList_other,
-        };
-        stateData.iconColor = {
-          proj: "#909399",
-          account: "#909399",
-          other: "",
-        };        
-        break;
-    }
-  };
   // 获取信息列表
   let apiPort_mail = () => {
     stationMailList({
@@ -229,7 +200,6 @@ function relate_msg() {
             stateData.mailList_other.push(val);
           }
         });
-        tabClick(1);
       }
     });
   };
@@ -259,20 +229,66 @@ function relate_msg() {
         stateData.conuntProj = arr_proj.length;
         stateData.conuntUser = arr_user.length;
         stateData.countOther = arr_other.length;
-        stateData.currentInfo.count = stateData.conuntProj;
       }
     });
   };
   let watchShow = watch(
-    showMsg,
+    $props,
     (newval, oldval) => {
-      stateData.diaVisible = newval;
-      if (newval) {
+      stateData.diaVisible = newval.showMsg;
+      if (newval.showMsg) {
         apiPort_mail();
         apiPort_mail_no();
       }
     },
     { immediate: true }
+  );
+  let watActive = watch(
+    stateData,
+    (newval, oldval) => {
+      switch (newval.activeKey) {
+        case 1:
+          curData.currentInfo = {
+            menu: "【项目信息】",
+            type: newval.activeKey,
+            count: stateData.conuntProj,
+            mailList: stateData.mailList_proj,
+          };
+          curData.iconColor = {
+            proj: "",
+            account: "#909399",
+            other: "#909399",
+          };
+          break;
+        case 2:
+          curData.currentInfo = {
+            menu: "【账户信息】",
+            type: newval.activeKey,
+            count: stateData.conuntUser,
+            mailList: stateData.mailList_user,
+          };
+          curData.iconColor = {
+            proj: "#909399",
+            account: "",
+            other: "#909399",
+          };
+          break;
+        case 3:
+          curData.currentInfo = {
+            menu: "【其他信息】",
+            type: newval.activeKey,
+            count: stateData.countOther,
+            mailList: stateData.mailList_other,
+          };
+          curData.iconColor = {
+            proj: "#909399",
+            account: "#909399",
+            other: "",
+          };
+          break;
+      }
+    },
+    { immediate: true, deep: true }
   );
   let handlecancel = () => {
     $emit("changeMsgTag");
@@ -281,11 +297,11 @@ function relate_msg() {
   let cancelEvent = () => {
     mailSeeAll({
       no: "",
-      mail_type: stateData.currentInfo.type,
+      mail_type: curData.currentInfo.type,
     }).then((res) => {
       apiPort_mail_no();
       // 当前列表样式改变
-      stateData.currentInfo.mailList.forEach((val, idx) => {
+      curData.currentInfo.mailList.forEach((val, idx) => {
         val.currentStatus = 1;
       });
     });
@@ -310,10 +326,10 @@ function relate_msg() {
 
   return {
     ...toRefs(stateData),
+    ...toRefs(curData),
     handlecancel,
     cancelEvent,
     collapseChangeEvent,
-    tabClick,
   };
 }
 </script>

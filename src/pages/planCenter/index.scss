@@ -25,8 +25,6 @@ $baseFontsize: 14px;
     border-radius: 6px;
     font-size: $baseFontsize;
     transition: all .4s linear;
-    cursor: pointer;
-
     &_title {
         display: flex;
         flex-wrap: nowrap;
@@ -131,7 +129,7 @@ $baseFontsize: 14px;
             }
         }
 
-        div {
+        &_div {
             flex-basis: 20%;
             padding: 20px 8px;
             box-sizing: border-box;
@@ -212,17 +210,27 @@ $baseFontsize: 14px;
         }
 
         &_btn {
+            display: flex;
+            flex-basis: 20%;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
             min-height: 112px;
-
-            span {
-                margin: 5px 0;
-                cursor: pointer;
-                color: #1890ff;
-
-                &:hover {
-                    color: #056ac8;
+            div {
+                flex-basis: 100%;
+                margin: 5px 0!important;
+                text-align: center;
+                padding: 0;
+                span {
+                    padding: 5px 0;
+                    cursor: pointer;
+                    color: #1890ff;
+                    &:hover {
+                        color: #056ac8;
+                    }
                 }
             }
+
         }
     }
 }
