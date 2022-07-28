@@ -58,7 +58,6 @@ $headerTheme: #fff;
             white-space: nowrap;
             text-overflow: ellipsis;
             margin-right: 80px;
-
             :deep svg {
                 width: 20px;
                 height: 20px;
@@ -102,7 +101,10 @@ $headerTheme: #fff;
     :deep .ant {
         &-badge {
             margin-right: 20px;
-
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding-right: 15px;
             sup {
                 height: 16px;
                 line-height: 16px;

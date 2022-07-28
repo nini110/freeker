@@ -102,8 +102,10 @@
             :key="idx"
             class="w33"
           >
-            <span>{{ item.label }}</span
-            ><span>{{ item.value }}</span>
+            <span>{{ item.label }}</span>
+            <span v-if="item.type === 'money'">￥{{ item.value }}</span>
+            <span v-else-if="item.type === 'percent'">{{ item.value }}%</span>
+            <span v-else>{{ item.value }}</span>
           </p>
         </div>
       </div>
@@ -472,6 +474,7 @@ function relate_detail() {
             label: "花费",
             code: "cost",
             value: delRes.cost,
+            type: "money",
           },
           {
             label: "展示数",
@@ -487,16 +490,19 @@ function relate_detail() {
             label: "点击率",
             code: "clickPer",
             value: delRes.clickPer,
+            type: "percent",
           },
           {
             label: "平均千次展示成本",
             code: "thDisCost",
             value: delRes.thDisCost,
+            type: 'money'
           },
           {
             label: "平均点击成本",
             code: "disCost",
             value: delRes.disCost,
+            type: "money",
           },
           {
             label: "总订单行数",
@@ -507,6 +513,7 @@ function relate_detail() {
             label: "总订单金额",
             code: "totalMoney",
             value: delRes.totalMoney,
+            type: "money",
           },
         ];
       }
@@ -703,6 +710,7 @@ function relate_shuju() {
               label: "花费",
               code: "cost",
               value: delRes.cost,
+              type: "money",
             },
             {
               label: "展示数",
@@ -718,6 +726,7 @@ function relate_shuju() {
               label: "点击率",
               code: "clickPer",
               value: delRes.clickPer,
+              type: "percent",
             },
             {
               label: "平均千次展示成本",
@@ -728,6 +737,7 @@ function relate_shuju() {
               label: "平均点击成本",
               code: "disCost",
               value: delRes.disCost,
+              type: "money",
             },
             {
               label: "总订单行数",
@@ -738,6 +748,7 @@ function relate_shuju() {
               label: "总订单金额",
               code: "totalMoney",
               value: delRes.totalMoney,
+              type: "money",
             },
           ];
         } else {

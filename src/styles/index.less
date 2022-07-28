@@ -17,14 +17,24 @@
     transition: all 0.3s ease-in-out;
     border-radius: 2px;
 }
-
+.ant-modal {
+    &-header {
+        background-color: #ff5c5c!important;
+    }
+    &-title,
+    &-close-x {
+        color: #fff!important;
+    }
+}
 .content {
     .ant {
-        &-modal-body {
-            padding: 10px 30px;
-
-            .ant-rate {
-                margin-bottom: 12px;
+        &-modal {
+            &-body {
+                padding: 10px 30px;
+    
+                .ant-rate {
+                    margin-bottom: 12px;
+                }
             }
         }
 

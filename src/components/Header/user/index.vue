@@ -4,13 +4,13 @@
       dialogClass="user_dialog"
       v-model:visible="visibleDia"
       title="用户信息"
-      :footer="null"
       @cancel="dialogEvent"
       :keyboard="false"
       :maskClosable="false"
       centered
       :width="600"
       :getContainer="$refs.aff2"
+      forceRender
     >
       <template #footer>
         <a-button key="back" type="primary" @click="dialogEvent"
@@ -70,62 +70,58 @@
             >
             <span class="cnt">{{ userInfo.levelCn }}</span>
           </div>
-          <div class="user_box_item">
-            <span class="label"
-              ><safety-certificate-two-tone
-                two-tone-color="#52c41a"
-              />资质</span
-            >
-            <div class="cnt">
-              <a-collapse
-                v-model:activeKey="activeKey"
-                ghost
-                :collapsible="collapsibleZizhi"
-              >
-                <a-collapse-panel key="1" :header="collapseHeader">
-                  <a-tag
-                    v-for="(item, idx) in zizhiList"
-                    :key="idx"
-                    :color="item.color"
+          <a-collapse v-model:activeKey="activeKey" ghost accordion>
+            <a-collapse-panel key="1" :collapsible="collapsibleZizhi">
+              <template #header>
+                <div>
+                  <span class="label"
+                    ><safety-certificate-two-tone
+                      two-tone-color="#52c41a"
+                    />资质</span
                   >
-                    <span
-                      v-if="item.platform === 1"
-                      class="iconfont icon-pay-jingdong"
-                    ></span>
-                    <span
-                      v-if="item.platform === 2"
-                      class="iconfont icon-douyin"
-                    >
-                    </span>
-                    {{ item.txt }}
-                  </a-tag>
-                  <template #extra
-                    ><i @click="uploadEvent"><edit-outlined /></i
-                  ></template>
-                </a-collapse-panel>
-              </a-collapse>
-            </div>
-          </div>
-          <div class="user_box_item">
-            <!-- <span class="label iconfont icon-yinxingqia">美事通</span> -->
-            <span class="label iconfont">美事通</span>
-            <div class="cnt">
-              <a-collapse
-                v-model:activeKey="activeKey2"
-                ghost
-                :collapsible="collapsibleMst"
+                  <span class="cnt">{{ collapseHeader }}</span>
+                </div>
+              </template>
+              <a-tag
+                v-for="(item, idx) in zizhiList"
+                :key="idx"
+                :color="item.color"
+                closable
+                @close.prevent="zizhiDelEvent(item)"
               >
-                <a-collapse-panel key="1" :header="collapseHeader2">
-                  <a-tag v-for="(item, idx) in mstList" :key="idx" color="blue">
-                    {{ item }}
-                  </a-tag>
-                  <template #extra
-                    ><i @click="bindEvent"><link-outlined /></i
-                  ></template>
-                </a-collapse-panel>
-              </a-collapse>
-            </div>
-          </div>
+                <span
+                  v-if="item.platform === 1"
+                  class="iconfont icon-pay-jingdong"
+                ></span>
+                <span v-if="item.platform === 2" class="iconfont icon-douyin">
+                </span>
+                <span class="txt">{{ item.txt }}</span>
+              </a-tag>
+              <template #extra
+                ><i v-if="zizhiList.length < 6" @click="uploadEvent"><upload-outlined /></i
+              ></template>
+            </a-collapse-panel>
+            <a-collapse-panel key="2" :collapsible="collapsibleMst">
+              <template #header>
+                <div>
+                  <span class="label mst">美事通</span>
+                  <span class="cnt">{{ collapseHeader2 }}</span>
+                </div>
+              </template>
+              <a-tag
+                v-for="(item, idx) in mstList"
+                :key="idx"
+                color="orange"
+                closable
+                @close.prevent="mstDelEvent(item)"
+              >
+                <span class="mst txt">{{ item.account }}</span>
+              </a-tag>
+              <template #extra
+                ><i v-if="mstList.length < 6" @click="bindEvent"><usergroup-add-outlined /></i
+              ></template>
+            </a-collapse-panel>
+          </a-collapse>
         </div>
       </div>
       <a-drawer
@@ -266,9 +262,18 @@ import {
   EditOutlined,
   LinkOutlined,
   VerifiedOutlined,
+  UploadOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons-vue";
 import { useStore } from "vuex";
-import { uploadZizhi, bindMst, editNickName, editAvatar } from "@/api/api";
+import {
+  uploadZizhi,
+  bindMst,
+  editNickName,
+  editAvatar,
+  delZizhi,
+  delMst,
+} from "@/api/api";
 import { message, Modal } from "ant-design-vue";
 import { checkPlat, checkLevel, checkNumber, checkFile } from "@/validator";
 
@@ -281,7 +286,12 @@ let $props = defineProps({
   mstList: Array,
 });
 let { showDialog, userInfo, zizhiList, mstList } = toRefs($props);
-let $emit = defineEmits(["changeDialogTag", "closeMstDialog"]);
+let $emit = defineEmits([
+  "changeDialogTag",
+  "reGetUser",
+  "reGetZiZHi",
+  "reGetMst",
+]);
 let {
   visibleDia,
   activeKey,
@@ -299,13 +309,21 @@ function realte_dialog() {
     activeKey2: 0,
     collapseHeader: "",
     collapseHeader2: "",
-    collapsibleZizhi: 'disabled',
-    collapsibleMst: 'disabled',
+    collapsibleZizhi: "disabled",
+    collapsibleMst: "disabled",
   });
   let watchTag = watch(
     showDialog,
     (newval, oldval) => {
+      stateData.collapseHeader =
+        zizhiList.value.length > 0 ? zizhiList.value[0].txt : "暂无认证";
+      stateData.collapseHeader2 =
+        mstList.value.length > 0 ? mstList.value[0].account : "暂未绑定";
+
+      stateData.collapsibleZizhi = zizhiList.value.length > 0 ? "" : "disabled";
+      stateData.collapsibleMst = mstList.value.length > 0 ? "" : "disabled";
       stateData.visibleDia = newval;
+
     },
     { immediate: true }
   );
@@ -325,14 +343,6 @@ function realte_dialog() {
         default:
           newval.levelCn = "暂无评级";
       }
-      stateData.collapseHeader =
-        zizhiList.value.length > 0 ? zizhiList.value[0].txt : "暂无认证";
-      stateData.collapseHeader2 =
-        mstList.value.length > 0 ? mstList.value[0] : "暂未绑定";
-
-      stateData.collapsibleZizhi =
-        zizhiList.value.length > 0 ? '' : "disabled";
-      stateData.collapsibleMst = mstList.value.length > 0 ? '' : "disabled";
     },
     {
       deep: true,
@@ -341,17 +351,9 @@ function realte_dialog() {
   let dialogEvent = () => {
     $emit("changeDialogTag", false);
   };
-  let collapseZizhiCge = () => {
-    if (zizhiList.value.length === 0) return;
-  };
-  let collapseMstCge = () => {
-    if (mstList.value.length === 0) return;
-  };
   return {
     ...toRefs(stateData),
     dialogEvent,
-    collapseZizhiCge,
-    collapseMstCge,
   };
 }
 // 修改昵称
@@ -389,7 +391,7 @@ function relate_nick() {
         stateData.showIpt = false;
         store.commit("pageData/SET_USERNAME", res.data.data.username);
         // 昵称回显
-        $emit("closeMstDialog");
+        $emit("reGetUser");
       } else {
         message.error(`${res.data.msg}`);
       }
@@ -440,7 +442,9 @@ let {
   uploadEvent,
   submitEvent,
   bindEvent,
+  zizhiDelEvent,
   knowEvent,
+  mstDelEvent,
   beforeUpload,
 } = relate_upload();
 function relate_upload() {
@@ -512,9 +516,11 @@ function relate_upload() {
   let apiPort_upload = (val) => {
     uploadZizhi(val).then((res) => {
       if (res.data.code === 200) {
-        message.success("操作成功");
+        message.success("资质上传成功");
         stateData.showUpload = false;
         reset();
+      } else if (res.data.code === 4005) {
+        message.error("最多允许上传6项资质证明");
       } else {
         message.error(`${res.data.msg}`);
       }
@@ -523,22 +529,24 @@ function relate_upload() {
   let apiPort_mst = (val) => {
     bindMst(val).then((res) => {
       if (res.data.code === 200) {
-        message.success("操作成功");
+        message.success("美事通账户绑定成功");
         stateData.showErweima = false;
         // 需要重新调取展示mst账户
-        $emit("closeMstDialog");
+        $emit("reGetMst");
         reset();
+      } else if (res.data.code === 4005) {
+        message.error("最多允许绑定6个美事通账户");
       } else {
         message.error(`${res.data.msg}`);
       }
     });
   };
-  // 打开上传资质弹层
+  // 打开上传资质弹层----------------------------------
   let uploadEvent = (e) => {
     e.stopPropagation();
     stateData.showUpload = true;
   };
-  // 确认 取消
+  // 资质确认 取消
   let submitEvent = (val) => {
     if (val) {
       refZizhi.value.validate().then((res) => {
@@ -549,12 +557,28 @@ function relate_upload() {
       reset();
     }
   };
-  // 打开绑定美事通弹层
+  // 资质删除
+  let zizhiDelEvent = (item) => {
+    delZizhi(
+      {
+        no: "",
+      },
+      item.id
+    ).then((res) => {
+      if (res.data.code === 200) {
+        message.success("资质删除成功");
+        $emit("reGetZiZhi");
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
+  // 打开绑定美事通弹层------------------------------
   let bindEvent = (e) => {
     e.stopPropagation();
     stateData.showErweima = true;
   };
-  // 确认 取消
+  // 美事通确认 取消
   let knowEvent = (val) => {
     if (val) {
       apiPort_mst({ ...stateData.erweimaForm });
@@ -563,10 +587,27 @@ function relate_upload() {
     }
     reset();
   };
+  // 美事通删除
+  let mstDelEvent = (item) => {
+    delMst(
+      {
+        no: "",
+      },
+      item.id
+    ).then((res) => {
+      if (res.data.code === 200) {
+        message.success("美事通账户删除成功");
+        $emit("reGetMst");
+      } else if (res.data.code === 10016) {
+        message.error("删除失败：该美事通账户已绑定订单");
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
   let beforeUpload = (file) => {
     stateData.zizhiForm.fileArr = [file];
     refZizhi.value.clearValidate("fileArr");
-
     return false;
   };
 
@@ -575,7 +616,9 @@ function relate_upload() {
     uploadEvent,
     submitEvent,
     bindEvent,
+    zizhiDelEvent,
     knowEvent,
+    mstDelEvent,
     beforeUpload,
   };
 }

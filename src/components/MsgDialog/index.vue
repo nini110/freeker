@@ -4,6 +4,8 @@
       v-model:visible="diaVisible"
       :destroyOnClose="true"
       title="消息中心"
+      cancelText="一键已读"
+      okText="关闭"
       @cancel="handlecancel"
       centered
       :maskClosable="false"
@@ -113,9 +115,18 @@
               </a-collapse-panel>
             </a-collapse>
           </div>
-        </div>
-        <div class="msgBox_btn">
-          <a-button type="primary" @click="handlecancel">关闭</a-button>
+          <div class="msgBox_btn">
+            <a-popconfirm
+              title="确认一键已读所有未读消息?"
+              ok-text="Yes"
+              cancel-text="No"
+              @confirm="readConfirm"
+            >
+              <a-button>一键已读</a-button>
+            </a-popconfirm>
+
+            <a-button type="primary" @click="handlecancel">关闭</a-button>
+          </div>
         </div>
       </div>
     </a-modal>
@@ -149,6 +160,7 @@ let {
   alertMsg,
   currentInfo,
   iconColor,
+  readConfirm,
   handlecancel,
   cancelEvent,
   collapseChangeEvent,
@@ -290,6 +302,15 @@ function relate_msg() {
     },
     { immediate: true, deep: true }
   );
+  // 一键  所有类型
+  let readConfirm = () => {
+    mailSeeAll({
+      no: "",
+      mail_type: "",
+    }).then((res) => {
+      $emit("changeMsgTag");
+    });
+  };
   let handlecancel = () => {
     $emit("changeMsgTag");
   };
@@ -327,6 +348,7 @@ function relate_msg() {
   return {
     ...toRefs(stateData),
     ...toRefs(curData),
+    readConfirm,
     handlecancel,
     cancelEvent,
     collapseChangeEvent,

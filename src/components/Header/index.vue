@@ -32,7 +32,7 @@
           @click="openMsgDialog"
         >
           <a-badge color="#f50" :count="countNum">
-            <sound-outlined />
+            <sound-outlined />消息
           </a-badge>
         </div>
         <div v-if="store.getters.account">
@@ -66,7 +66,9 @@
   <UserDialog
     :showDialog="showDialog"
     @changeDialogTag="changeDialogTag"
-    @closeMstDialog="closeMstDialog"
+    @reGetUser="reGetUser"
+    @reGetZiZhi="reGetZiZhi"
+    @reGetMst="reGetMst"
     :userInfo="userInfo"
     :zizhiList="zizhiList"
     :mstList="mstList"
@@ -94,13 +96,14 @@ import {
   onBeforeUnmount,
   onMounted,
   onUnmounted,
+  nextTick,
 } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import UserDialog from "./user/index.vue";
 import LoginDialog from "../Login/index.vue";
 import MsgDialog from "../MsgDialog/index.vue";
-import { userDetail, getZizhi, stationMailList } from "@/api/api";
+import { userDetail, searchMst, getZizhi, stationMailList } from "@/api/api";
 const store = useStore();
 let $route = useRoute();
 let $router = useRouter();
@@ -187,9 +190,11 @@ let {
   userInfo,
   zizhiList,
   mstList,
+  reGetUser,
+  reGetZiZhi,
+  reGetMst,
   openDialog,
   changeDialogTag,
-  closeMstDialog,
 } = relate_user();
 function relate_user() {
   let stateData = reactive({
@@ -198,42 +203,48 @@ function relate_user() {
     zizhiList: [], // 资质列表
     mstList: [], // 美事通列表
   });
-  // 用户信息
-  let apiPort_user = () => {
-    Promise.all([
-      userDetail({ no: "" }),
-      getZizhi({
-        no: "",
-        page: 1,
-        page_size: 100,
-      }),
-    ]).then((res) => {
+  // 获取用户信息
+  let reGetUser = async () => {
+    await userDetail({ no: "" }).then((res) => {
       // 用户
-      if (res[0].data.code === 200) {
-        let result = res[0].data.data;
+      if (res.data.code === 200) {
+        let result = res.data.data;
         stateData.userInfo = result;
         stateData.userInfo.imageUrl = store.getters.userImg;
-        stateData.mstList = result.mst_account
-          ? result.mst_account.split(",")
-          : [];
       } else {
         message.error("用户信息查询失败");
       }
+    });
+  };
+  // 获取美事通
+  let reGetMst = async () => {
+    await searchMst({ no: "" }).then((res) => {
+      // 美事通
+      if (res.data.code === 200) {
+        stateData.mstList = res.data.data;
+      } else {
+        message.error("美事通信息查询失败");
+      }
+    });
+  };
+  // 获取资质
+  let reGetZiZhi = async () => {
+    await getZizhi({
+      no: "",
+    }).then((res) => {
       // 资质
-      if (res[0].data.code === 200) {
+      if (res.data.code === 200) {
         stateData.zizhiList = [];
-        let result = res[1].data.data;
+        let result = res.data.data;
         result.forEach((val, idx) => {
           switch (val.platform) {
             case 1:
               val.platformCn = "京东";
-              val.color = "#e1251b";
-
+              val.color = "#f24239ed";
               break;
             case 2:
               val.platformCn = "抖音";
-              val.color = "#333";
-
+              val.color = "#544b4b";
               break;
           }
           switch (val.cert_level) {
@@ -248,6 +259,7 @@ function relate_user() {
               break;
           }
           stateData.zizhiList.push({
+            ...val,
             platform: val.platform,
             color: val.color,
             txt: val.platformCn + val.cert_levelCn,
@@ -258,8 +270,10 @@ function relate_user() {
       }
     });
   };
-  let openDialog = () => {
-    apiPort_user();
+  let openDialog = async () => {
+    await reGetMst();
+    await reGetUser();
+    await reGetZiZhi();
     stateData.showDialog = true;
   };
   let changeDialogTag = () => {
@@ -269,15 +283,19 @@ function relate_user() {
     store.state.pageData,
     (newval, oldval) => {
       if (newval.accountId) {
-        apiPort_user();
+        reGetUser();
       }
     },
     { immediate: true }
   );
-  let closeMstDialog = () => {
-    apiPort_user();
+  return {
+    ...toRefs(stateData),
+    reGetUser,
+    reGetZiZhi,
+    reGetMst,
+    openDialog,
+    changeDialogTag,
   };
-  return { ...toRefs(stateData), openDialog, changeDialogTag, closeMstDialog };
 }
 // 登录
 let { showLogin, interval, logoutEvent, openLoginDialog, changeLogTag } =

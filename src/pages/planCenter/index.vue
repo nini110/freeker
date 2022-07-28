@@ -94,13 +94,6 @@
           ></a-col>
         </a-row>
       </a-form>
-      <!-- <a-rate v-model:value="rateValue" />
-      <a-textarea
-        v-model:value="areaValue"
-        placeholder="请输入评价内容"
-        :auto-size="{ minRows: 2, maxRows: 5 }"
-        allow-clear
-      /> -->
     </a-modal>
   </div>
   <DetailPage
@@ -113,14 +106,13 @@
 </template>
 <script setup>
 import { ref, reactive, createVNode, onBeforeMount, toRefs } from "vue";
-import { Modal } from "ant-design-vue";
+import {  Modal } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import DetailPage from "../detailPage/index.vue";
 import { planProj, getProjDetail, okFinish, calcelApply } from "@/api/api";
 import { message } from "ant-design-vue";
 import dayjs from "dayjs";
-
 let $router = useRouter();
 const menuList = reactive([
   {

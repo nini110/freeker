@@ -19,14 +19,16 @@
     </div>
   </div>
   <div v-else class="content">
-    <div class="content_box">
-      <a-affix :offset-top="85">
-        <div class="content_box_lt">
-          <SideMenu></SideMenu>
-        </div>
-      </a-affix>
-      <router-view class="content_box_rt"></router-view>
-    </div>
+    <!-- <a-spin size="large" :indicator="indicator" :spinning="true" tip="加载中"> -->
+      <div class="content_box">
+        <a-affix :offset-top="85">
+          <div class="content_box_lt">
+            <SideMenu></SideMenu>
+          </div>
+        </a-affix>
+        <router-view class="content_box_rt"></router-view>
+      </div>
+    <!-- </a-spin> -->
   </div>
 
   <a-back-top :visibilityHeight="100" />
@@ -35,6 +37,8 @@
 import Header from "@/components/Header";
 import SideMenu from "@/components/SideMenu";
 import { useRoute } from "vue-router";
+import { LoadingOutlined } from "@ant-design/icons-vue";
+
 const $route = useRoute();
 </script>
 <style lang="scss" scoped>

@@ -29,6 +29,11 @@ export const getZizhi = request({
     url:`${BASE_PATH2}/index_api/certificate`,
     method:'get',
 })
+// 删除资质
+export const delZizhi = request({
+    url:`${BASE_PATH2}/index_api/certificate`,
+    method:'delete',
+})
 // 绑定美事通
 export const bindMst = request({
     url:`${BASE_PATH2}/index_api/mst_account`,
@@ -38,6 +43,11 @@ export const bindMst = request({
 export const searchMst = request({
     url:`${BASE_PATH2}/index_api/mst_account`,
     method:'get',
+})
+// 删除美事通
+export const delMst = request({
+    url:`${BASE_PATH2}/index_api/mst_account`,
+    method:'delete',
 })
 // 修改昵称
 export const editNickName = request({

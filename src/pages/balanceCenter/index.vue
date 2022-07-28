@@ -13,11 +13,8 @@
           v-for="(item, idx) in projList"
           :key="idx"
         >
-          <a-badge-ribbon
-            :text="item.statusTxt"
-            :color="item.statusClass"
-          >
-            <h2  @click="openPage(item)">
+          <a-badge-ribbon :text="item.statusTxt" :color="item.statusClass">
+            <h2 @click="openPage(item)">
               <span>{{ item.project_name }}</span>
             </h2>
           </a-badge-ribbon>
@@ -58,7 +55,7 @@
       </div>
       <a-modal
         v-model:visible="modalvisible"
-        :width="500"
+        :width="520"
         title="提现绑定"
         @ok="handleOk"
         :getContainer="$refs.bale"
@@ -70,17 +67,22 @@
           <div class="bind_left">
             <img src="../../assets/images/nobind.png" alt="" />
           </div>
+          <div class="bind_mask">
+            <img src="../../assets/images/nobind.png" alt="" />
+          </div>
           <div
             v-if="showRegister"
             class="bind_right bind_right_bind"
-            :class="{ ts: mstList.length === 0 }"
+            :class="{ ts: mstList.length < 6 }"
           >
             <div>
-              <img src="../../assets/images/weweima.webp" alt="" />
+              <img src="../../assets/images/usermstcode.jpg" alt="" />
             </div>
-            <a-button v-if="mstList.length > 0" @click="cncelEvent"
-              >取消</a-button
-            >
+            <div class="bind_right_btn">
+              <a-button v-if="mstList.length > 0" @click="cncelEvent"
+                >取消</a-button
+              >
+            </div>
           </div>
           <div v-else class="bind_right">
             <a-radio-group v-model:value="radioMst">
@@ -93,16 +95,12 @@
               </a-radio>
             </a-radio-group>
             <div class="bind_right_btn">
-              <a-button @click="registerEvent">注册</a-button>
+              <a-button v-if="mstList.length < 6" @click="registerEvent"
+                >注册</a-button
+              >
               <a-button type="primary" @click="submitEvent">确认</a-button>
             </div>
           </div>
-        </div>
-        <div class="bind_tip">
-          <div v-if="showRegister">
-            <expand-outlined />扫码进行美事通账号的绑定
-          </div>
-          <div v-else><check-square-outlined />选择美事通账户</div>
         </div>
       </a-modal>
     </div>
@@ -120,9 +118,7 @@ import {
   AccountBookOutlined,
   UserOutlined,
   AppstoreOutlined,
-  CheckCircleOutlined,
   ExpandOutlined,
-  CheckSquareOutlined,
 } from "@ant-design/icons-vue";
 import {
   payCenterList,
@@ -175,19 +171,19 @@ function relate_balance() {
         result.forEach((val, idx) => {
           switch (val.project_status) {
             case 9:
-              val.statusTxt = '未结算'
+              val.statusTxt = "未结算";
               val.statusClass = "red";
               break;
             case 10:
-              val.statusTxt = '待汇款'
+              val.statusTxt = "待汇款";
               val.statusClass = "cyan";
-              break              
+              break;
             case 11:
-              val.statusTxt = '待打款'
+              val.statusTxt = "待打款";
               val.statusClass = "green";
-              break
+              break;
             case 12:
-              val.statusTxt = '已结算'
+              val.statusTxt = "已结算";
               val.statusClass = "";
               break;
           }
