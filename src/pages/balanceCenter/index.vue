@@ -67,9 +67,6 @@
           <div class="bind_left">
             <img src="../../assets/images/nobind.png" alt="" />
           </div>
-          <div class="bind_mask">
-            <img src="../../assets/images/nobind.png" alt="" />
-          </div>
           <div
             v-if="showRegister"
             class="bind_right bind_right_bind"

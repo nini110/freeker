@@ -8,7 +8,7 @@
           mode="horizontal"
           @select="menuClick"
         >
-          <div v-for="(item, idx) in routeMenu" :key="idx">
+          <!-- <div v-for="(item, idx) in routeMenu" :key="idx">
             <a-sub-menu
               v-if="item.children"
               :key="item.name"
@@ -22,7 +22,14 @@
             <a-menu-item v-else :key="item.name">{{
               item.meta.txt
             }}</a-menu-item>
-          </div>
+          </div> -->
+          <a-menu-item :key="routeMenu[0].name">{{ routeMenu[0].meta.txt }}</a-menu-item>
+          <a-sub-menu :key="routeMenu[1].name" popupClassName="headerMenu">
+            <template #title>{{ routeMenu[1].meta.txt }}</template>
+            <a-menu-item v-for="item1 in routeMenu[1].children" :key="item1.name">{{
+              item1.meta.txt
+            }}</a-menu-item>
+          </a-sub-menu>
         </a-menu>
       </div>
       <div class="headerBox_user">
