@@ -10,6 +10,8 @@ import './router/promission.js'
 // 按需引入ant design
 import Ant from './UI/AntDesign.js'
 import 'ant-design-vue/dist/antd.css'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
 for(let item of Ant) {
     app.use(item)
 }

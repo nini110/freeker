@@ -2,29 +2,65 @@
   <div class="detailBox" ref="deta">
     <div class="detailBox_topbtn">
       <a-page-header title="返回" @back="backEvent"> </a-page-header>
-      <div class="rttopStus" :class="iconClass">
-        <span>{{ iconTxt }}</span>
-      </div>
     </div>
-    <div class="detailBox_div">
-      <h2>项目描述</h2>
-      <p class="detailBox_desc">
-        {{ resData.describe }}
-      </p>
+    <div class="gailanbox">
+      <a-row class="gailan">
+        <a-col :span="22">
+          <a-badge class="rttopStus" :count="iconTxt" :color="iconClass">
+            <p class="gailan_name">⌜ {{ detailData.project_name }} ⌟</p>
+          </a-badge>
+        </a-col>
+        <a-col
+          :span="6"
+          v-for="(item, idx) in detailData.projGailan"
+          :key="idx"
+          class="gailan_card"
+        >
+          <a-statistic :title="item.title" :value="item.value">
+            <template #prefix>
+              <div v-if="idx === 0" class="iconbox"><tag-two-tone /></div>
+              <div v-if="idx === 1" class="iconbox">
+                <property-safety-two-tone />
+              </div>
+              <div v-if="idx === 2" class="iconbox">
+                <red-envelope-two-tone />
+              </div>
+            </template>
+          </a-statistic>
+        </a-col>
+      </a-row>
     </div>
     <div class="detailBox_div">
       <h2>项目信息</h2>
       <div class="detailBox_info">
-        <h3>{{ resData.project_name }}</h3>
         <div class="detailBox_info_box">
           <p
-            v-for="(item, idx) in detailData.detailList"
+            v-for="(item, idx) in detailData.detailList1"
             :key="idx"
             class="w50"
           >
             <span>{{ item.label }}</span
             ><span>{{ item.value }}</span>
           </p>
+        </div>
+      </div>
+      <div class="detailBox_info">
+        <h3>项目投放时间</h3>
+        <div class="detailBox_info_box">
+          <p
+            v-for="(item, idx) in detailData.detailList2"
+            :key="idx"
+            class="w50"
+          >
+            <span>{{ item.label }}</span
+            ><span>{{ item.value }}</span>
+          </p>
+        </div>
+      </div>
+      <div class="detailBox_info">
+        <h3>项目描述</h3>
+        <div class="detailBox_info_box">
+          <div v-html="resData.describe" class="pre ql-snow ql-editor"></div>
         </div>
       </div>
     </div>
@@ -123,24 +159,26 @@
       class="detailBox_div"
     >
       <h2>评价</h2>
-      <div class="detailBox_desc">
-        <span class="label">项目评价</span>
-        <a-rate :value="resData.user_evaluate_score" disabled />
-        <div class="rateInfo">
-          {{ resData.user_evaluate_content }}
-        </div>
-        <div
-          v-if="
-            stusCode === 9 ||
-            stusCode === 10 ||
-            stusCode === 11 ||
-            stusCode === 12
-          "
-        >
-          <span class="label">商家评价</span>
-          <a-rate :value="resData.merchant_evaluate_score" disabled />
+      <div class="detailBox_info">
+        <div class="detailBox_desc">
+          <span class="label"><book-outlined />项目评价</span>
+          <a-rate :value="resData.user_evaluate_score" disabled />
           <div class="rateInfo">
-            {{ resData.merchant_evaluate_content }}
+            {{ resData.user_evaluate_content }}
+          </div>
+          <div
+            v-if="
+              stusCode === 9 ||
+              stusCode === 10 ||
+              stusCode === 11 ||
+              stusCode === 12
+            "
+          >
+            <span class="label"><shop-outlined />商家评价</span>
+            <a-rate :value="resData.merchant_evaluate_score" disabled />
+            <div class="rateInfo">
+              {{ resData.merchant_evaluate_content }}
+            </div>
           </div>
         </div>
       </div>
@@ -271,13 +309,6 @@
           ></a-col>
         </a-row>
       </a-form>
-      <!-- <a-rate v-model:value="rateValue" />
-      <a-textarea
-        v-model:value="areaValue"
-        placeholder="请输入评价内容"
-        :auto-size="{ minRows: 2, maxRows: 5 }"
-        allow-clear
-      /> -->
     </a-modal>
   </div>
 </template>
@@ -291,7 +322,15 @@ import {
   createVNode,
   onBeforeMount,
 } from "vue";
-import { LeftOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import {
+  LeftOutlined,
+  ExclamationCircleOutlined,
+  ShopOutlined,
+  BookOutlined,
+  RedEnvelopeTwoTone,
+  TagTwoTone,
+  PropertySafetyTwoTone,
+} from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import dayjs from "dayjs";
 import { applyProj, uploadData, okFinish, upAagain } from "@/api/api";
@@ -315,7 +354,14 @@ function relate_detail() {
     iconClass: "",
     iconTxt: "",
     detailData: {
+      describe: "",
+      project_name: "",
+      marketing_typeCn: "",
+      categoryCn: "",
+      platformCn: "",
+      projGailan: [], // 数据概览
       detailList: [], // 项目信息
+      detailList2: [], // 时间相关
       toufanglist: [], // 投放信息
       shujuList: [], //数据信息
     },
@@ -324,20 +370,40 @@ function relate_detail() {
   let backEvent = () => {
     $emit("back");
   };
+  let numberToCurrencyNo = (value) => {
+    if (!value) return 0;
+    // 获取整数部分
+    const intPart = Math.trunc(value);
+    // 整数部分处理，增加,
+    const intPartFormat = intPart
+      .toString()
+      .replace(/(\d)(?=(?:\d{3})+$)/g, "$1,");
+    // 预定义小数部分
+    let floatPart = "";
+    // 将数值截取为小数部分和整数部分
+    const valueArray = value.toString().split(".");
+    if (valueArray.length === 2) {
+      // 有小数部分
+      floatPart = valueArray[1].toString(); // 取得小数部分
+      return intPartFormat + "." + floatPart;
+    }
+    return intPartFormat + floatPart;
+  };
   let watch_resData = watch(
     resData,
     (newval, oldval) => {
       stateDate.platOption = optionJs.categoryOpt;
       let target = stateDate.detailData;
+      target.project_name = newval.project_name;
       // 投放比例
       let proportion = JSON.parse(newval.delivery_proportion);
-      target.delivery_proportion = `站内${proportion.percentInner}%、站外${proportion.percentOutter}%`;
-      // 目标  节奏  数量等等
-      let info = JSON.parse(newval.delivery_target);
-      // 投放数量
-      target.delivery_num = info[info.length - 1].value;
-      // 投放节奏
-      target.delivery_jiezou = info[info.length - 2].value;
+      if (!proportion.percentInner && !proportion.percentOutter) {
+        target.delivery_proportion = "--";
+      } else {
+        target.delivery_proportion = `站内${
+          proportion.percentInner || "--"
+        }%、站外${proportion.percentOutter || "--"}%`;
+      }
       // 投放时间
       let startdate = dayjs(newval.delivery_start_date).format(
         "YYYY-MM-DD HH:mm"
@@ -353,14 +419,13 @@ function relate_detail() {
       // 目标
       target.delivery_target = "";
       let delivery_target = JSON.parse(newval.delivery_target);
-      if (delivery_target.length === 3 && !delivery_target[0].label) {
+      if (delivery_target.length === 1 && !delivery_target[0].label) {
         target.delivery_target = "--";
       } else {
-        delivery_target
-          .slice(0, delivery_target.length - 2)
-          .forEach((val, index) => {
-            target.delivery_target += `${val.label}：${val.value}`;
-          });
+        delivery_target.forEach((val, index) => {
+          target.delivery_target += `${val.label}:${val.value}、`;
+        });
+        target.delivery_target = target.delivery_target.slice(0, -1);
       }
       // 产品类型
       for (let i of stateDate.platOption) {
@@ -368,6 +433,21 @@ function relate_detail() {
           target.categoryCn = i.label;
           break;
         }
+      }
+      // 推广类型
+      switch (newval.marketing_type) {
+        case 1:
+          target.marketing_typeCn = "商品推广";
+          break;
+        case 2:
+          target.marketing_typeCn = "店铺推广";
+          break;
+        case 3:
+          target.marketing_typeCn = "活动推广";
+          break;
+        case 4:
+          target.marketing_typeCn = "视频推广";
+          break;
       }
       // 难度
       switch (newval.project_level) {
@@ -384,66 +464,52 @@ function relate_detail() {
       // 投放平台
       switch (parseInt(newval.delivery_platform)) {
         case 1:
-          target.platformCn = "京准通";
+          target.platformCn = "京东";
+          break;
+        case 2:
+          target.platformCn = "抖音";
           break;
       }
-      target.detailList = [
+      target.detailList1 = [
         {
-          label: "服务费",
-          value: "￥" + newval.brokerage,
-        },
-        {
-          label: "预算金额",
-          value: "￥" + newval.budget,
+          label: "营销类型",
+          value: target.marketing_typeCn,
         },
         {
           label: "产品类型",
           value: target.categoryCn,
         },
         {
-          label: "投放平台",
-          value: target.platformCn,
-        },
-
-        {
-          label: "投放比例",
-          value: target.delivery_proportion,
-        },
-        {
-          label: "投放目标",
+          label: "营销目标",
           value: target.delivery_target,
         },
+        {
+          label: "投放占比",
+          value: target.delivery_proportion,
+        },
+      ];
+      target.detailList2 = [
         {
           label: "投放时间",
           value: target.delivery_date,
         },
         {
-          label: "活动投放类型",
-          value: newval.service_type,
-        },
-        {
-          label: "活动投放节奏",
-          value: target.delivery_jiezou || "--",
-        },
-        {
-          label: "参与品牌",
-          value: newval.delivery_brand,
-        },
-        {
-          label: "投放数量",
-          value: target.delivery_num || "--",
-        },
-        {
           label: "任务领取截止时间",
           value: target.project_end_date,
         },
+      ];
+      target.projGailan = [
         {
-          label: "项目难度",
-          value: target.project_levelCn,
+          title: "投放平台",
+          value: target.platformCn,
         },
         {
-          label: "备注",
-          value: newval.comment || "--",
+          title: "项目预算",
+          value: "￥" + numberToCurrencyNo(newval.budget),
+        },
+        {
+          title: "服务费",
+          value: "￥" + numberToCurrencyNo(newval.brokerage),
         },
       ];
       // 投放信息:待启动 进行中 待确认
@@ -496,7 +562,7 @@ function relate_detail() {
             label: "平均千次展示成本",
             code: "thDisCost",
             value: delRes.thDisCost,
-            type: 'money'
+            type: "money",
           },
           {
             label: "平均点击成本",
@@ -526,47 +592,47 @@ function relate_detail() {
       switch (newval) {
         case 99:
           iconTxt = "待申请";
-          iconClass = "dsq";
+          iconClass = "#2d2a2a";
           break;
         case 0:
           iconTxt = "申请中";
-          iconClass = "sqz";
+          iconClass = "#8896b3";
           break;
         case 1:
           iconTxt = "系统审核中";
-          iconClass = "xtshz";
+          iconClass = "#8896b3";
           break;
         case 2:
           iconTxt = "待审核";
-          iconClass = "dsh";
+          iconClass = "#8896b3";
           break;
         case 3:
           iconTxt = "已驳回";
-          iconClass = "ybh";
+          iconClass = "#ff4d4f";
           break;
         case 4:
           iconTxt = "待启动";
-          iconClass = "dqd";
+          iconClass = "#e6a23c";
           break;
         case 5:
           iconTxt = "进行中";
-          iconClass = "jxz";
+          iconClass = "#5cbb7a";
           break;
         case 6:
           iconTxt = "待确认";
-          iconClass = "dqr";
+          iconClass = "#2bbccd";
           break;
         case 7:
           iconTxt = "待通过";
-          iconClass = "dtg";
+          iconClass = "#aa6cf5";
           break;
         case 8:
           iconTxt = "未通过";
-          iconClass = "wtg";
+          iconClass = "#f56c6c";
           break;
         case 9:
           iconTxt = "已完成";
-          iconClass = "ywc";
+          iconClass = "#40a0ff";
           break;
         case 10:
           iconTxt = "待汇款";

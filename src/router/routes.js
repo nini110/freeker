@@ -9,7 +9,7 @@ const routes = [{
             meta: {
                 txt: '首页'
             },
-            component: 'home'
+            component: 'Home'
         },
         {
             path: 'tem',
@@ -17,7 +17,7 @@ const routes = [{
             meta: {
                 txt: '菜单'
             },
-            component: 'tem',
+            component: 'Tem',
             children: [{
                     path: 'projectCenter',
                     name: 'projectCenter',

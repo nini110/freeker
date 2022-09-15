@@ -46,6 +46,11 @@ $baseHsize: 18px;
 
         .label {
             margin-right: 15px;
+            color: #8d6a6a;
+
+            .anticon {
+                margin-right: 10px;
+            }
         }
     }
 
@@ -56,11 +61,12 @@ $baseHsize: 18px;
         background-color: #e7e7e726;
 
         h3 {
-            font-size: 16px;
+            font-size: 14px;
             line-height: 30px;
             position: relative;
-            padding: 12px 15px;
+            padding: 10px 15px;
             border-bottom: 1px solid #f6f6f6;
+            color: #8d6a6a;
 
             &:before {
                 content: '';
@@ -80,6 +86,10 @@ $baseHsize: 18px;
             flex-wrap: wrap;
             margin: 10px 0;
             padding: 0 20px;
+
+            .pre {
+                width: 100%;
+            }
 
             p {
                 margin: 7px 0;
@@ -123,94 +133,115 @@ $baseHsize: 18px;
         position: relative;
         border-bottom: 1px solid #f3f1f1;
 
-        .rttopStus {
-            position: absolute;
-            box-sizing: border-box;
-            right: 0;
-            bottom: -87;
-            padding: 15px 10px 40px 10px;
-            color: #fff;
-            text-align: center;
-            background: red;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    }
+}
 
-            span {
-                writing-mode: vertical-lr;
-            }
+.gailan {
+    display: flex;
+    justify-content: space-around;
+    background-color: #e7e7e726;
+    padding: 20px 0;
+    border-radius: 5px;
 
-            &:after {
-                content: '';
-                border: 26px gold solid;
-                border-left: 21px transparent solid;
-                border-right: 21px transparent solid;
-                border-top: 26px transparent solid;
-                border-bottom: 20px #fff solid;
-                position: absolute;
-                left: 0;
-                bottom: 0;
-            }
-            &.dsq {
-                background: linear-gradient(150deg, #2d2a2a 50%, #fff 150%);
-            }
-            &.sqz {
-                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
-            }
+    &box {
+        margin: 20px 30px 0 30px;
+    }
 
-            &.xtshz {
-                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
-            }
+    &_name {
+        font-size: 18px;
+        text-align: center;
+        line-height: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #8d6a6a;
+    }
 
-            &.dsh {
-                background: linear-gradient(150deg, #8896b3 50%, #fff 150%);
-            }
+    :deep .ant-statistic {
+        border-radius: 10px;
+        box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
 
-            &.dqd {
-                background: linear-gradient(150deg, #e6a23c 50%, #fff 150%);
-            }
+        padding: 14px 20px;
+        background-color: #fff;
 
-            &.jxz {
-                background: linear-gradient(150deg, #5cbb7a 50%, #fff 150%);
-            }
-
-            &.dqr {
-                background: linear-gradient(150deg, #2bbccd 50%, #fff 150%);
-            }
-
-            &.dtg {
-                background: linear-gradient(150deg, #aa6cf5 50%, #fff 150%);
-            }
-
-            &.wtg {
-                background: linear-gradient(150deg, #f56c6c 50%, #fff 150%);
-            }
-
-            &.ywc {
-                background: linear-gradient(150deg, #40a0ff 50%, #fff 150%);
-            }
-
-            &.ybh {
-                background: linear-gradient(150deg, #ff4d4f 50%, #fff 150%);
-            }
-            // ’‘
-            &.dhk {
-                background: linear-gradient(150deg, #13c2c2 50%, #fff 150%);
-            }
-
-            &.ddk {
-                background: linear-gradient(150deg, #52c41a 50%, #fff 150%);
-            }
+        &-title {
+            font-size: 14px;
         }
 
+        &-content {
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 8px 0 0px 0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            align-content: flex-end;
+
+            .anticon {
+                font-size: 26px;
+            }
+
+            &-value {
+                color: #303133;
+            }
+        }
+    }
+
+    .iconbox {
+        background-color: #1890ff;
+        border-radius: 6px;
+        width: 36px;
+        height: 36px;
+        padding: 10px;
+        margin-right: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .rttopStus {
+        :deep .ant-badge-count {
+            transform: translate(75%, -50%)!important;
+        }
+    }
+}
+
+.projinfo {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid red;
+    background-color: #fff2ee;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+
+    p {
+        display: flex;
+        flex-wrap: wrap;
+
+        span {
+            flex-basis: 100%;
+            text-align: center;
+
+            &:nth-child(1) {
+                color: #909399;
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+
+            &:nth-child(2) {
+                color: #606266;
+            }
+
+            &.ts {
+                font-weight: bold;
+            }
+        }
 
     }
 }
 
 .dataDialog {
     :deep .ant {
-        &-modal {
-        }
+        &-modal {}
 
         &-form {
             &-item {

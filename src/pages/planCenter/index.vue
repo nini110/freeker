@@ -177,6 +177,22 @@ function relate_plan() {
     projList: [],
     activeKey: "",
   });
+  let numberToCurrencyNo = (value) => {
+    if (!value) return 0
+    // 获取整数部分
+    const intPart = Math.trunc(value)
+    // 整数部分处理，增加,
+    const intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
+    // 预定义小数部分
+    let floatPart = ''
+    // 将数值截取为小数部分和整数部分
+    const valueArray = value.toString().split('.')
+    if (valueArray.length === 2) { // 有小数部分
+      floatPart = valueArray[1].toString() // 取得小数部分
+      return intPartFormat + '.' + floatPart
+    }
+    return intPartFormat + floatPart
+  }
   // 获取列表
   let apiPort_list = (status, page, page_size) => {
     planProj({
@@ -256,6 +272,7 @@ function relate_plan() {
           }
           let obj = {
             ...val,
+            brokerage: numberToCurrencyNo(val.brokerage),
             jdTime: dayjs(val.allot_time).format("YYYY-MM-DD HH:mm:ss"),
             sqTime: dayjs(val.create_time).format("YYYY-MM-DD HH:mm:ss"),
           };

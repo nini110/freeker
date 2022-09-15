@@ -42,9 +42,9 @@
           </div>
           <div class="proj_txt" @click="cardClick(item)">
             <p class="proj_p"><span>投放平台</span>{{ item.platCn }}</p>
-            <p class="proj_p"><span>预算金额</span>￥{{ item.budget }}</p>
+            <p class="proj_p"><span>项目预算</span>￥{{ item.budget }}</p>
             <p class="proj_p"><span>服务费</span>￥{{ item.brokerage }}</p>
-            <p class="proj_p"><span>所属类目</span>{{ item.categoryCn }}</p>
+            <p class="proj_p"><span>产品类型</span>{{ item.categoryCn }}</p>
             <p class="proj_p"><span>截止时间</span>{{ item.time }}</p>
           </div>
           <div class="proj_btn">
@@ -158,7 +158,10 @@ function relate_proj() {
           }
           switch (parseInt(item.delivery_platform)) {
             case 1:
-              item.platCn = "京准通";
+              item.platCn = "京东";
+              break;
+            case 2:
+              item.platCn = "抖音";
               break;
           }
           item.create_time = dayjs(item.create_time).format(

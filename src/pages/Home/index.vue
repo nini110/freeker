@@ -91,7 +91,10 @@ function projectFun() {
             }
             switch (parseInt(item.delivery_platform)) {
               case 1:
-                item.platCn = "京准通";
+                item.platCn = "京东";
+                break;
+              case 2:
+                item.platCn = "抖音";
                 break;
             }
             item.create_time = dayjs(item.create_time).format(
