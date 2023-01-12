@@ -1,6 +1,6 @@
 <template>
+    <!-- component-size="large" -->
   <a-config-provider
-    component-size="large"
     :locale="locale === 'en' ? enUS : zhCN"
   >
     <router-view></router-view>

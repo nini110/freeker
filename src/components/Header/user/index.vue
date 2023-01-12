@@ -607,6 +607,9 @@ function relate_upload() {
   };
   let beforeUpload = (file) => {
     stateData.zizhiForm.fileArr = [file];
+    console.log({
+      ...stateData.zizhiForm
+    })
     refZizhi.value.clearValidate("fileArr");
     return false;
   };

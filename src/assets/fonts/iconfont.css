@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3348143 */
-  src: url('iconfont.woff2?t=1656388366876') format('woff2'),
-       url('iconfont.woff?t=1656388366876') format('woff'),
-       url('iconfont.ttf?t=1656388366876') format('truetype');
+  src: url('iconfont.woff2?t=1673408059854') format('woff2'),
+       url('iconfont.woff?t=1673408059854') format('woff'),
+       url('iconfont.ttf?t=1673408059854') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,50 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-dengdai:before {
+  content: "\e68d";
+}
+
+.icon-yanshoujijiesuanguanli:before {
+  content: "\e62d";
+}
+
+.icon-shenhebutongguo:before {
+  content: "\e60b";
+}
+
+.icon-shenfenrenzheng:before {
+  content: "\e608";
+}
+
+.icon-yirenzheng:before {
+  content: "\e652";
+}
+
+.icon-renzheng:before {
+  content: "\ff5b";
+}
+
+.icon-zhanghaoxinxi:before {
+  content: "\e668";
+}
+
+.icon-shenhe:before {
+  content: "\e69a";
+}
+
+.icon-shimingrenzheng:before {
+  content: "\e626";
+}
+
+.icon-shimingrenzheng1:before {
+  content: "\e607";
+}
+
+.icon-a-anquanzhongxindunpai:before {
+  content: "\e642";
 }
 
 .icon-douyin:before {

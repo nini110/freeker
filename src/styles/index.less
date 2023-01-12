@@ -17,21 +17,74 @@
     transition: all 0.3s ease-in-out;
     border-radius: 2px;
 }
+
 .ant-modal {
     &-header {
-        background-color: #1a1a2ad1!important;
+        background-color: #1a1a2ad1 !important;
     }
+
     &-title,
     &-close-x {
-        color: #fff!important;
+        color: #fff !important;
     }
 }
+
 .content {
     .ant {
+        &-descriptions {
+            // &-view {
+            //     border-left-color: transparent;
+            //     border-right-color: transparent;
+            // }
+            &-row {
+                display: flex;
+                flex-wrap: nowrap;
+            }
+            &-title {
+                position: relative;
+                font-size: 20px;
+                line-height: 40px;
+                font-weight: bold;
+                &:after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    display: inline-block;
+                    width: 40px;
+                    height: 5px;
+                    background-color: #ff532b;
+                    border-radius: 5px;
+                }
+            }
+            &-item-label {
+                flex-basis: 15%;
+                color: #606266;
+            }
+            &-item-content {
+                .stus {
+                    &:before {
+                        margin-right: 5px;
+                    }
+                }
+                .grey {
+                    color: #333;
+                    font-weight: bold;
+                }
+                .red {
+                    color: #f50;
+                    font-weight: bold;
+                }
+                .green {
+                    color: #72c84d;
+                    font-weight: bold;
+                }
+            }
+        }
         &-modal {
             &-body {
                 padding: 10px 30px;
-    
+
                 .ant-rate {
                     margin-bottom: 12px;
                 }
@@ -44,9 +97,29 @@
             }
         }
 
+        &-row {
+            &.realPic {
+                label {
+                    height: auto !important;
+                }
+            }
+        }
+
+        &-upload {
+
+            // &-select-picture-card {
+            //     width: 100%;
+            //     height: 100%;
+            // }
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
         &-form {
             flex-basis: 100%;
-
             &-item {
                 flex-basis: 100%;
                 margin: 11px 0;
@@ -59,12 +132,36 @@
                         font-size: 14px;
                     }
                 }
+
                 &-explain-connected {
                     position: absolute;
                     bottom: -24px;
                     font-size: 12px;
                 }
             }
+        }
+        &-btn {
+            &-round {
+                
+            }
+            &.red {
+                &_bd {
+                    padding: 0 30px;
+                    border: 1px solid #ff532b;
+                    background-color: transparent;
+                    color: #ff532b;
+                    margin-right: 20px;
+                }
+                &_solid {
+                    padding: 0 30px;
+                    border: 1px solid #ff532b;
+                    background-color: #ff532b;
+                    color: #fff;
+                }
+            }
+        }
+        &-picker {
+            width: 100%;
         }
     }
 
@@ -77,54 +174,66 @@
 
 .userPopver {
     user-select: none;
+
     .ant-popover-title {
         padding: 10px 0;
     }
+
     .ant-popover-inner-content {
         padding: 0 0 10px 0;
     }
-    p { 
+
+    p {
         max-width: 180px;
         padding: 10px 20px;
         font-size: 16px;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+
         span {
             margin-right: 10px;
         }
+
         &.t1 {
             color: #303133;
             font-size: 16px;
             padding: 5px 20px;
         }
+
         &.t2 {
             padding: 0 20px;
             color: #909399;
             font-size: 14px;
         }
+
         &.t3,
         &.t4 {
             cursor: pointer;
+
             &:hover {
                 background-color: #fbf5ee;
-                color: #ff5c5c!important;
+                color: #ff5c5c !important;
             }
 
         }
     }
 
 }
+
 .headerMenu {
     user-select: none;
+
     .ant-menu-title-content {
         font-size: 16px;
     }
+
     .ant-menu-item {
+
         &-selected,
         &:hover {
-            color: #ff5c5c!important;
-            background-color: #fbf5ee!important;
+            color: #ff5c5c !important;
+            background-color: #fbf5ee !important;
         }
     }
 }

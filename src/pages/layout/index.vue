@@ -18,17 +18,25 @@
       Copyrihgt(C) 2010-2022 aFoucs.com.cn,All Rights Reserved
     </div>
   </div>
-  <div v-else class="content">
-    <!-- <a-spin size="large" :indicator="indicator" :spinning="true" tip="加载中"> -->
+  <div v-else-if="$route.name === 'personCenter'" class="content">
       <div class="content_box">
-        <a-affix :offset-top="85">
+        <a-affix :offsetTop="60">
+          <div class="content_box_lt white">
+            <SideMenu class="white"></SideMenu>
+          </div>
+        </a-affix>
+        <router-view class="content_box_rt"></router-view>
+      </div>
+  </div>
+  <div v-else class="content">
+      <div class="content_box">
+        <a-affix :offset-top="60">
           <div class="content_box_lt">
             <SideMenu></SideMenu>
           </div>
         </a-affix>
         <router-view class="content_box_rt"></router-view>
       </div>
-    <!-- </a-spin> -->
   </div>
 
   <a-back-top :visibilityHeight="100" />

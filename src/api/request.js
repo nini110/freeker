@@ -23,7 +23,7 @@ service.interceptors.request.use(config => {
         config.params = {
             ...config.data
         }
-    } else if (config.method === 'post') {
+    } else if (config.method === 'post' || config.method === 'patch') {
         config.headers = {
             'content-type': headers[config.responseType]
         }
@@ -46,11 +46,13 @@ service.interceptors.request.use(config => {
             let formData = new FormData()
             let data = config.data
             for (let i in data) {
+                
                 let item = data[i]
                 if (Array.isArray(item) && item.length > 0) {
-                    item.forEach((val) => {
-                        formData.append('img', val)
-                    })
+                    // item.forEach((val) => {
+                    //     formData.append('img', val)
+                    // })
+                    formData.append(i, item[0].originFileObj)
                 } else {
                     formData.append(i, item)
                 }
@@ -73,7 +75,7 @@ service.interceptors.response.use(response => {
         store.commit("pageData/SET_USERIMG", '');
         store.commit("interval/SET_INTERVALTAG", false);
         setTimeout(() => {
-            window.location.replace('http://tool.afocus.com.cn/freeker/#/home')
+            window.location.replace('http://tool.afocus.com.cn/test/freeker/#/home')
         }, 1000);
         return
     }

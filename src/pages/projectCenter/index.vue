@@ -5,7 +5,6 @@
         <a-form-item label="项目">
           <a-input
             v-model:value="formData.project_name"
-            size="large"
             placeholder="请输入项目名称"
             allow-clear
           />
@@ -13,7 +12,6 @@
         <a-form-item label="类目">
           <a-select
             v-model:value="formData.category"
-            size="large"
             placeholder="请选择类目"
             allow-clear
           >

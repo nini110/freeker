@@ -1,6 +1,6 @@
 import request from './request.js'
 const BASE_PATH = 'http://192.168.90.209:8000'
-const BASE_PATH2 = 'http://114.67.229.243:8003'
+const BASE_PATH2 = 'http://114.67.229.243:8004'
 
 // 用户登录
 export const userLogin = request({
@@ -130,4 +130,22 @@ export const payCenterList = request({
 export const projBindMst = request({
     url:`${BASE_PATH2}/index_api/ad_project_user`,
     method:'patch',
+})
+
+
+// 新版个人信息---修改基本信息
+export const editBaseInfo = request({
+    url:`${BASE_PATH2}/index_api/user`,
+    method:'patch',
+})
+// 新版个人信息---获取基本信息
+export const userBaseInfo = request({
+    url:`${BASE_PATH2}/index_api/user/user_info`,
+    method:'get',
+})
+// 新版个人信息---实名认证
+export const realUserVarify = request({
+    url:`${BASE_PATH2}/index_api/user/real_name_authentication`,
+    method:'post',
+    responseType: 'form-data'
 })

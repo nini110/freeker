@@ -6,30 +6,26 @@
         <a-menu
           v-model:selectedKeys="currentMenu"
           mode="horizontal"
-          @select="menuClick"
+          @click="menuClick"
+          @select="menuSelect"
         >
-          <!-- <div v-for="(item, idx) in routeMenu" :key="idx">
-            <a-sub-menu
-              v-if="item.children"
-              :key="item.name"
-              popupClassName="headerMenu"
-            >
-              <template #title>{{ item.meta.txt }}</template>
-              <a-menu-item v-for="item1 in item.children" :key="item1.name">{{
-                item1.meta.txt
-              }}</a-menu-item>
-            </a-sub-menu>
-            <a-menu-item v-else :key="item.name">{{
-              item.meta.txt
-            }}</a-menu-item>
-          </div> -->
-          <a-menu-item :key="routeMenu[0].name">{{ routeMenu[0].meta.txt }}</a-menu-item>
+          <!-- <a-menu-item :key="routeMenu[0].name">{{ routeMenu[0].meta.txt }}</a-menu-item>
           <a-sub-menu :key="routeMenu[1].name" popupClassName="headerMenu">
             <template #title>{{ routeMenu[1].meta.txt }}</template>
             <a-menu-item v-for="item1 in routeMenu[1].children" :key="item1.name">{{
               item1.meta.txt
             }}</a-menu-item>
-          </a-sub-menu>
+          </a-sub-menu> -->
+          <!-- ----------------------------- -->
+          <!-- <a-menu-item :key="routeMenu[0].name">{{
+            routeMenu[0].meta.txt
+          }}</a-menu-item>
+          <a-menu-item :key="routeMenu[1].name">{{
+            routeMenu[1].meta.txt
+          }}</a-menu-item> -->
+          <!-- ----------------------------- -->
+          <a-menu-item key="home">首页</a-menu-item>
+          <a-menu-item key="projM">项目</a-menu-item>
         </a-menu>
       </div>
       <div class="headerBox_user">
@@ -49,7 +45,7 @@
             arrow-point-at-center
           >
             <template #content>
-              <p class="t3" @click="openDialog"><user-outlined />个人信息</p>
+              <p class="t3" @click="openDialog"><user-outlined />账户信息</p>
               <p class="t4" @click="logoutEvent">
                 <poweroff-outlined />退出登录
               </p>
@@ -131,28 +127,43 @@ function relate_search() {
   return { searchVal, onEnterSearch };
 }
 // 菜单相关
-let { currentMenu, menuClick } = relate_menu();
+let { currentMenu, menuSelect, menuClick } = relate_menu();
 function relate_menu() {
   const stateData = reactive({
     currentMenu: [],
   });
-  let menuClick = (item) => {
+  let menuSelect = (item) => {
+    // stateData.currentMenu = [item.key];
+    // $router.push({
+    //   path:
+    //     item.keyPath.length > 1
+    //       ? `/${item.keyPath[0]}/${item.keyPath[1]}`
+    //       : `/${item.keyPath[0]}`,
+    // });
     stateData.currentMenu = [item.key];
     $router.push({
       path:
-        item.keyPath.length > 1
-          ? `/${item.keyPath[0]}/${item.keyPath[1]}`
-          : `/${item.keyPath[0]}`,
+        item.key === 'home'
+          ? `/home`
+          : `/projM/projectCenter`,
     });
+  };
+  let menuClick = () => {
+    localStorage.setItem("menuTag", "proj");
   };
   let $watch = watch(
     $route,
     (newval, oldval) => {
-      stateData.currentMenu = [newval.name];
+      if (newval.path.indexOf('home') !== -1) {
+        stateData.currentMenu = ['home'];
+      }
+      if (newval.path.indexOf('projM') !== -1) {
+        stateData.currentMenu = ['projM'];
+      }
     },
     { immediate: true, deep: true }
   );
-  return { ...toRefs(stateData), menuClick };
+  return { ...toRefs(stateData), menuSelect, menuClick };
 }
 // 消息弹层
 let {
@@ -278,10 +289,15 @@ function relate_user() {
     });
   };
   let openDialog = async () => {
-    await reGetMst();
-    await reGetUser();
-    await reGetZiZhi();
-    stateData.showDialog = true;
+    localStorage.setItem("menuTag", "per");
+    currentMenu.value = []
+    $router.push({
+      path: `/personM/personCenter`,
+    });
+    // await reGetMst();
+    // await reGetUser();
+    // await reGetZiZhi();
+    // stateData.showDialog = true;
   };
   let changeDialogTag = () => {
     stateData.showDialog = false;
