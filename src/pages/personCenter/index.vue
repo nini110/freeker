@@ -15,7 +15,7 @@
           <img class="avatar" :src="store.getters.userImg" alt="avatar" />
           <div class="userBox_rt">
             <div class="userBox_rt_tp">
-              <span>{{ initInfo.account }}</span>
+              <span>{{ initInfo.username }}</span>
             </div>
             <div class="userBox_rt_btm">
               <div class="icon">
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div v-if="descEdit" class="descBox">
-        <a-descriptions bordered title="个人资料" :column="1">
+        <a-descriptions bordered title="个人资料">
           <template #extra>
             <a-button type="primary" @click="descEvent(1)">编辑</a-button>
           </template>
@@ -48,6 +48,7 @@
             v-for="(item1, idx1) in descList"
             :key="idx1"
             :label="item1.label"
+            :span="item1.span || 3"
             >{{ item1.val }}</a-descriptions-item
           >
         </a-descriptions>
@@ -147,11 +148,12 @@
         </a-form>
       </div>
       <div v-if="skillEdit" class="descBox">
-        <div v-if="!initInfo.work_time" class="fl100">
-          <span @click="skillEvent(0)">请完善专业技能</span>
+        <div v-if="!initInfo.work_time" class="nodatadiv ts">
+          <img src="../../assets/images/nodataRZ.png" alt="" />
+          <div @click="skillEvent(0)">请完善技能信息</div>
         </div>
         <div v-else class="fl100">
-          <a-descriptions bordered title="专业技能" :column="1">
+          <a-descriptions bordered title="专业技能">
             <template #extra>
               <a-button type="primary" @click="skillEvent(1)">编辑</a-button>
             </template>
@@ -159,6 +161,7 @@
               v-for="(item1, idx1) in skillList"
               :key="idx1"
               :label="item1.label"
+              :span="item1.span || 3"
               >{{ item1.val }}</a-descriptions-item
             >
           </a-descriptions>
@@ -236,8 +239,9 @@
         </a-steps>
       </div>
       <div v-if="sfEdit" class="descBox">
-        <div v-if="initInfo.if_authentication === 0">
-          <span @click="sfEvent(0)">请完善实名信息</span>
+        <div class="nodatadiv ts" v-if="initInfo.if_authentication === 0">
+          <img src="../../assets/images/nodataRZ.png" alt="" />
+          <div @click="sfEvent(0)">请完善实名信息</div>
         </div>
         <div v-else class="fl100">
           <a-descriptions bordered title="实名信息" :column="1">
@@ -387,7 +391,7 @@
             v-for="(item, idx) in zzListArr"
             :key="idx"
             :color="item.color"
-            :closable="tagClosable"
+            closable
             @close.prevent="zizhiDelEvent(item)"
             @click="zzClickEvent(item)"
           >
@@ -397,17 +401,20 @@
         <div><a-button type="primary" @click="zzEvent(1)">上传</a-button></div>
       </div>
       <div v-if="zzEdit" class="descBox">
-        <div v-if="zzListArr.length === 0"><span>请完善资质信息</span></div>
+        <div v-if="zzListArr.length === 0" class="nodatadiv">
+          <img src="../../assets/images/nodataRZ.png" alt="" />
+          <div>暂无资质信息</div>
+        </div>
         <div v-else class="fl100">
           <a-descriptions bordered title="投手资质" :column="1">
-            <template #extra>
+            <!-- <template #extra>
               <a-button
                 v-if="curentZz.status == 2"
                 type="primary"
                 @click="zzEvent(2)"
                 >编辑</a-button
               >
-            </template>
+            </template> -->
             <a-descriptions-item
               v-for="(item1, idx1) in zzList"
               :key="idx1"
@@ -694,7 +701,7 @@ function relate_init() {
     },
     formState2: {
       work_years: "",
-      work_type: "",
+      work_type: "兼职",
       work_time: "",
       self_introduction: "",
     },
@@ -726,7 +733,13 @@ function relate_init() {
     ],
     descList: [
       {
-        label: "用户名",
+        label: "账户",
+        code: "account",
+        val: "",
+        span: 2,
+      },
+      {
+        label: "昵称",
         code: "username",
         val: "",
       },
@@ -734,6 +747,7 @@ function relate_init() {
         label: "账户类型",
         code: "account_type",
         val: "",
+        span: 2,
       },
       {
         label: "账户角色",
@@ -749,6 +763,7 @@ function relate_init() {
         label: "毕业院校",
         code: "graduated",
         val: "",
+        span: 2,
       },
       {
         label: "最高学历",
@@ -766,6 +781,7 @@ function relate_init() {
         label: "工作方式",
         code: "work_type",
         val: "",
+        span: 2,
       },
       {
         label: "工作时间",
@@ -843,16 +859,32 @@ function relate_init() {
     },
     rules2: {
       work_years: [
-        { required: true, message: "请输入工作年限", trigger: ["blur", "change"] },
+        {
+          required: true,
+          message: "请输入工作年限",
+          trigger: ["blur", "change"],
+        },
       ],
       work_type: [
-        { required: true, message: "请选择工作方式", trigger: ["blur", "change"] },
+        {
+          required: true,
+          message: "请选择工作方式",
+          trigger: ["blur", "change"],
+        },
       ],
       work_time: [
-        { required: true, message: "请选择工作时间", trigger: ["blur", "change"] },
+        {
+          required: true,
+          message: "请选择工作时间",
+          trigger: ["blur", "change"],
+        },
       ],
       self_introduction: [
-        { required: true, message: "请输入个人优势", trigger: ["blur", "change"] },
+        {
+          required: true,
+          message: "请输入个人优势",
+          trigger: ["blur", "change"],
+        },
       ],
     },
     rules3: {
@@ -963,7 +995,7 @@ function relate_init() {
               color: val.color,
               txt: val.platform_cn + val.cert_level_cn,
             });
-            stateData.tagClosable = stateData.zzListArr.length > 1;
+            // stateData.tagClosable = stateData.zzListArr.length > 1;
           });
           zzClickEvent(stateData.zzListArr[0]);
         }
@@ -1006,7 +1038,10 @@ function relate_init() {
             if (i === item.code) {
               if (item.code === "work_years") {
                 item.val = `${res.data.data[i]}年`;
-              } else if (item.code === "work_time" && res.data.data['work_time']) {
+              } else if (
+                item.code === "work_time" &&
+                res.data.data["work_time"]
+              ) {
                 let tg = JSON.parse(res.data.data[i]);
                 item.val = `${tg[0]} 至 ${tg[1]}`;
               } else {
@@ -1116,6 +1151,11 @@ function relate_init() {
       }
       stateData.zzEdit = false;
     } else if (val === 2) {
+      // stateData.formState4.platform = stateData.curentZz.platform;
+      // stateData.formState4.cert_level = stateData.curentZz.cert_level;
+      // stateData.formState4.term_of_validity = stateData.curentZz.term_of_validity;
+      // stateData.showedZZUrl = stateData.curentZz.cert_image;
+      stateData.zzEdit = false;
       // 编辑
     } else if (val === 3) {
       // 取消

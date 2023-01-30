@@ -10,7 +10,6 @@
         justify-content: center;
         background: url(../../assets/images/userheader.png) no-repeat 0 0;
         background-size: cover;
-
         &_outer {
             flex-basis: 88%;
             flex-wrap: nowrap;
@@ -19,6 +18,7 @@
 
         .avatar {
             width: 100px;
+            height: 100px;
             border-radius: 50%;
             margin-right: 40px;
             background-color: #fff;
@@ -31,7 +31,7 @@
             display: flex;
             flex-wrap: wrap;
             align-content: space-between;
-            padding: 10px 0;
+            // padding: 10px 0;
 
             &_tp {
                 font-size: 16px;
@@ -97,6 +97,8 @@
         align-items: center;
         flex-wrap: nowrap;
         padding: 20px 40px;
+        border-radius: 8px 8px 0 0;
+        margin: 0;
         div {
             &:nth-child(1) {
                 width: 80%;
@@ -117,7 +119,6 @@
         padding: 10px;
         background-color: #fff2ee;
         border-top: 1px solid #fa4b42;
-
         p {
             padding: 0 30px;
             color: #606266;
@@ -159,7 +160,28 @@
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        border-radius: 8px;
+        border-radius: 0 0 8px 8px;
+        .nodatadiv {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            img {
+                width: 50%;
+                padding: 20px;
+            }
+            div {
+                flex-basis: 100%;
+                text-align: center;
+                color: #909399;
+            }
+            &.ts {
+                font-weight: bold;
+                div:hover {
+                    cursor: pointer;
+                    color: #1890ff;
+                }
+            }
+        }
         .ant {
             &-descriptions {
                 // margin: 0 auto;
@@ -245,7 +267,6 @@
         padding: 20px 60px;
         background-color: #fff;
         border-radius: 8px 8px 0 0;
-
         :deep .ant-steps {
             flex-basis: 88%;
             padding: 20px 0;

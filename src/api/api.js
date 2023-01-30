@@ -4,9 +4,37 @@ const BASE_PATH2 = 'http://114.67.229.243:8004'
 
 // 用户登录
 export const userLogin = request({
-    url:`${BASE_PATH2}/index_api/user/login`,
-    method:'post',
+    url: `${BASE_PATH2}/admin_api/adminuser/login`,
+    method: 'post',
 })
+// 注册
+export const userRegist = request({
+    url: `${BASE_PATH2}/admin_api/adminuser/register`,
+    method: 'post',
+})
+// 修改密码
+export const userEditPwd = request({
+    url: `${BASE_PATH2}/admin_api/adminuser/get_pwd`,
+    method: 'post',
+})
+// 发送验证码--注册
+export const getPhoneCode = request({
+    url: `${BASE_PATH2}/admin_api/adminuser/register_send_msg`,
+    method: 'post',
+})
+// 发送验证码--登录
+export const getPhoneCodeLog = request({
+    url: `${BASE_PATH2}/admin_api/adminuser/login_send_msg`,
+    method: 'post',
+})
+// 发送验证码-- 找回密码
+export const getPhoneCodePwd = request({
+    url: `${BASE_PATH2}/admin_api/adminuser/get_pwd_send_msg`,
+    method: 'post',
+})
+
+
+
 // 个人详情
 export const userDetail = request({
     url:`${BASE_PATH2}/index_api/user/user_info`,

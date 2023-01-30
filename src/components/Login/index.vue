@@ -14,141 +14,144 @@
       <div class="login">
         <div class="login_left">
           <h2>灵狐用工</h2>
-          <p><check-outlined />看看我是特点一</p>
-          <p><check-outlined />看看我是特点二</p>
-          <p><check-outlined />看看我是特点三</p>
+          <p>看看我是特点一</p>
+          <p>看看我是特点二</p>
+          <p>看看我是特点三</p>
         </div>
         <div class="login_right">
-          <div class="login_right_box" v-if="tabTag === 1">
+          <div class="login_right_box">
             <a-tabs v-model:activeKey="activeTabKey" @tabClick="tabClick">
-              <a-tab-pane :key="1" tab="密码登录" force-render></a-tab-pane>
-              <a-tab-pane :key="2" tab="免密登录"></a-tab-pane>
+              <a-tab-pane
+                v-for="item in tabList"
+                :key="item.key"
+                :tab="item.tabName"
+                force-render
+              ></a-tab-pane>
             </a-tabs>
             <a-form
-              ref="refLogin"
+              ref="formref"
               :model="formState"
               name="normal_login"
-              :rules="rulesLogin"
+              :rules="rules"
             >
-              <a-form-item label="" name="account" placeholder="账户">
-                <a-input
-                  v-model:value.trim="formState.account"
-                  placeholder="账户"
-                  allow-clear
+              <div v-if="activeTabKey === 1 || activeTabKey === 2">
+                <a-form-item label="" name="account">
+                  <a-input
+                    v-model:value.trim="formState.account"
+                    placeholder="手机号"
+                    :maxlength="11"
+                    allow-clear
+                  >
+                    <template #prefix>
+                      <mobile-outlined />
+                    </template>
+                  </a-input>
+                </a-form-item>
+                <a-form-item
+                  v-if="activeTabKey === 1"
+                  label=""
+                  name="password_code"
                 >
-                  <template #prefix>
-                    <UserOutlined class="site-form-item-icon" />
-                  </template>
-                </a-input>
-              </a-form-item>
-              <a-form-item v-if="activeTabKey === 1" label="" name="password">
-                <a-input-password
-                  v-model:value.trim="formState.password"
-                  placeholder="密码"
-                  allow-clear
-                >
-                  <template #prefix>
-                    <LockOutlined class="site-form-item-icon" />
-                  </template>
-                </a-input-password>
-              </a-form-item>
-              <a-form-item v-else label="" name="phoneCode">
-                <a-input-search
-                  v-model:value.trim="formState.phoneCode"
-                  placeholder="6位短信验证码"
-                  allow-clear
-                  size="middle"
-                >
-                  <template #enterButton>
-                    <a-button>发送验证码</a-button>
-                  </template>
-                  <template #prefix>
-                    <LockOutlined class="site-form-item-icon" /> </template
-                ></a-input-search>
-              </a-form-item>
-              <a-form-item class="zhuceItem">
+                  <a-input
+                    v-model:value.trim="formState.password_code"
+                    placeholder="短信验证码"
+                    allow-clear
+                    :maxlength="4"
+                    size="default"
+                  >
+                    <template #addonAfter>
+                      <span v-if="showCount">{{ count }}S 后重新获取</span>
+                      <span v-else @click="sendCode">发送验证码</span>
+                    </template>
+                    <template #prefix> <message-outlined /></template
+                  ></a-input>
+                </a-form-item>
+                <a-form-item v-else label="" name="password_code">
+                  <a-input-password
+                    v-model:value.trim="formState.password_code"
+                    placeholder="密码"
+                    :maxlength="20"
+                    allow-clear
+                  >
+                    <template #prefix>
+                      <LockOutlined class="site-form-item-icon" />
+                    </template>
+                  </a-input-password>
+                </a-form-item>
+              </div>
+              <div v-if="activeTabKey === 3 || activeTabKey === 4">
+                <a-form-item v-if="activeTabKey === 3" label="" name="nickname">
+                  <a-input
+                    v-model:value.trim="formState.nickname"
+                    placeholder="昵称"
+                    :maxlength="10"
+                    allow-clear
+                  >
+                    <template #prefix>
+                      <UserOutlined class="site-form-item-icon" />
+                    </template>
+                  </a-input>
+                </a-form-item>
+                <a-form-item label="" name="mobile">
+                  <a-input
+                    v-model:value.trim="formState.mobile"
+                    placeholder="手机号"
+                    :maxlength="11"
+                    allow-clear
+                  >
+                    <template #prefix>
+                      <mobile-outlined />
+                    </template>
+                  </a-input>
+                </a-form-item>
+                <a-form-item label="" name="code">
+                  <a-input
+                    v-model:value.trim="formState.code"
+                    placeholder="短信验证码"
+                    :maxlength="4"
+                    allow-clear
+                    size="default"
+                  >
+                    <template #addonAfter>
+                      <span v-if="showCount">{{ count }}S 后重新获取</span>
+                      <span v-else @click="sendCode">发送验证码</span>
+                    </template>
+                    <template #prefix><message-outlined /></template
+                  ></a-input>
+                </a-form-item>
+                <a-form-item label="" name="password">
+                  <a-input-password
+                    v-model:value.trim="formState.password"
+                    placeholder="密码"
+                    :maxlength="20"
+                    allow-clear
+                  >
+                    <template #prefix>
+                      <LockOutlined class="site-form-item-icon" />
+                    </template>
+                  </a-input-password>
+                </a-form-item>
+              </div>
+              <a-form-item>
                 <a-button
                   type="primary"
                   html-type="submit"
-                  class="login-form-button"
-                  @click="loginEvent"
+                  @click="submitEvent"
                 >
-                  登录
-                </a-button>
-                <span class="zhuce" @click="wayClick(3)">注册</span>
-              </a-form-item>
-            </a-form>
-          </div>
-          <div class="login_right_box" v-else-if="tabTag === 3">
-            <a-form
-              ref="refRegist"
-              :model="formRegister"
-              name="normal_login"
-              :rules="rulesRegist"
-            >
-              <a-form-item label="" name="account">
-                <a-input
-                  v-model:value="formRegister.account"
-                  placeholder="账号"
-                  allow-clear
-                >
-                  <template #prefix>
-                    <UserOutlined class="site-form-item-icon" />
-                  </template>
-                </a-input>
-              </a-form-item>
-              <a-form-item label="" name="username">
-                <a-input
-                  v-model:value="formRegister.username"
-                  placeholder="昵称"
-                  allow-clear
-                >
-                  <template #prefix>
-                    <smile-outlined class="site-form-item-icon" />
-                  </template>
-                </a-input>
-              </a-form-item>
-              <a-form-item label="" name="password">
-                <a-input-password
-                  v-model:value="formRegister.password"
-                  placeholder="密码"
-                  allow-clear
-                >
-                  <template #prefix>
-                    <LockOutlined class="site-form-item-icon" />
-                  </template>
-                </a-input-password>
-              </a-form-item>
-              <a-form-item label="" name="mobile">
-                <a-input
-                  v-model:value="formRegister.mobile"
-                  placeholder="手机号"
-                  allow-clear
-                >
-                  <template #prefix>
-                    <phone-outlined class="site-form-item-icon" />
-                  </template>
-                </a-input>
-              </a-form-item>
-              <a-form-item class="zhuceItem">
-                <a-button
-                  type="primary"
-                  html-type="submit"
-                  class="login-form-button"
-                  @click="registerEvent"
-                >
-                  注册
+                  {{ submitTxt }}
                 </a-button>
               </a-form-item>
             </a-form>
-          </div>
-          <div class="login_right_fs">
-            <span
-              @click="wayClick(1)"
-              :class="{ active: tabTag === 1 }"
-              class="iconfont icon-yonghu"
-              >用户登录</span
+            <p
+              v-if="activeTabKey === 1 || activeTabKey === 2"
+              class="ant-form-p"
             >
+              <span @click="changeTab(3)">注册</span
+              ><span @click="changeTab(4)">忘记密码</span>
+            </p>
+            <p v-else class="ant-form-p">
+              <span @click="submitEvent(0)">取消</span>
+            </p>
           </div>
         </div>
       </div>
@@ -158,27 +161,24 @@
 <script setup>
 import {
   UserOutlined,
-  MobileOutlined,
-  CheckOutlined,
   LockOutlined,
-  PhoneOutlined,
-  SmileOutlined,
+  MobileOutlined,
+  MessageOutlined,
 } from "@ant-design/icons-vue";
 import { ref, watch, toRefs, onMounted, reactive } from "vue";
 import { useStore } from "vuex";
-import { userLogin, registerUser } from "@/api/api";
-import { message } from "ant-design-vue";
 import {
-  checkLogAccount,
-  checkLogPwd,
-  checkLogPhone,
-  checkUsername,
-  checkPhone,
-} from "@/validator";
-
+  userLogin,
+  userRegist,
+  getPhoneCode,
+  getPhoneCodeLog,
+  getPhoneCodePwd,
+  userEditPwd,
+} from "@/api/api";
+import { message } from "ant-design-vue";
+import { checkMobile, checkMobileCode, checklgPwd, checkUsername } from "@/validator";
+const formref = ref("");
 const store = useStore();
-const refLogin = ref();
-const refRegist = ref();
 let $props = defineProps({
   showLogin: {
     type: Boolean,
@@ -186,132 +186,345 @@ let $props = defineProps({
 });
 let { showLogin } = toRefs($props);
 let $emit = defineEmits(["changeLogTag"]);
-// 登录相关
+// tab切换相关
 let {
-  formState,
-  formRegister,
-  activeTabKey,
-  tabTag,
   diaVisible,
-  rulesLogin,
-  rulesRegist,
+  activeTabKey,
+  submitTxt,
+  tabList,
   handlecancel,
-  loginEvent,
-  registerEvent,
   tabClick,
-  wayClick,
-} = relate_login();
-function relate_login() {
-  // ---
-  let stateData = reactive({
-    formState: {
-      account: "",
-      password: "",
-      phoneCode: "",
-    },
-    formRegister: {
-      account: "",
-      username: "",
-      account: "",
-      mobile: "",
-    },
-    activeTabKey: 1,
-    tabTag: 1,
+  changeTab,
+} = relate_tab();
+function relate_tab() {
+  let stateData2 = reactive({
     diaVisible: false,
-    rulesLogin: {
-      account: [
-        { required: true, validator: checkLogAccount, trigger: "change" },
-      ],
-      password: [{ required: true, validator: checkLogPwd, trigger: "change" }],
-      phoneCode: [
-        { required: true, validator: checkLogPhone, trigger: "change" },
-      ],
-    },
-    rulesRegist: {
-      account: [
-        { required: true, validator: checkLogAccount, trigger: "change" },
-      ],
-      username: [
-        { required: true, validator: checkUsername, trigger: "change" },
-      ],
-      password: [{ required: true, validator: checkLogPwd, trigger: "change" }],
-      mobile: [{ required: true, validator: checkPhone, trigger: "change" }],
-    },
+    activeTabKey: 1,
+    submitTxt: "登录",
+    tabList: [
+      {
+        key: 1,
+        tabName: "验证码登录",
+      },
+      {
+        key: 2,
+        tabName: "密码登录",
+      },
+    ],
   });
   let watchLogTag = watch(
     showLogin,
     (newval, oldval) => {
-      stateData.diaVisible = newval;
+      stateData2.diaVisible = newval;
     },
     { immediate: true }
   );
   let handlecancel = () => {
     $emit("changeLogTag", false);
   };
-  let tabClick = (val) => {
-    refLogin.value.clearValidate();
-    stateData.activeTabKey = val;
-  };
-  let wayClick = (val) => {
-    if (stateData.tabTag === 3) {
-      // 注册
-      refRegist.value.resetFields();
+  let changeTab = (val) => {
+    if (val === 3) {
+      stateData2.tabList = [
+        {
+          key: 3,
+          tabName: "注册",
+        },
+      ];
+      stateData2.submitTxt = "注册";
     } else {
-      refLogin.value.resetFields();
+      stateData2.tabList = [
+        {
+          key: 4,
+          tabName: "找回密码",
+        },
+      ];
+      stateData2.submitTxt = "修改";
     }
-    stateData.tabTag = val;
-    stateData.activeTabKey = 1;
+    stateData2.activeTabKey = val;
+  };
+  let tabClick = (val) => {
+    stateData2.activeTabKey = val;
+    formref.value.resetFields();
+  };
+  return { ...toRefs(stateData2), handlecancel, changeTab, tabClick };
+}
+// 登录相关
+let {
+  formState,
+  errorInfo,
+  rules,
+  timer,
+  count,
+  showCount,
+  sendCode,
+  submitEvent,
+} = relate_login();
+function relate_login() {
+  // ---
+  let stateData = reactive({
+    // 登录
+    formState: {
+      way: 0,
+      // 登录
+      account: "",
+      password_code: "",
+      // 注册
+      nickname: "",
+      mobile: "",
+      password: "",
+      code: "",
+    },
+    errorInfo: "",
+    rules: {
+      account: [
+        {
+          required: true,
+          validator: checkMobile,
+          trigger: ["blur", "change"],
+        },
+      ],
+      password_code: [
+        {
+          required: true,
+          validator: checklgPwd,
+          trigger: ["blur", "change"],
+        },
+      ],
+      nickname: [
+        {
+          required: true,
+          validator: checkUsername,
+          trigger: ["blur", "change"],
+        },
+      ],
+      mobile: [
+        {
+          required: true,
+          validator: checkMobile,
+          trigger: ["blur", "change"],
+        },
+      ],
+      code: [
+        {
+          required: true,
+          validator: checkMobileCode,
+          trigger: ["blur", "change"],
+        },
+      ],
+      password: [
+        {
+          required: true,
+          validator: checklgPwd,
+          trigger: ["blur", "change"],
+        },
+      ],
+    },
+    timer: null,
+    TIME_COUNT: 60,
+    count: null,
+    showCount: false,
+  });
+  let watchActive = watch(
+    activeTabKey,
+    (newval, oldval) => {
+      stateData.showCount = false;
+      clearInterval(stateData.timer);
+      stateData.timer = null;
+      stateData.rules.password_code[0].validator =
+        newval === 1 ? checkMobileCode : checklgPwd;
+    },
+    { immediate: true, deep: true }
+  );
+  /* 倒计时 */
+  let countDown = () => {
+    if (!stateData.timer) {
+      stateData.count = stateData.TIME_COUNT;
+      stateData.showCount = true;
+      stateData.timer = setInterval(() => {
+        if (stateData.count > 1 && stateData.count <= stateData.TIME_COUNT) {
+          stateData.count--;
+        } else {
+          stateData.showCount = false;
+          clearInterval(stateData.timer);
+          stateData.timer = null;
+        }
+      }, 1000);
+    }
   };
   // 登录接口
-  let apiPort_login = () => {
-    refLogin.value.validate().then((res) => {
-      userLogin({ ...stateData.formState }).then((res) => {
-        if (res.data.code === 200) {
-          refLogin.value.resetFields();
-          message.success("登陆成功");
-          store.commit("pageData/SET_SSO", res.data.data.token);
-          store.commit("pageData/SET_USERNAME", res.data.data.username);
-          store.commit("pageData/SET_ACCOUNT", res.data.data.account);
-          store.commit("pageData/SET_ACCOUNTID", res.data.data.user);
-          store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
-          $emit("changeLogTag", true);
-        } else {
-          message.error(`${res.data.msg}`);
-        }
-      });
+  let apiPort_login = (val) => {
+    userLogin(val).then((res) => {
+      if (res.data.code === 200) {
+        formref.value.resetFields();
+        message.success("登陆成功");
+        store.commit("pageData/SET_SSO", res.data.data.token);
+        store.commit("pageData/SET_USERNAME", res.data.data.username);
+        store.commit("pageData/SET_ACCOUNT", res.data.data.account);
+        store.commit("pageData/SET_ACCOUNTID", res.data.data.id);
+        store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
+        $emit("changeLogTag", true);
+      } else {
+        message.error(`${res.data.msg}`);
+      }
     });
   };
-  let apiPort_register = () => {
-    refRegist.value.validate().then((res) => {
-      registerUser({
-        ...stateData.formRegister,
-      }).then((res) => {
-        if (res.data.code === 200) {
-          refRegist.value.resetFields();
-          message.success("注册成功，请登录");
-          stateData.tabTag = 1;
-          stateData.activeTabKey = 1;
-        } else {
-          message.error(`${res.data.msg}`);
-        }
-      });
+  // 注册接口
+  let apiPort_regist = (val) => {
+    userRegist(val).then((res) => {
+      if (res.data.code === 200) {
+        message.success(`注册成功`);
+        tabList.value = [
+          {
+            key: 1,
+            tabName: "验证码登录",
+          },
+          {
+            key: 2,
+            tabName: "密码登录",
+          },
+        ];
+        activeTabKey.value = 1;
+        submitTxt.value = "登录";
+      } else {
+        message.error(`${res.data.msg}`);
+      }
     });
   };
-  let registerEvent = () => {
-    apiPort_register();
+  // 验证码接口 -- 注册
+  let apiPort_send = (mobile) => {
+    getPhoneCode({
+      mobile,
+      way: 0
+    }).then((res) => {
+      if (res.data.code == 200) {
+        message.success(`验证码已发送`);
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
   };
-  let loginEvent = () => {
-    apiPort_login();
+  // 验证码接口 -- 登录
+  let apiPort_send_log = (mobile) => {
+    getPhoneCodeLog({
+      mobile,
+      way: 0
+    }).then((res) => {
+      if (res.data.code == 200) {
+        message.success(`验证码已发送`);
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
   };
-  // ----
-  return {
-    ...toRefs(stateData),
-    handlecancel,
-    loginEvent,
-    registerEvent,
-    tabClick,
-    wayClick,
+  // 验证码接口 -- 修改密码
+  let apiPort_send_pwd = (mobile) => {
+    getPhoneCodePwd({
+      mobile,
+      way: 0
+    }).then((res) => {
+      if (res.data.code == 200) {
+        message.success(`验证码已发送`);
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
   };
+  // 找回密码
+  let apiPort_edit = (val) => {
+    userEditPwd(val).then((res) => {
+      if (res.data.code == 200) {
+        message.success(`密码修改成功`);
+        tabList.value = [
+          {
+            key: 1,
+            tabName: "验证码登录",
+          },
+          {
+            key: 2,
+            tabName: "密码登录",
+          },
+        ];
+        activeTabKey.value = 1;
+        submitTxt.value = "登录";
+      } else {
+        message.error(`${res.data.msg}`);
+      }
+    });
+  };
+  // 发送验证
+  let sendCode = () => {
+    let mobile;
+    switch (activeTabKey.value) {
+      case 1:
+        mobile = stateData.formState.account;
+        formref.value.validate("account").then((valid) => {
+          countDown();
+          apiPort_send_log(mobile);
+        });
+        break;
+      case 3:
+        mobile = stateData.formState.mobile;
+        formref.value.validate("mobile").then((valid) => {
+          countDown();
+          apiPort_send(mobile);
+        });
+        break;
+      case 4:
+        mobile = stateData.formState.mobile;
+        countDown();
+        formref.value.validate("mobile").then((valid) => {
+          apiPort_send_pwd(mobile);
+        });
+        break;
+    }
+  };
+  // 提交事件
+  let submitEvent = (val) => {
+    if (val == 0) {
+      formref.value.resetFields();
+      // 取消
+      tabList.value = [
+        {
+          key: 1,
+          tabName: "验证码登录",
+        },
+        {
+          key: 2,
+          tabName: "密码登录",
+        },
+      ];
+      activeTabKey.value = 1;
+      submitTxt.value = "登录";
+    } else {
+      formref.value.validate().then((valid) => {
+        let csData = {
+          ...stateData.formState,
+        };
+        if (activeTabKey.value === 1) {
+          // 验证码登录
+          csData = {
+            ...csData,
+            type: "code",
+          };
+          apiPort_login(csData);
+        } else if (activeTabKey.value === 2) {
+          // 密码登录
+          csData = {
+            ...csData,
+            type: "password",
+          };
+          apiPort_login(csData);
+        } else if (activeTabKey.value === 3) {
+          // 注册
+          apiPort_regist(csData);
+        } else if (activeTabKey.value === 4) {
+          // 修改密码
+          apiPort_edit(csData);
+        }
+      });
+    }
+  };
+  return { ...toRefs(stateData), sendCode, submitEvent };
 }
 </script>
 
