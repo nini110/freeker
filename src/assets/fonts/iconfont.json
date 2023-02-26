@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "10268607",
+      "name": "完善数据",
+      "font_class": "wanshanshuju",
+      "unicode": "e683",
+      "unicode_decimal": 59011
+    },
+    {
+      "icon_id": "17542037",
+      "name": "每日推荐",
+      "font_class": "tuijian",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "33762280",
+      "name": "腾讯实名认证",
+      "font_class": "tengxunshimingrenzheng",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
       "icon_id": "307213",
       "name": "等待",
       "font_class": "dengdai",

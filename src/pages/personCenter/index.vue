@@ -88,13 +88,13 @@
             <p class="uploader_msg">支持JPG、JPEG、PNG且不超过5M。</p>
             <a-divider style="border-color: #ddd6d6; margin-bottom: 0" dashed />
           </a-form-item>
-          <a-form-item label="账户" name="account">
+          <a-form-item label="账户" name="account" class="ts">
             <a-input v-model:value="formState1.account" disabled />
           </a-form-item>
           <a-form-item label="用户名" name="username">
             <a-input v-model:value="formState1.username" />
           </a-form-item>
-          <a-form-item label="账户类型" name="account_type">
+          <a-form-item label="账户类型" name="account_type" class="ts">
             <a-select v-model:value="formState1.account_type">
               <a-select-option
                 v-for="(item, idx) in typeOpt"
@@ -114,13 +114,13 @@
               >
             </a-select>
           </a-form-item>
-          <a-form-item label="手机号" name="mobile">
+          <a-form-item label="手机号" name="mobile" class="ts">
             <a-input v-model:value="formState1.mobile" />
           </a-form-item>
           <a-form-item label="毕业院校" name="graduated">
             <a-input v-model:value="formState1.graduated" />
           </a-form-item>
-          <a-form-item label="最高学历" name="education">
+          <a-form-item label="最高学历" name="education" class="ts">
             <a-radio-group
               v-model:value="formState1.education"
               button-style="solid"
@@ -164,13 +164,17 @@
               :span="item1.span || 3"
               >{{ item1.val }}</a-descriptions-item
             >
+            <a-descriptions-item
+              label="个人介绍"
+              ><div v-html="initInfo.self_introduction"></div></a-descriptions-item
+            >
           </a-descriptions>
         </div>
       </div>
       <div v-else class="descBox">
         <p class="descBox_title">专业技能修改</p>
         <a-form
-          class="flex50"
+          class="flex50 ts"
           :model="formState2"
           ref="refForm2"
           name="basic"
@@ -178,13 +182,7 @@
           autocomplete="off"
           :rules="rules2"
         >
-          <a-form-item label="工作年限" name="work_years">
-            <a-input-number
-              v-model:value="formState2.work_years"
-              addon-after="年"
-            ></a-input-number>
-          </a-form-item>
-          <a-form-item label="工作方式" name="work_type">
+          <a-form-item label="工作方式" name="work_type" class="flexw100">
             <a-radio-group
               v-model:value="formState2.work_type"
               button-style="solid"
@@ -193,6 +191,12 @@
               <a-radio-button value="全职">全职</a-radio-button>
             </a-radio-group>
           </a-form-item>
+          <a-form-item label="工作年限" name="work_years" class="ts">
+            <a-input-number
+              v-model:value="formState2.work_years"
+              addon-after="年"
+            ></a-input-number>
+          </a-form-item>
           <a-form-item label="工作时间" name="work_time">
             <a-time-range-picker
               v-model:value="formState2.work_time"
@@ -200,8 +204,29 @@
               value-format="HH:mm"
             />
           </a-form-item>
-          <a-form-item label="个人优势" name="self_introduction">
+          <!-- <a-form-item label="个人优势" name="self_introduction">
             <a-input v-model:value="formState2.self_introduction" />
+          </a-form-item> -->
+          <a-form-item
+            label="个人优势"
+            name="self_introduction"
+            class="flexw100"
+          >
+            <div style="border: 1px solid #ccc">
+              <Toolbar
+                style="border-bottom: 1px solid #ccc"
+                :editor="editorRef"
+                :defaultConfig="toolbarConfig"
+                :mode="mode"
+              ></Toolbar>
+              <Editor
+                v-model="formState2.self_introduction"
+                :defaultConfig="editorConfig"
+                :mode="mode"
+                @onCreated="handleCreated"
+                @onChange="editorChange"
+              />
+            </div>
           </a-form-item>
           <a-form-item class="btnrow">
             <a-button class="red_bd" shape="round" @click="skillEvent(1)"
@@ -285,7 +310,7 @@
           autocomplete="off"
           :rules="rules3"
         >
-          <a-form-item label="真实姓名" name="real_name">
+          <a-form-item label="真实姓名" name="real_name" class="ts">
             <a-input v-model:value="formState3.real_name" />
           </a-form-item>
           <a-form-item label="身份证号" name="id_card">
@@ -458,7 +483,7 @@
               >
             </a-radio-group>
           </a-form-item>
-          <a-form-item label="资质等级" name="cert_level">
+          <a-form-item label="资质等级" name="cert_level" class="ts">
             <a-select v-model:value="formState4.cert_level">
               <a-select-option
                 v-for="(item, idx) in levelOpt"
@@ -475,7 +500,7 @@
               value-format="YYYY-MM-DD"
             />
           </a-form-item>
-          <a-form-item label="资质证书" name="cert_image">
+          <a-form-item label="资质证书" name="cert_image" class="ts">
             <a-upload
               v-model:file-list="formState4.cert_image"
               name="avatar"
@@ -512,7 +537,17 @@
   </div>
 </template>
 <script setup>
-import { ref, refs, reactive, toRefs, onBeforeMount, watch } from "vue";
+import {
+  ref,
+  refs,
+  reactive,
+  toRefs,
+  onBeforeMount,
+  onBeforeUnmount,
+  watch,
+  toRef,
+  shallowRef,
+} from "vue";
 import { useStore } from "vuex";
 import {
   editBaseInfo,
@@ -524,11 +559,75 @@ import {
   delZizhi,
 } from "@/api/api";
 import { message } from "ant-design-vue";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 const store = useStore();
 const refForm1 = ref();
 const refForm2 = ref();
 const refForm3 = ref();
 const refForm4 = ref();
+const editorRef = shallowRef();
+// 编辑器相关
+let { toolbarConfig, editorConfig, mode, handleCreated, editorChange } =
+  relate_editor();
+function relate_editor() {
+  let stateData = reactive({
+    toolbarConfig: {
+      /* 工具栏配置 */
+      toolbarKeys: [
+        "bold",
+        "color",
+        "bgColor",
+        "headerSelect",
+        "|",
+        "justifyLeft",
+        "justifyCenter",
+        "justifyRight",
+        "bulletedList",
+        "numberedList",
+        "|",
+        // 菜单组，包含多个菜单
+        {
+          key: "group-link",
+          title: "链接",
+          menuKeys: ["insertLink", "editLink", "unLink", "viewLink"],
+        },
+        // {
+        //   key: "group-image", // 必填，要以 group 开头
+        //   title: "图片", // 必填
+        //   menuKeys: [
+        //     "uploadImage",
+        //     "deleteImage",
+        //     "editImage",
+        //     "viewImageLink",
+        //   ],
+        // },
+        "divider",
+        "|",
+        "undo",
+        "|",
+        "clearStyle",
+      ],
+    },
+    editorConfig: {
+      placeholder:
+        "简要的介绍您公司的“背景”、“商品”或“推广诉求”，以及“投手意见”等.",
+      readOnly: false,
+    },
+    mode: "default",
+  });
+  // 组件销毁时，也及时销毁编辑器
+  onBeforeUnmount(() => {
+    const editor = editorRef.value;
+    if (editor == null) return;
+    editor.destroy();
+  });
+  let handleCreated = (editor) => {
+    editorRef.value = editor; // 记录 editor 实例，重要！
+  };
+  let editorChange = () => {};
+  return { ...toRefs(stateData), handleCreated, editorChange };
+}
 let {
   tagClosable,
   initInfo,
@@ -788,11 +887,11 @@ function relate_init() {
         code: "work_time",
         val: "",
       },
-      {
-        label: "个人介绍",
-        code: "self_introduction",
-        val: "",
-      },
+      // {
+      //   label: "个人介绍",
+      //   code: "self_introduction",
+      //   val: "",
+      // },
     ],
     sfList: [
       {

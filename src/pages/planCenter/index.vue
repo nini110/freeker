@@ -10,7 +10,7 @@
     <div v-if="projList.length === 0" class="planBox proj_box_empty">
       <a-empty />
     </div>
-    <div v-else>
+    <div v-else class="dataBox">
       <div v-for="(item, idx) in projList" :key="idx" class="planBox iconfont">
         <div v-if="item.project_status !== 0" class="planBox_title">
           <p

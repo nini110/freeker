@@ -1,8 +1,16 @@
 $baseFontsize: 14px;
 
 .banlanceBox {
-    margin: 20px 60px;
+    // margin: 20px 60px;
+    .tabs {
+        margin: 20px 60px;
 
+    }
+    .empty {
+        flex-basis: 100%;
+        display: flex;
+        justify-content: center;
+    }
     &_list {
         display: flex;
         flex-wrap: wrap;
@@ -12,9 +20,8 @@ $baseFontsize: 14px;
     &_item {
         flex-basis: 31.3%;
         transition: all .3s linear;
-        margin: 1%;
+        // margin: 1%;
         background: url(../../assets/images/itembg.png), linear-gradient(-223.91deg, #fbfbfb 0%, #bea692 100%);
-
         background-size: cover;
         border-radius: 8px;
 

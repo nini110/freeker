@@ -30,6 +30,9 @@
 }
 
 .content {
+    .dataBox {
+        margin: 20px 60px;
+    }
     .ant {
         &-descriptions {
             // &-view {
@@ -168,10 +171,21 @@
     .pagination {
         display: flex;
         justify-content: flex-end;
-        padding: 20px 40px;
+        padding: 20px 0;
     }
 }
+.ant {
+    &-modal {
+        &.mdmodal {
+            .ant-modal-content{
+                border-radius: 4px;
+                background: #f6f4ee url(../assets/images/bg-exchange.png) no-repeat;
+                background-size: contain;
 
+            }
+        }
+    }
+}
 .userPopver {
     user-select: none;
 

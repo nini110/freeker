@@ -32,35 +32,38 @@
     <div v-if="projectList.length === 0" class="proj_box proj_box_empty">
       <a-empty />
     </div>
-    <div v-else class="proj_box">
-      <div v-for="(item, idx) in projectList" :key="idx" class="proj_box_div">
-        <div class="proj_box_card">
-          <div class="proj_desc">
-            {{ item.project_name }}
-          </div>
-          <div class="proj_txt" @click="cardClick(item)">
-            <p class="proj_p"><span>投放平台</span>{{ item.platCn }}</p>
-            <p class="proj_p"><span>项目预算</span>￥{{ item.budget }}</p>
-            <p class="proj_p"><span>服务费</span>￥{{ item.brokerage }}</p>
-            <p class="proj_p"><span>产品类型</span>{{ item.categoryCn }}</p>
-            <p class="proj_p"><span>截止时间</span>{{ item.time }}</p>
-          </div>
-          <div class="proj_btn">
-            <span @click="applyEvent(item)">申请</span>
+    <div v-else class="dataBox">
+      <div class="proj_box">
+        <div v-for="(item, idx) in projectList" :key="idx" class="proj_box_div">
+          <div class="proj_box_card">
+            <div class="proj_desc">
+              {{ item.project_name }}
+            </div>
+            <div class="proj_txt" @click="cardClick(item)">
+              <p class="proj_p"><span>投放平台</span>{{ item.platCn }}</p>
+              <p class="proj_p"><span>项目预算</span>￥{{ item.budget }}</p>
+              <p class="proj_p"><span>服务费</span>￥{{ item.brokerage }}</p>
+              <p class="proj_p"><span>产品类型</span>{{ item.categoryCn }}</p>
+              <p class="proj_p"><span>截止时间</span>{{ item.time }}</p>
+            </div>
+            <div class="proj_btn">
+              <span @click="applyEvent(item)">申请</span>
+            </div>
           </div>
         </div>
       </div>
+      <div class="pagination fixed">
+        <a-pagination
+          v-model:current="pageNation.currentPage"
+          v-model:pageSize="pageNation.pageSize"
+          :pageSizeOptions="['6', '12']"
+          show-size-changer
+          :total="pageNation.totalNum"
+          @change="sizeChange"
+        />
+      </div>
     </div>
-    <div class="pagination fixed">
-      <a-pagination
-        v-model:current="pageNation.currentPage"
-        v-model:pageSize="pageNation.pageSize"
-        :pageSizeOptions="['6', '12']"
-        show-size-changer
-        :total="pageNation.totalNum"
-        @change="sizeChange"
-      />
-    </div>
+    <MdModal :showMdModal="showMdModal" @closeMod="closeModEvent"></MdModal>
   </div>
   <DetailPage
     v-else
@@ -74,11 +77,13 @@ import { ref, reactive, watch, onBeforeMount, toRefs, createVNode } from "vue";
 import { FormOutlined, ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import DetailPage from "../detailPage/index.vue";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 import { getProjList, applyProj, getProjDetail } from "@/api/api";
 import dayjs from "dayjs";
 import { message, Modal, Empty } from "ant-design-vue";
 import optionJs from "@/utils/option.js";
-
+import MdModal from "../../components/MdModal";
+const store = useStore();
 let $route = useRoute();
 let pageNation = reactive({
   currentPage: 1,
@@ -88,6 +93,7 @@ let pageNation = reactive({
 const refForm = ref();
 // 项目中心
 let {
+  showMdModal,
   projectList,
   platOption,
   formData,
@@ -95,9 +101,11 @@ let {
   applyEvent,
   searchEvent,
   resetEvent,
+  closeModEvent,
 } = relate_proj();
 function relate_proj() {
   const stateDate = reactive({
+    showMdModal: false,
     projectList: [],
     platOption: null,
     formData: {
@@ -105,6 +113,9 @@ function relate_proj() {
       category: null,
     },
   });
+  let closeModEvent = () => {
+    stateDate.showMdModal = false;
+  };
   // 获取列表
   let apiPort_list = (page, page_size) => {
     getProjList({
@@ -195,18 +206,22 @@ function relate_proj() {
     });
   };
   let applyEvent = (row) => {
-    Modal.confirm({
-      title: `是否确认申请当前项目`,
-      centered: true,
-      icon: createVNode(ExclamationCircleOutlined),
-      onOk() {
-        apiPort_apply(row.id);
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-      class: "test",
-    });
+    if (store.getters.verifyFlag === 2) {
+      Modal.confirm({
+        title: `是否确认申请当前项目`,
+        centered: true,
+        icon: createVNode(ExclamationCircleOutlined),
+        onOk() {
+          apiPort_apply(row.id);
+        },
+        onCancel() {
+          console.log("Cancel");
+        },
+        class: "test",
+      });
+    } else {
+      stateDate.showMdModal = true;
+    }
   };
   let searchEvent = () => {
     if (stateDate.formData.project_name || stateDate.formData.category) {
@@ -234,6 +249,7 @@ function relate_proj() {
   });
   return {
     ...toRefs(stateDate),
+    closeModEvent,
     apiPort_list,
     applyEvent,
     searchEvent,
@@ -285,5 +301,5 @@ function relate_page() {
 </script>
 <style lang="scss" scoped>
 @import "./index.scss";
-@import "../home/index.scss";
+@import "../Home/index.scss";
 </style>

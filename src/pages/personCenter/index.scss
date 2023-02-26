@@ -1,15 +1,18 @@
 .personBox {
     background-color: transparent;
     padding: 0;
+
     // padding-top: 10px;
     .fl100 {
         flex-basis: 88%;
     }
+
     .userBox {
         display: flex;
         justify-content: center;
         background: url(../../assets/images/userheader.png) no-repeat 0 0;
         background-size: cover;
+
         &_outer {
             flex-basis: 88%;
             flex-wrap: nowrap;
@@ -45,6 +48,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+
                 .icon {
                     // display: flex;
                     // align-items: center;
@@ -59,6 +63,7 @@
                         align-items: center;
                         padding: 3px;
                         margin-right: 20px;
+
                         img {
                             width: 80%;
                             height: 80%;
@@ -91,6 +96,7 @@
         padding: 20px 60px;
         margin-bottom: 10px;
     }
+
     .tagBox {
         display: flex;
         justify-content: space-between;
@@ -99,13 +105,16 @@
         padding: 20px 40px;
         border-radius: 8px 8px 0 0;
         margin: 0;
+
         div {
             &:nth-child(1) {
                 width: 80%;
             }
+
             &:nth-child(2) {
                 width: 5%;
             }
+
             .ant-tag {
                 padding: 7px 10px;
                 font-size: 14px;
@@ -113,12 +122,14 @@
             }
         }
     }
+
     .tipBox {
         padding: 0;
         line-height: 24px;
         padding: 10px;
         background-color: #fff2ee;
         border-top: 1px solid #fa4b42;
+
         p {
             padding: 0 30px;
             color: #606266;
@@ -161,27 +172,33 @@
         justify-content: center;
         flex-wrap: wrap;
         border-radius: 0 0 8px 8px;
+
         .nodatadiv {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+
             img {
                 width: 50%;
                 padding: 20px;
             }
+
             div {
                 flex-basis: 100%;
                 text-align: center;
                 color: #909399;
             }
+
             &.ts {
                 font-weight: bold;
+
                 div:hover {
                     cursor: pointer;
                     color: #1890ff;
                 }
             }
         }
+
         .ant {
             &-descriptions {
                 // margin: 0 auto;
@@ -234,9 +251,11 @@
                 margin: 0;
                 padding: 20px 40px;
                 height: 60px;
+
                 &:hover {
                     color: #ff532b;
                 }
+
                 &-active {
                     border-radius: 3px;
                     height: 70px;
@@ -267,6 +286,7 @@
         padding: 20px 60px;
         background-color: #fff;
         border-radius: 8px 8px 0 0;
+
         :deep .ant-steps {
             flex-basis: 88%;
             padding: 20px 0;
@@ -295,6 +315,7 @@
             border-radius: 4px;
             padding: 20px;
             margin-right: 20px;
+
             // width: 200px;
             // height: 400px;
             span {
@@ -316,6 +337,7 @@
         justify-content: space-around;
         flex-wrap: wrap;
         border-radius: 0 0 8px 8px;
+
         &_lf,
         &_rt {
             display: flex;
@@ -369,17 +391,6 @@
                 flex-wrap: wrap;
             }
 
-            &.ts {
-                .ant-row {
-                    &:nth-child(even) {
-                        margin-right: 10%;
-                    }
-
-                    &:nth-child(odd) {
-                        margin-right: 0;
-                    }
-                }
-            }
         }
 
         &-row {
@@ -387,12 +398,8 @@
             margin: 0 0 22px 0;
             display: inline;
 
-            &:nth-child(odd) {
+            &.ts {
                 margin-right: 10%;
-
-                &.flexw100 {
-                    margin-right: 0;
-                }
             }
 
             &.flexw100 {
@@ -408,7 +415,9 @@
                 text-align: center;
             }
         }
-
+        &-input-number-group-wrapper {
+            width: 100%;
+        }
         &-form-item {}
     }
 }

@@ -362,6 +362,8 @@ function relate_login() {
         store.commit("pageData/SET_ACCOUNT", res.data.data.account);
         store.commit("pageData/SET_ACCOUNTID", res.data.data.id);
         store.commit("pageData/SET_USERIMG", res.data.data.thumb_avatar);
+        store.commit("pageData/SET_FIRSTLOG", res.data.data.is_frist_login);
+        store.commit("pageData/SET_VERIFYFLAG", res.data.data.is_authentication);
         $emit("changeLogTag", true);
       } else {
         message.error(`${res.data.msg}`);

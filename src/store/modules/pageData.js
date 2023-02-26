@@ -5,6 +5,8 @@ const state = {
     userImg: '',
     SSO: '',
     menuTag: null,
+    firstLog: false,// 第一次登录
+    verifyFlag: 0, //是否实名认证
 }
 const mutations = {
     SET_USERNAME: (state, view) => {
@@ -25,6 +27,12 @@ const mutations = {
     SET_MENUTAG: (state, view) => {
         state.menuTag = view
     },
+    SET_FIRSTLOG: (state, view) => {
+        state.firstLog = view
+    },
+    SET_VERIFYFLAG: (state, view) => {
+        state.verifyFlag = view
+    }
 }
 const actions = {
 

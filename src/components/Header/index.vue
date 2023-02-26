@@ -45,7 +45,7 @@
             arrow-point-at-center
           >
             <template #content>
-              <p class="t3" @click="openDialog"><user-outlined />账户信息</p>
+              <p class="t3" @click="openDialog"><user-outlined />用户信息</p>
               <p class="t4" @click="logoutEvent">
                 <poweroff-outlined />退出登录
               </p>
@@ -159,6 +159,9 @@ function relate_menu() {
       }
       if (newval.path.indexOf('projM') !== -1) {
         stateData.currentMenu = ['projM'];
+      }
+      if (newval.path.indexOf('personM') !== -1) {
+        stateData.currentMenu = [];
       }
     },
     { immediate: true, deep: true }

@@ -1,57 +1,67 @@
 <template>
   <div>
     <div v-if="showList" class="planBox banlanceBox" ref="bale">
-      <a-tabs v-model:activeKey="activeKey" type="card" @change="tabEvent">
+      <a-tabs
+        v-model:activeKey="activeKey"
+        type="card"
+        class="tabs"
+        @change="tabEvent"
+      >
         <a-tab-pane key="" tab="全部"></a-tab-pane>
         <a-tab-pane key="9" tab="未结算"></a-tab-pane>
         <a-tab-pane key="10,11" tab="结算中"></a-tab-pane>
         <a-tab-pane key="12" tab="已结算"></a-tab-pane>
       </a-tabs>
-      <div class="banlanceBox_list">
-        <div
-          class="banlanceBox_item"
-          v-for="(item, idx) in projList"
-          :key="idx"
-        >
-          <a-badge-ribbon :text="item.statusTxt" :color="item.statusClass">
-            <h2 @click="openPage(item)">
-              <span>{{ item.project_name }}</span>
-            </h2>
-          </a-badge-ribbon>
+      <div v-if="projList.length === 0" class="planBox proj_box_empty empty">
+        <a-empty />
+      </div>
+      <div v-else class="dataBox">
+        <div class="proj_box">
+          <div
+            class="banlanceBox_item"
+            v-for="(item, idx) in projList"
+            :key="idx"
+          >
+            <a-badge-ribbon :text="item.statusTxt" :color="item.statusClass">
+              <h2 @click="openPage(item)">
+                <span>{{ item.project_name }}</span>
+              </h2>
+            </a-badge-ribbon>
 
-          <div class="banlanceBox_item_info" @click="openPage(item)">
-            <p>
-              <account-book-outlined /><span>佣金</span
-              ><span>￥{{ item.brokerage }}</span>
-            </p>
-            <p>
-              <user-outlined /><span>提现账号</span
-              ><span v-if="item.mst_account">{{ item.mst_account }}</span
-              ><span v-else class="cur">未绑定</span>
-            </p>
-          </div>
-          <div class="banlanceBox_item_opt">
-            <span
-              v-if="item.project_status === 9"
-              class="pointer"
-              @click="bindEvent(item)"
-              >申请结算</span
-            >
-            <span v-if="item.project_status === 10">等待商家汇款</span>
-            <span v-if="item.project_status === 11">等待美事通打款</span>
-            <span v-if="item.project_status === 12">投手已到账</span>
+            <div class="banlanceBox_item_info" @click="openPage(item)">
+              <p>
+                <account-book-outlined /><span>佣金</span
+                ><span>￥{{ item.brokerage }}</span>
+              </p>
+              <p>
+                <user-outlined /><span>提现账号</span
+                ><span v-if="item.mst_account">{{ item.mst_account }}</span
+                ><span v-else class="cur">未绑定</span>
+              </p>
+            </div>
+            <div class="banlanceBox_item_opt">
+              <span
+                v-if="item.project_status === 9"
+                class="pointer"
+                @click="bindEvent(item)"
+                >申请结算</span
+              >
+              <span v-if="item.project_status === 10">等待商家汇款</span>
+              <span v-if="item.project_status === 11">等待美事通打款</span>
+              <span v-if="item.project_status === 12">投手已到账</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="pagination fixed">
-        <a-pagination
-          v-model:current="pageNation.currentPage"
-          v-model:pageSize="pageNation.pageSize"
-          :pageSizeOptions="['6', '12']"
-          show-size-changer
-          :total="pageNation.totalNum"
-          @change="sizeChange"
-        />
+        <div class="pagination fixed">
+          <a-pagination
+            v-model:current="pageNation.currentPage"
+            v-model:pageSize="pageNation.pageSize"
+            :pageSizeOptions="['6', '12']"
+            show-size-changer
+            :total="pageNation.totalNum"
+            @change="sizeChange"
+          />
+        </div>
       </div>
       <a-modal
         v-model:visible="modalvisible"
@@ -342,4 +352,5 @@ function relate_page() {
 </script>
 <style lang="scss" scoped>
 @import "index.scss";
+@import "../Home/index.scss";
 </style>
